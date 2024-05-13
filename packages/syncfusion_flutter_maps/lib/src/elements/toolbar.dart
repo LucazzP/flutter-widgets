@@ -131,7 +131,9 @@ class _ToolbarItemState extends State<_ToolbarItem> {
         break;
       case _ToolbarIcon.reset:
         enabled = widget.zoomPanBehavior.zoomLevel !=
-            widget.zoomPanBehavior.minZoomLevel;
+            widget.zoomPanBehavior.minZoomLevel || 
+            widget.zoomPanBehavior.focalLatLng != 
+            widget.zoomPanBehavior.initialFocalLatLng;
         break;
     }
 
@@ -250,6 +252,7 @@ class _ToolbarItemState extends State<_ToolbarItem> {
 
   void _handlePointerUp() {
     double newZoomLevel;
+    MapLatLng? newFocalLatLng;
     switch (widget.icon) {
       case _ToolbarIcon.zoomIn:
         newZoomLevel = widget.zoomPanBehavior.zoomLevel + _increment;
@@ -259,6 +262,7 @@ class _ToolbarItemState extends State<_ToolbarItem> {
         break;
       case _ToolbarIcon.reset:
         newZoomLevel = widget.zoomPanBehavior.minZoomLevel;
+        newFocalLatLng = widget.zoomPanBehavior.initialFocalLatLng;
         break;
     }
 
@@ -267,6 +271,9 @@ class _ToolbarItemState extends State<_ToolbarItem> {
     if (widget.controller != null &&
         newZoomLevel != widget.zoomPanBehavior.zoomLevel) {
       widget.controller!.notifyToolbarZoomedListeners(newZoomLevel);
+      if (newFocalLatLng != null) {
+        widget.zoomPanBehavior.focalLatLng = newFocalLatLng;
+      }
     }
   }
 }
