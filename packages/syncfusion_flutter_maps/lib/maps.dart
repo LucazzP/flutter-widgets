@@ -2343,6 +2343,7 @@ class MapZoomPanBehavior extends MapBehavior {
     bool showToolbar = true,
     MapToolbarSettings toolbarSettings = const MapToolbarSettings(),
   })  : _zoomLevel = zoomLevel.clamp(minZoomLevel, maxZoomLevel),
+        _initialZoomLevel = zoomLevel.clamp(minZoomLevel, maxZoomLevel),
         _focalLatLng = focalLatLng,
         _initialFocalLatLng = focalLatLng,
         _latLngBounds = latLngBounds,
@@ -2429,6 +2430,18 @@ class MapZoomPanBehavior extends MapBehavior {
 
     _initialFocalLatLng = value;
     focalLatLng = value;
+  }
+
+  /// Specifies the initial zoom level to be setted when pressing the reset
+  double? get initialZoomLevel => _initialZoomLevel;
+  double? _initialZoomLevel;
+  set initialZoomLevel(double? value) {
+    if (_initialZoomLevel == value) {
+      return;
+    }
+
+    _initialZoomLevel = value;
+    zoomLevel = value!;
   }
 
   /// Specifies the current latlng bounds of the maps. The maps zoom level

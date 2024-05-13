@@ -131,7 +131,8 @@ class _ToolbarItemState extends State<_ToolbarItem> {
         break;
       case _ToolbarIcon.reset:
         enabled = widget.zoomPanBehavior.zoomLevel !=
-            widget.zoomPanBehavior.minZoomLevel || 
+            (widget.zoomPanBehavior.initialZoomLevel ?? 
+              widget.zoomPanBehavior.minZoomLevel) || 
             widget.zoomPanBehavior.focalLatLng != 
             widget.zoomPanBehavior.initialFocalLatLng;
         break;
@@ -261,7 +262,8 @@ class _ToolbarItemState extends State<_ToolbarItem> {
         newZoomLevel = widget.zoomPanBehavior.zoomLevel - _increment;
         break;
       case _ToolbarIcon.reset:
-        newZoomLevel = widget.zoomPanBehavior.minZoomLevel;
+        newZoomLevel = widget.zoomPanBehavior.initialZoomLevel ?? 
+                        widget.zoomPanBehavior.minZoomLevel;
         newFocalLatLng = widget.zoomPanBehavior.initialFocalLatLng;
         break;
     }
