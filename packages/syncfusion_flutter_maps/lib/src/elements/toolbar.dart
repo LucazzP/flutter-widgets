@@ -269,7 +269,8 @@ class _ToolbarItemState extends State<_ToolbarItem> {
     newZoomLevel = newZoomLevel.clamp(widget.zoomPanBehavior.minZoomLevel,
         widget.zoomPanBehavior.maxZoomLevel);
     if (widget.controller != null &&
-        newZoomLevel != widget.zoomPanBehavior.zoomLevel) {
+        (newZoomLevel != widget.zoomPanBehavior.zoomLevel || 
+        newFocalLatLng != null)) {
       widget.controller!.notifyToolbarZoomedListeners(newZoomLevel);
       if (newFocalLatLng != null) {
         widget.zoomPanBehavior.focalLatLng = newFocalLatLng;
