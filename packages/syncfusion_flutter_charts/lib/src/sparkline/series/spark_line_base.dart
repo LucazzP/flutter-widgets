@@ -58,7 +58,9 @@ class SfSparkLineChart extends StatefulWidget {
       this.marker,
       this.labelDisplayMode,
       this.labelStyle,
-      this.trackball})
+      this.trackball,
+      this.maxY,
+      this.minY})
       : _sparkChartDataDetails = SparkChartDataDetails(data: data),
         super(key: key);
 
@@ -142,7 +144,9 @@ class SfSparkLineChart extends StatefulWidget {
       this.trackball,
       this.marker,
       this.labelDisplayMode,
-      this.labelStyle})
+      this.labelStyle,
+      this.maxY,
+      this.minY})
       : _sparkChartDataDetails = SparkChartDataDetails(
             dataCount: dataCount,
             xValueMapper: xValueMapper,
@@ -556,6 +560,10 @@ class SfSparkLineChart extends StatefulWidget {
   /// Specifies the spark chart data details.
   final SparkChartDataDetails _sparkChartDataDetails;
 
+  final double? maxY;
+
+  final double? minY;
+
   @override
   State<StatefulWidget> createState() {
     return _SfSparkLineChartState();
@@ -706,7 +714,9 @@ class _SfSparkLineChartState extends State<SfSparkLineChart> {
           themeData: _chartThemeData,
           sparkChartDataDetails: widget._sparkChartDataDetails,
           dataPoints: _dataPoints,
-          coordinatePoints: _coordinatePoints),
+          coordinatePoints: _coordinatePoints,
+          maxY: widget.maxY,
+          minY: widget.minY),
       SparkChartTrackballRenderer(
         trackball: widget.trackball,
         coordinatePoints: _coordinatePoints,
