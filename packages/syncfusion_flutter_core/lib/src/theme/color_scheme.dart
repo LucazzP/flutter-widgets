@@ -21,6 +21,7 @@ class SfColorScheme {
     required Color outlineVariant,
     required this.splashColor,
     required this.hoverColor,
+    required this.alternateRowColor,
     required this.highlightColor,
     required this.valueIndicatorColor,
     required this.textColor,
@@ -88,12 +89,8 @@ class SfColorScheme {
         31: surface.withOpacity(0.12),
         143: surface.withOpacity(0.56),
         150: surface,
-        250: brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
-            : const Color(0xFF303030),
-        251: brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
-            : const Color(0xFF303030),
+        250: brightness == Brightness.light ? const Color(0xFFFAFAFA) : const Color(0xFF303030),
+        251: brightness == Brightness.light ? const Color(0xFFFAFAFA) : const Color(0xFF303030),
         255: surface,
       },
     );
@@ -108,9 +105,7 @@ class SfColorScheme {
         20: onSurface.withOpacity(0.08),
         21: onSurface.withOpacity(0.081),
         22: onSurface.withOpacity(0.08),
-        24: brightness == Brightness.light
-            ? onPrimary
-            : onSurface.withOpacity(0.09),
+        24: brightness == Brightness.light ? onPrimary : onSurface.withOpacity(0.09),
         23: onSurface.withOpacity(0.09),
         28: onSurface.withOpacity(0.11),
         29: brightness == Brightness.light
@@ -135,9 +130,7 @@ class SfColorScheme {
         61: onSurface.withOpacity(0.24),
         66: onSurface.withOpacity(0.26),
         69: onSurface.withOpacity(0.27),
-        70: brightness == Brightness.light
-            ? const Color(0xFF212121)
-            : const Color(0xFFE0E0E0),
+        70: brightness == Brightness.light ? const Color(0xFF212121) : const Color(0xFFE0E0E0),
         71: brightness == Brightness.light
             ? onSurface.withOpacity(0.28)
             : onSurface.withOpacity(0.33),
@@ -160,14 +153,10 @@ class SfColorScheme {
         153: onSurface.withOpacity(0.6),
         154: onSurface.withOpacity(0.6),
         179: onSurface.withOpacity(0.7),
-        184: brightness == Brightness.light
-            ? onSurface.withOpacity(0.72)
-            : onSurface,
+        184: brightness == Brightness.light ? onSurface.withOpacity(0.72) : onSurface,
         217: onSurface.withOpacity(0.85),
         222: onSurface.withOpacity(0.87),
-        223: brightness == Brightness.light
-            ? onSurface.withOpacity(0.87)
-            : onSurface,
+        223: brightness == Brightness.light ? onSurface.withOpacity(0.87) : onSurface,
         224: brightness == Brightness.light
             ? const Color.fromRGBO(97, 97, 97, 1)
             : const Color.fromRGBO(224, 224, 224, 1),
@@ -223,9 +212,7 @@ class SfColorScheme {
     this.inverseSurface = MaterialColor(
       inverseSurface.value,
       <int, Color>{
-        255: brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
-            : const Color(0xFF424242),
+        255: brightness == Brightness.light ? const Color(0xFFFAFAFA) : const Color(0xFF424242),
         257: Colors.transparent,
         79: brightness == Brightness.light
             ? const Color.fromRGBO(79, 79, 79, 1)
@@ -304,6 +291,7 @@ class SfColorScheme {
     required Color outlineVariant,
     required this.splashColor,
     required this.hoverColor,
+    required this.alternateRowColor,
     required this.highlightColor,
     required this.valueIndicatorColor,
     required this.textColor,
@@ -315,9 +303,7 @@ class SfColorScheme {
       primary.value,
       <int, Color>{
         1: primaryContainer,
-        27: brightness == Brightness.light
-            ? primary.withOpacity(0.1)
-            : primary.withOpacity(0.3),
+        27: brightness == Brightness.light ? primary.withOpacity(0.1) : primary.withOpacity(0.3),
         28: primary,
         30: primary.withOpacity(0.12),
         31: primary.withOpacity(0.08),
@@ -361,9 +347,7 @@ class SfColorScheme {
             ? const Color.fromRGBO(150, 60, 112, 1)
             : const Color.fromRGBO(77, 170, 255, 1),
         250: surface,
-        251: brightness == Brightness.light
-            ? const Color(0xFFEEE8F4)
-            : const Color(0xFF302D38),
+        251: brightness == Brightness.light ? const Color(0xFFEEE8F4) : const Color(0xFF302D38),
         255: surface,
       },
     );
@@ -371,17 +355,13 @@ class SfColorScheme {
     this.onSurface = MaterialColor(
       onSurface.value,
       <int, Color>{
-        0: brightness == Brightness.light
-            ? const Color(0xFFEEE8F4)
-            : const Color(0xFF302D38),
+        0: brightness == Brightness.light ? const Color(0xFFEEE8F4) : const Color(0xFF302D38),
         10: primary.withOpacity(0.08),
         11: onSurface.withOpacity(0.04),
         19: primaryContainer,
         20: primary.withOpacity(0.12),
         22: surfaceVariant,
-        24: brightness == Brightness.light
-            ? onPrimary
-            : onSurface.withOpacity(0.09),
+        24: brightness == Brightness.light ? onPrimary : onSurface.withOpacity(0.09),
         29: surfaceVariant,
         31: onSurface.withOpacity(0.12),
         32: outline,
@@ -531,6 +511,9 @@ class SfColorScheme {
 
   /// A color that is used to paint the hover effect of the components.
   Color hoverColor;
+
+  /// A color that is used to paint the alternate row color of the components.
+  Color alternateRowColor;
 
   /// A color that is used to paint the highlight effect of the components.
   Color highlightColor;

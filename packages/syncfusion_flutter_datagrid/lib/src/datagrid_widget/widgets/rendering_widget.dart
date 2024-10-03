@@ -713,6 +713,10 @@ class RenderVirtualizingCellsWidget extends RenderBox
     Color? backgroundColor;
 
     Color getDefaultRowBackgroundColor() {
+      final isEven = dataRow.rowIndex.isEven;
+      if (isEven) {
+        return dataGridConfiguration.dataGridThemeHelper!.alternateRowColor!;
+      }
       return dataGridConfiguration.colorScheme!.transparent;
     }
 

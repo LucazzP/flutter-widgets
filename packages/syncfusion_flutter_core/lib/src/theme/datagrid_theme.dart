@@ -122,6 +122,7 @@ class SfDataGridThemeData with Diagnosticable {
       this.columnResizeIndicatorStrokeWidth,
       this.rowHoverColor,
       this.rowHoverTextStyle,
+      this.alternateRowColor,
       this.sortIcon,
       this.filterIcon,
       this.filterIconColor,
@@ -151,6 +152,7 @@ class SfDataGridThemeData with Diagnosticable {
     Color? headerColor,
     double? frozenPaneElevation,
     Color? rowHoverColor,
+    Color? alternateRowColor,
     Color? columnResizeIndicatorColor,
     double? columnResizeIndicatorStrokeWidth,
     TextStyle? rowHoverTextStyle,
@@ -181,6 +183,7 @@ class SfDataGridThemeData with Diagnosticable {
         headerColor: headerColor,
         frozenPaneElevation: frozenPaneElevation,
         rowHoverColor: rowHoverColor,
+        alternateRowColor: alternateRowColor,
         columnResizeIndicatorColor: columnResizeIndicatorColor,
         columnResizeIndicatorStrokeWidth: columnResizeIndicatorStrokeWidth,
         rowHoverTextStyle: rowHoverTextStyle,
@@ -325,6 +328,9 @@ class SfDataGridThemeData with Diagnosticable {
 
   /// The color for the row when a pointer is hovering over it.
   final Color? rowHoverColor;
+
+  /// The color for the row when the row is even, to differentiate the rows.
+  final Color? alternateRowColor;
 
   /// The default [TextStyle] for the row when a pointer is hovering over it.
   final TextStyle? rowHoverTextStyle;
@@ -515,6 +521,7 @@ class SfDataGridThemeData with Diagnosticable {
     Color? columnResizeIndicatorColor,
     double? columnResizeIndicatorStrokeWidth,
     Color? rowHoverColor,
+    Color? alternateRowColor,
     TextStyle? rowHoverTextStyle,
     Widget? sortIcon,
     Widget? filterIcon,
@@ -547,6 +554,7 @@ class SfDataGridThemeData with Diagnosticable {
         columnResizeIndicatorStrokeWidth: columnResizeIndicatorStrokeWidth ??
             this.columnResizeIndicatorStrokeWidth,
         rowHoverColor: rowHoverColor ?? this.rowHoverColor,
+        alternateRowColor: alternateRowColor ?? this.alternateRowColor,
         rowHoverTextStyle: rowHoverTextStyle ?? this.rowHoverTextStyle,
         sortIcon: sortIcon ?? this.sortIcon,
         filterIcon: filterIcon ?? this.filterIcon,
@@ -590,6 +598,8 @@ class SfDataGridThemeData with Diagnosticable {
       frozenPaneElevation:
           lerpDouble(a.frozenPaneElevation, b.frozenPaneElevation, t),
       rowHoverColor: Color.lerp(a.rowHoverColor, b.rowHoverColor, t),
+      alternateRowColor:
+          Color.lerp(a.alternateRowColor, b.alternateRowColor, t),
       columnResizeIndicatorColor: Color.lerp(
           a.columnResizeIndicatorColor, b.columnResizeIndicatorColor, t),
       columnResizeIndicatorStrokeWidth: lerpDouble(
@@ -643,6 +653,7 @@ class SfDataGridThemeData with Diagnosticable {
         other.headerColor == headerColor &&
         other.frozenPaneElevation == frozenPaneElevation &&
         other.rowHoverColor == rowHoverColor &&
+        other.alternateRowColor == alternateRowColor &&
         other.columnResizeIndicatorColor == columnResizeIndicatorColor &&
         other.columnResizeIndicatorStrokeWidth ==
             columnResizeIndicatorStrokeWidth &&
@@ -731,6 +742,8 @@ class SfDataGridThemeData with Diagnosticable {
         defaultValue: defaultData.columnResizeIndicatorStrokeWidth));
     properties.add(ColorProperty('rowHoverColor', rowHoverColor,
         defaultValue: defaultData.rowHoverColor));
+    properties.add(ColorProperty('alternateRowColor', alternateRowColor,
+        defaultValue: defaultData.alternateRowColor));
     properties.add(DiagnosticsProperty<TextStyle>(
         'rowHoverTextStyle', rowHoverTextStyle,
         defaultValue: defaultData.rowHoverTextStyle));
