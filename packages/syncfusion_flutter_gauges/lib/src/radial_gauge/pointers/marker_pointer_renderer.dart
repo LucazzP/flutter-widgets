@@ -74,7 +74,7 @@ class RenderMarkerPointer extends RenderBox {
   final double _margin = 15;
   dart_ui.Image? _image;
   late double _radian;
-  Size? _textSize;
+  late Size? _textSize;
   late double _totalOffset;
   late double _actualMarkerOffset;
   late double _angle;
@@ -660,9 +660,9 @@ class RenderMarkerPointer extends RenderBox {
         overlayColor != colorScheme.transparent) {
       overlayPaint = Paint()
         ..color = overlayColor ??
-            color?.withOpacity(0.12) ??
-            gaugeThemeData.markerColor?.withOpacity(0.12) ??
-            _themeData.colorScheme.secondaryContainer.withOpacity(0.12)
+            color?.withValues(alpha: 0.12) ??
+            gaugeThemeData.markerColor?.withValues(alpha: 0.12) ??
+            _themeData.colorScheme.secondaryContainer.withValues(alpha: 0.12)
         ..style = PaintingStyle.fill;
     }
 

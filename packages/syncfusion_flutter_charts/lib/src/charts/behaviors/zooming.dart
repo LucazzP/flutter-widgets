@@ -616,16 +616,24 @@ class ZoomPanBehavior extends ChartBehavior {
       return 0.5;
     }
     double origin;
-    final double plotOffset = axis.plotOffset;
+    double plotOffsetStart = 0.0;
+    double plotOffsetEnd = 0.0;
+    if (axis.plotOffset != null) {
+      plotOffsetStart = axis.plotOffset!;
+      plotOffsetEnd = axis.plotOffset!;
+    } else {
+      plotOffsetStart = axis.plotOffsetStart ?? 0.0;
+      plotOffsetEnd = axis.plotOffsetEnd ?? 0.0;
+    }
 
     if (axis.isVertical) {
       origin = axis.isInversed
-          ? ((manipulation.dy - plotOffset) / bounds.height)
-          : 1 - ((manipulation.dy - plotOffset) / bounds.height);
+          ? ((manipulation.dy - plotOffsetEnd) / bounds.height)
+          : 1 - ((manipulation.dy - plotOffsetStart) / bounds.height);
     } else {
       origin = axis.isInversed
-          ? 1.0 - ((manipulation.dx - plotOffset) / bounds.width)
-          : (manipulation.dx - plotOffset) / bounds.width;
+          ? 1.0 - ((manipulation.dx - plotOffsetStart) / bounds.width)
+          : (manipulation.dx - plotOffsetEnd) / bounds.width;
     }
 
     return origin;
@@ -1104,8 +1112,8 @@ class ZoomPanBehavior extends ChartBehavior {
       Color? fillColor = selectionRectColor;
       if (fillColor != null &&
           fillColor != Colors.transparent &&
-          fillColor.opacity == 1) {
-        fillColor = fillColor.withOpacity(0.3);
+          fillColor.a == 1) {
+        fillColor = fillColor.withValues(alpha: 0.3);
       }
       final Paint fillPaint = Paint()
         ..color =

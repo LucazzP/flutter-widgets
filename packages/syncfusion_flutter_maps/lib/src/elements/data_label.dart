@@ -10,6 +10,7 @@ import '../utils.dart';
 // ignore_for_file: public_member_api_docs
 class MapDataLabel extends LeafRenderObjectWidget {
   const MapDataLabel({
+    super.key,
     required this.source,
     required this.mapDataSource,
     required this.settings,
@@ -281,6 +282,6 @@ class _RenderMapDataLabel extends ShapeLayerChildRenderBoxBase {
     if (color == null) {
       return null;
     }
-    return color.withOpacity(_opacityTween.evaluate(_dataLabelAnimation));
+    return color.withValues(alpha: _opacityTween.evaluate(_dataLabelAnimation));
   }
 }

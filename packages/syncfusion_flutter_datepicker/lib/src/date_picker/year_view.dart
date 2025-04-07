@@ -46,7 +46,8 @@ class YearView extends StatefulWidget {
       this.width,
       this.height,
       this.disableDatesCollection,
-      this.extendableRangeSelectionDirection);
+      this.extendableRangeSelectionDirection,
+      {super.key});
 
   /// Defines the year cell style.
   final dynamic cellStyle;
@@ -2436,8 +2437,8 @@ abstract class _IYearViewRenderObject extends RenderBox
       _todayHighlightPaint.style = PaintingStyle.fill;
       _todayHighlightPaint.strokeWidth = 2;
       _todayHighlightPaint.color = selectionColor != null
-          ? selectionColor!.withOpacity(0.4)
-          : datePickerTheme.selectionColor!.withOpacity(0.4);
+          ? selectionColor!.withValues(alpha: 0.4)
+          : datePickerTheme.selectionColor!.withValues(alpha: 0.4);
 
       if (centerYPosition - textHalfHeight < highlightPadding / 2) {
         highlightPadding = (centerYPosition - textHalfHeight / 2) - 1;
@@ -2515,8 +2516,8 @@ abstract class _IYearViewRenderObject extends RenderBox
     _todayHighlightPaint.style = PaintingStyle.stroke;
     _todayHighlightPaint.strokeWidth = 1.0;
     _todayHighlightPaint.color = selectionColor != null
-        ? selectionColor!.withOpacity(0.4)
-        : datePickerTheme.selectionColor!.withOpacity(0.4);
+        ? selectionColor!.withValues(alpha: 0.4)
+        : datePickerTheme.selectionColor!.withValues(alpha: 0.4);
     if (isStartRange) {
       rect = Rect.fromLTRB(endXPosition - cornerRadius, startYPosition,
           endXPosition, endYPosition);
@@ -3877,8 +3878,9 @@ void _drawYearCells(
             yearView._todayHighlightPaint.strokeWidth = 2;
             yearView._todayHighlightPaint.color =
                 yearView.selectionColor != null
-                    ? yearView.selectionColor!.withOpacity(0.4)
-                    : yearView.datePickerTheme.selectionColor!.withOpacity(0.4);
+                    ? yearView.selectionColor!.withValues(alpha: 0.4)
+                    : yearView.datePickerTheme.selectionColor!
+                        .withValues(alpha: 0.4);
 
             final Rect rect = Rect.fromLTRB(xPosition, yPosition,
                 xPosition + cellWidth, yPosition + cellHeight);

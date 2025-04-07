@@ -46,6 +46,8 @@ class CategoryAxis extends ChartAxis {
     super.majorGridLines,
     super.labelStyle,
     super.plotOffset,
+    super.plotOffsetStart,
+    super.plotOffsetEnd,
     super.initialZoomFactor,
     super.initialZoomPosition,
     super.interactiveTooltip,
@@ -564,8 +566,7 @@ class RenderCategoryAxis extends RenderChartAxis {
       return;
     }
 
-    final double extent =
-        labelsExtent ?? (maximumLabelWidth ?? double.maxFinite);
+    final double extent = maximumLabelWidth ?? double.maxFinite;
     labels.clear();
     for (final AxisDependent dependent in dependents) {
       if (dependent is CartesianSeriesRenderer) {

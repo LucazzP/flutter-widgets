@@ -69,8 +69,8 @@ class AesEncryptor {
   /// internal constructor
   AesEncryptor(List<int> key, List<int> iv, bool isEncryption) {
     initialize();
-    _aes = Aes(
-        key.length == _blockSize ? _KeySize.bits128 : _KeySize.bits256, key);
+    _aes =
+        Aes(key.length == _blockSize ? KeySize.bits128 : KeySize.bits256, key);
     List.copyRange(_buf, 0, iv, 0, iv.length);
     List.copyRange(_cbcV!, 0, iv, 0, iv.length);
     if (isEncryption) {
@@ -207,16 +207,17 @@ class AesEncryptor {
 /// internal class
 class Aes {
   /// internal constructor
-  Aes(_KeySize keySize, List<int> keyBytes) {
+  // ignore: library_private_types_in_public_api
+  Aes(KeySize keySize, List<int> keyBytes) {
     _keySize = keySize;
     nb = 4;
-    if (_keySize == _KeySize.bits128) {
+    if (_keySize == KeySize.bits128) {
       nk = 4;
       nr = 10;
-    } else if (_keySize == _KeySize.bits192) {
+    } else if (_keySize == KeySize.bits192) {
       nk = 6;
       nr = 12;
-    } else if (_keySize == _KeySize.bits256) {
+    } else if (_keySize == KeySize.bits256) {
       nk = 8;
       nr = 14;
     }
@@ -226,7 +227,7 @@ class Aes {
   }
 
   //Fields
-  _KeySize? _keySize;
+  KeySize? _keySize;
 
   /// internal field
   late int nb;
@@ -403,33 +404,32 @@ class Aes {
   }
 
   void _invMixColumns() {
-    final List<List<int>> temp = List<List<int>>.generate(
-        4, (int i) => List<int>.generate(4, (int j) => 0));
-    for (int r = 0; r < 4; ++r) {
-      for (int c = 0; c < 4; ++c) {
-        temp[r][c] = state[r][c];
-      }
-    }
+    final List<int> temp = List<int>.filled(4, 0);
     for (int c = 0; c < 4; ++c) {
-      state[0][c] = (_gfmultby0e(temp[0][c]).toSigned(32) ^
-              _gfmultby0b(temp[1][c]).toSigned(32) ^
-              _gfmultby0d(temp[2][c]).toSigned(32) ^
-              _gfmultby09(temp[3][c]).toSigned(32))
+      temp[0] = state[0][c];
+      temp[1] = state[1][c];
+      temp[2] = state[2][c];
+      temp[3] = state[3][c];
+
+      state[0][c] = (_gfmultby0e(temp[0]) ^
+              _gfmultby0b(temp[1]) ^
+              _gfmultby0d(temp[2]) ^
+              _gfmultby09(temp[3]))
           .toUnsigned(8);
-      state[1][c] = (_gfmultby09(temp[0][c]).toSigned(32) ^
-              _gfmultby0e(temp[1][c]).toSigned(32) ^
-              _gfmultby0b(temp[2][c]).toSigned(32) ^
-              _gfmultby0d(temp[3][c]).toSigned(32))
+      state[1][c] = (_gfmultby09(temp[0]) ^
+              _gfmultby0e(temp[1]) ^
+              _gfmultby0b(temp[2]) ^
+              _gfmultby0d(temp[3]))
           .toUnsigned(8);
-      state[2][c] = (_gfmultby0d(temp[0][c]).toSigned(32) ^
-              _gfmultby09(temp[1][c]).toSigned(32) ^
-              _gfmultby0e(temp[2][c]).toSigned(32) ^
-              _gfmultby0b(temp[3][c]).toSigned(32))
+      state[2][c] = (_gfmultby0d(temp[0]) ^
+              _gfmultby09(temp[1]) ^
+              _gfmultby0e(temp[2]) ^
+              _gfmultby0b(temp[3]))
           .toUnsigned(8);
-      state[3][c] = (_gfmultby0b(temp[0][c]).toSigned(32) ^
-              _gfmultby0d(temp[1][c]).toSigned(32) ^
-              _gfmultby09(temp[2][c]).toSigned(32) ^
-              _gfmultby0e(temp[3][c]).toSigned(32))
+      state[3][c] = (_gfmultby0b(temp[0]) ^
+              _gfmultby0d(temp[1]) ^
+              _gfmultby09(temp[2]) ^
+              _gfmultby0e(temp[3]))
           .toUnsigned(8);
     }
   }
@@ -519,11 +519,13 @@ class Aes {
   }
 
   void _addRoundKey(int? round) {
-    for (int r = 0; r < 4; ++r) {
+    if (round != null) {
+      final int baseIndex = round * 4;
       for (int c = 0; c < 4; ++c) {
-        state[r][c] = (state[r][c].toSigned(32) ^
-                keySheduleArray[(round! * 4) + c][r].toSigned(32))
-            .toUnsigned(8);
+        final keyColumn = keySheduleArray[baseIndex + c];
+        for (int r = 0; r < 4; ++r) {
+          state[r][c] = (state[r][c] ^ keyColumn[r]).toUnsigned(8);
+        }
       }
     }
   }
@@ -1132,7 +1134,7 @@ class Aes {
 }
 
 /// Specifies the key size of AES.
-enum _KeySize {
+enum KeySize {
   /// 128 Bit.
   bits128,
 

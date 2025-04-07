@@ -67,8 +67,8 @@ class PdfTextExtractor {
   double _characterSpacing = 0;
   double _wordSpacing = 0;
   MatrixHelper? _textLineMatrix;
-  MatrixHelper? _textMatrix;
-  MatrixHelper? _currentTextMatrix;
+  late MatrixHelper? _textMatrix;
+  late MatrixHelper? _currentTextMatrix;
   Rect? _tempBoundingRectangle;
   bool _hasLeading = false;
   bool _hasET = false;
@@ -448,7 +448,7 @@ class PdfTextExtractor {
                   textElement.fontName,
                   textElement.fontStyle,
                   glyphs,
-                  wordBound,
+                  _calculateBounds(wordBound),
                   textElement.fontSize);
               textLine.wordCollection.add(textwords);
             }
@@ -464,6 +464,9 @@ class PdfTextExtractor {
                   dy = tempResult['dy'] as double?;
                   width = tempResult['width'] as double?;
                   height = tempResult['height'] as double?;
+                  final Rect wordBound =
+                      Rect.fromLTWH(dx!, dy!, width!, height!);
+                  tempResult['word'].bounds = _calculateBounds(wordBound);
                   textLine.wordCollection.add(tempResult['word']);
                 }
                 i = i + 1;
@@ -489,6 +492,9 @@ class PdfTextExtractor {
                     dy = tempResult['dy'] as double?;
                     width = tempResult['width'] as double?;
                     height = tempResult['height'] as double?;
+                    final Rect wordBound =
+                        Rect.fromLTWH(dx!, dy!, width!, height!);
+                    tempResult['word'].bounds = _calculateBounds(wordBound);
                     textLine.wordCollection.add(tempResult['word']);
                   }
                   i = i + 1;
@@ -920,7 +926,7 @@ class PdfTextExtractor {
 
   PdfRecordCollection? _getRecordCollection(PdfPage page) {
     PdfRecordCollection? recordCollection;
-    final List<int>? combinedData =
+    List<int>? combinedData =
         PdfPageLayerCollectionHelper.getHelper(page.layers)
             .combineContent(true);
     if (combinedData != null) {
@@ -928,7 +934,9 @@ class PdfTextExtractor {
       parser.isTextExtractionProcess = true;
       recordCollection = parser.readContent();
       parser.isTextExtractionProcess = false;
+      combinedData.clear();
     }
+    combinedData = null;
     return recordCollection;
   }
 
@@ -1680,7 +1688,9 @@ class PdfTextExtractor {
         resultantText.endsWith(' ')) {
       resultantText = resultantText.substring(0, resultantText.length - 1);
     }
-    return resultantText;
+    return resultantText
+        .replaceAll(RegExp(r' {2,}'), ' ')
+        .replaceAll(' \r\n', '\r\n');
   }
 
   bool _hasOctalEscape(String input) {
@@ -1747,6 +1757,7 @@ class PdfTextExtractor {
         fontStructure = returnValue;
       }
       fontStructure!.isTextExtraction = true;
+      fontStructure.isLayout = _isLayout;
       fontStructure.fontSize = _fontSize;
       if (!fontStructure.isEmbedded &&
           fontStructure.isStandardCJKFont &&
@@ -1785,6 +1796,22 @@ class PdfTextExtractor {
         double characterWidth = 1.0;
         if (word != '' && word[word.length - 1] == 's') {
           word = word.substring(0, word.length - 1);
+        }
+        if (fontStructure != null &&
+            fontStructure.fontEncoding == 'MacRomanEncoding') {
+          String tempstring = '';
+          for (int i = 0; i < word.length; i++) {
+            final int b = word[i].codeUnitAt(0).toUnsigned(8);
+            if (b > 126) {
+              final String x = fontStructure.macEncodeTable![b]!;
+              tempstring += x;
+            } else {
+              tempstring += word[i];
+            }
+          }
+          if (tempstring != '') {
+            word = tempstring;
+          }
         }
         for (int i = 0; i < word.length; i++) {
           final String renderedCharacter = word[i];

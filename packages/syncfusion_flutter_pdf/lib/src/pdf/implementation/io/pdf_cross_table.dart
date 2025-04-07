@@ -122,6 +122,9 @@ class PdfCrossTable {
   /// internal property
   PdfDictionary? get trailer {
     _trailer ??= crossTable == null ? PdfStream() : crossTable!.trailer;
+    if (_trailer!.containsKey('XRefStm')) {
+      _trailer!.remove('XRefStm');
+    }
     return _trailer;
   }
 
@@ -1687,9 +1690,11 @@ class PdfCrossTable {
             documentCatalog!.containsKey(PdfDictionaryProperties.outlines)) {
           final IPdfPrimitive? dict = PdfCrossTable.dereference(
               documentCatalog![PdfDictionaryProperties.outlines]);
-          return dict != null && dict is PdfDictionary && dict == outline
-              ? (true)
-              : _checkForOutlinesAndDestination(outline);
+          if (dict != null && dict is PdfDictionary && dict == outline) {
+            return true;
+          } else {
+            return _checkForOutlinesAndDestination(outline);
+          }
         }
       }
     } else if (dictionary.containsKey(PdfDictionaryProperties.limits)) {

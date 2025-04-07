@@ -45,6 +45,8 @@ class LogarithmicAxis extends ChartAxis {
     super.edgeLabelPlacement,
     super.labelStyle,
     super.plotOffset,
+    super.plotOffsetStart,
+    super.plotOffsetEnd,
     super.initialZoomFactor,
     super.initialZoomPosition,
     super.enableAutoIntervalOnZooming,
@@ -611,8 +613,7 @@ class RenderLogarithmicAxis extends RenderChartAxis {
       return;
     }
 
-    final double extent =
-        labelsExtent ?? (maximumLabelWidth ?? double.maxFinite);
+    final double extent = maximumLabelWidth ?? double.maxFinite;
     final bool isRtl = textDirection == TextDirection.rtl;
     num current = visibleRange!.minimum;
     final num visibleMinimum = visibleRange!.minimum;

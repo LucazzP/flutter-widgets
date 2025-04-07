@@ -17,7 +17,7 @@ class TextElement {
   //constructor
   /// internal constructor
   TextElement(this.text, MatrixHelper? transformMatrix) {
-    transformations = _TransformationStack(transformMatrix);
+    transformations = TransformationStack(transformMatrix);
     _initialize();
   }
 
@@ -26,7 +26,7 @@ class TextElement {
   late String text;
 
   /// internal field
-  late _TransformationStack transformations;
+  late TransformationStack transformations;
 
   /// internal field
   late List<Glyph> textElementGlyphList;
@@ -830,7 +830,26 @@ class TextElement {
     } else {
       tempFontSize = glyph.fontSize;
     }
-    glyph.toUnicode = glyphChar!;
+    final String glyphText = glyphChar!;
+    if (!structure.macRomanEncoded &&
+        structure.fontEncoding == 'MacRomanEncoding') {
+      String tempstring = '';
+      for (int i = 0; i < glyphText.length; i++) {
+        final int b = glyphText[i].codeUnitAt(0).toUnsigned(8);
+        if (b > 126) {
+          final String x = structure.macEncodeTable![b]!;
+          tempstring += x;
+        } else {
+          tempstring += glyphText[i];
+        }
+      }
+      if (tempstring != '') {
+        glyphChar = tempstring;
+      }
+    } else {
+      structure.macRomanEncoded = false;
+    }
+    glyph.toUnicode = glyphChar;
     if (matrix.m12 != 0 && matrix.m21 != 0) {
       glyph.isRotated = true;
       if (matrix.m12 < 0 && matrix.m21 > 0) {
@@ -928,6 +947,8 @@ class TextElement {
         systemFontGlyph =
             fontGlyphWidths![letter.codeUnitAt(0)]! * charSizeMultiplier;
       }
+    } else if (defaultGlyphWidth != null && defaultGlyphWidth! > 0) {
+      systemFontGlyph = defaultGlyphWidth! * charSizeMultiplier;
     }
     gly.width = (systemFontGlyph == null) ? 0 : systemFontGlyph;
     final MatrixHelper identity = MatrixHelper(1, 0, 0, 1, 0, 0);
@@ -967,6 +988,24 @@ class TextElement {
       if (glyphName!.contains('\u0092')) {
         glyphName = glyphName.replaceAll('\u0092', '’');
       }
+    }
+    if (!structure.macRomanEncoded &&
+        structure.fontEncoding == 'MacRomanEncoding') {
+      String tempstring = '';
+      for (int i = 0; i < glyphName.length; i++) {
+        final int b = glyphName[i].codeUnitAt(0).toUnsigned(8);
+        if (b > 126) {
+          final String x = structure.macEncodeTable![b]!;
+          tempstring += x;
+        } else {
+          tempstring += glyphName[i];
+        }
+      }
+      if (tempstring != '') {
+        glyphName = tempstring;
+      }
+    } else {
+      structure.macRomanEncoded = false;
     }
     gly.toUnicode = glyphName;
     gly.boundingRect = Rect.fromLTWH(
@@ -1019,8 +1058,8 @@ class TextElement {
   }
 }
 
-class _TransformationStack {
-  _TransformationStack([MatrixHelper? transformMatrix]) {
+class TransformationStack {
+  TransformationStack([MatrixHelper? transformMatrix]) {
     _initialTransform = (transformMatrix != null)
         ? transformMatrix
         : MatrixHelper(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);

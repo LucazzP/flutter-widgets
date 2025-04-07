@@ -17,7 +17,7 @@ import 'data_label.dart';
 import 'element_widget.dart';
 
 // ignore: must_be_immutable
-class CircularChartDataLabelPositioned
+base class CircularChartDataLabelPositioned
     extends ParentDataWidget<CircularDataLabelBoxParentData>
     with LinkedListEntry<CircularChartDataLabelPositioned> {
   CircularChartDataLabelPositioned({
@@ -165,10 +165,10 @@ class _CircularDataLabelContainerState<T, D>
   Color _dataPointColor(int dataPointIndex) {
     final DataLabelSettings settings = widget.settings;
     if (settings.color != null) {
-      return settings.color!.withOpacity(settings.opacity);
+      return settings.color!.withValues(alpha: settings.opacity);
     } else if (settings.useSeriesColor) {
       return renderer!.segments[dataPointIndex].fillPaint.color
-          .withOpacity(settings.opacity);
+          .withValues(alpha: settings.opacity);
     }
     return Colors.transparent;
   }
@@ -398,16 +398,21 @@ class RenderCircularDataLabelStack<T, D> extends RenderChartElementStack {
     if (childCount > 0) {
       RenderBox? child = lastChild;
       while (child != null) {
-        final ChartElementParentData childParentData =
-            child.parentData! as ChartElementParentData;
-        if ((childParentData.offset & child.size).contains(localPosition)) {
+        final CircularDataLabelBoxParentData childParentData =
+            child.parentData! as CircularDataLabelBoxParentData;
+        if (childParentData.point!.isVisible &&
+            (childParentData.offset & child.size).contains(localPosition)) {
           return childParentData.dataPointIndex;
         }
         child = childParentData.previousSibling;
       }
     } else if (labels != null) {
-      for (int i = labels!.length - 1; i > -1; i--) {
+      final int labelsLength = labels!.length - 1;
+      for (int i = labelsLength; i > -1; i--) {
         final CircularChartDataLabelPositioned label = labels!.elementAt(i);
+        if (!label.point!.isVisible) {
+          continue;
+        }
         final Rect rect = Rect.fromLTWH(
           label.offset.dx,
           label.offset.dy,
@@ -520,8 +525,10 @@ class RenderCircularDataLabelStack<T, D> extends RenderChartElementStack {
             series!.dataLabelPosition(currentChildData, child.size);
         // TODO(Lavanya): Need to handle the offset value for the
         // shift data label.
-        currentChildData.offset +=
+        final Offset offset =
             _invokeDataLabelRender(currentChildData.dataPointIndex);
+        currentChildData.offset = Offset(currentChildData.offset.dx + offset.dx,
+            currentChildData.offset.dy - offset.dy);
         child = nextSibling;
       }
 
@@ -540,8 +547,10 @@ class RenderCircularDataLabelStack<T, D> extends RenderChartElementStack {
               ..point = currentLabel.point;
 
         final DataLabelText details = currentLabel.child as DataLabelText;
-        currentLabel.offset =
+        final Offset offset =
             _invokeDataLabelRender(currentLabel.dataPointIndex, details);
+        currentLabel.offset = Offset(currentLabel.offset.dx + offset.dx,
+            currentLabel.offset.dy - offset.dy);
         currentLabel.point!.text = details.text;
         currentLabel.size = measureText(details.text, details.textStyle);
         currentLabel.offset +=
@@ -588,7 +597,7 @@ class RenderCircularDataLabelStack<T, D> extends RenderChartElementStack {
       return dataLabelArgs.offset;
     }
 
-    return Offset.zero;
+    return settings.offset;
   }
 
   @override

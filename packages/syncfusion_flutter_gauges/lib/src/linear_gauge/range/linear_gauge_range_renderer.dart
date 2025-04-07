@@ -319,7 +319,8 @@ class RenderLinearRange extends RenderOpacity {
       child!.layout(BoxConstraints.tight(controlSize));
     }
 
-    size = controlSize;
+    size = Size(min(controlSize.width, constraints.maxWidth),
+        min(controlSize.height, constraints.maxHeight));
   }
 
   ///Calculation Position based on value.
@@ -420,9 +421,6 @@ class RenderLinearRange extends RenderOpacity {
               rect: rangeRect,
               radius: startThickness / 2));
           break;
-        // ignore: no_default_cases
-        default:
-          break;
       }
     } else {
       _drawRangeStyle(_path);
@@ -438,7 +436,7 @@ class RenderLinearRange extends RenderOpacity {
       animationValue = _rangeAnimation!.value;
     }
 
-    _rangePaint.color = color.withOpacity(animationValue * color.opacity);
+    _rangePaint.color = color.withValues(alpha: animationValue * color.a);
     _path.reset();
     _getRangePath();
     canvas.drawPath(_path, _rangePaint);

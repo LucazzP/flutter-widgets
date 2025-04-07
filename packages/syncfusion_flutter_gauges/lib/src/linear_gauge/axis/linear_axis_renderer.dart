@@ -228,7 +228,7 @@ class RenderLinearAxis extends RenderBox {
         _factorToValueCallback = factorToValueCallback,
         _valueToFactorCallback = valueToFactorCallback {
     _axisPaint = Paint()
-      ..color = Theme.of(context).colorScheme.onSurface.withOpacity(0.12);
+      ..color = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12);
     _textPainter = TextPainter(textDirection: TextDirection.ltr);
     _visibleLabels = <LinearAxisLabel>[];
     _isHorizontalOrientation = orientation == LinearGaugeOrientation.horizontal;
@@ -890,9 +890,6 @@ class RenderLinearAxis extends RenderBox {
             ((axisSize < tickSize) ? tickSize - axisSize : 0.0) +
             labelSize;
         break;
-      // ignore: no_default_cases
-      default:
-        break;
     }
 
     return _axisWidgetThickness;
@@ -926,9 +923,6 @@ class RenderLinearAxis extends RenderBox {
                 ? labelSize + labelMarginSize + axisSize + tickMarginSize
                 : 0;
             break;
-          // ignore: no_default_cases
-          default:
-            break;
         }
         break;
       case LinearElementPosition.outside:
@@ -952,9 +946,6 @@ class RenderLinearAxis extends RenderBox {
               _tickTop = 0;
               axisOffset += tickMarginSize - (labelSize + labelMarginSize);
             }
-            break;
-          // ignore: no_default_cases
-          default:
             break;
         }
         break;
@@ -996,13 +987,7 @@ class RenderLinearAxis extends RenderBox {
               _tickTop = showTicks ? labelSize + labelMarginSize : 0;
             }
             break;
-          // ignore: no_default_cases
-          default:
-            break;
         }
-        break;
-      // ignore: no_default_cases
-      default:
         break;
     }
   }
@@ -1223,7 +1208,8 @@ class RenderLinearAxis extends RenderBox {
       _axisActualSize = Size(axisWidgetThickness, parentWidgetSize);
     }
 
-    size = _axisActualSize;
+    size = Size(math.min(_axisActualSize.width, constraints.maxWidth),
+        math.min(_axisActualSize.height, constraints.maxHeight));
   }
 
   /// To calculate the axis interval based on the maximum axis label count.
@@ -1357,7 +1343,7 @@ class RenderLinearAxis extends RenderBox {
     }
 
     _axisPaint.color =
-        paintColor.withOpacity(animationValue * paintColor.opacity);
+        paintColor.withValues(alpha: animationValue * paintColor.a);
   }
 
   ///Draws minor tick elements.
@@ -1425,7 +1411,7 @@ class RenderLinearAxis extends RenderBox {
     }
 
     if (color != null) {
-      color = color.withOpacity(animationValue * color.opacity);
+      color = color.withValues(alpha: animationValue * color.a);
     }
 
     return dart_ui.TextStyle(
@@ -1563,9 +1549,6 @@ class RenderLinearAxis extends RenderBox {
               isAxisInversed: isAxisInversed,
               rect: _axisLineRect,
               radius: thickness / 2));
-          break;
-        // ignore: no_default_cases
-        default:
           break;
       }
 

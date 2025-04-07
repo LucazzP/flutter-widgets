@@ -78,14 +78,13 @@ class _GridCellState extends State<GridCell> {
           .onCellSubmit(dataGridConfiguration);
     }
 
-    if (_isDoubleTapEnabled(dataGridConfiguration)) {
-      _handleDoubleTapOnEditing(
-          dataGridConfiguration, dataCell, details, isSecondaryTapDown);
+    if (_isDoubleTapEnabled(dataGridConfiguration) && !isSecondaryTapDown) {
+      _handleDoubleTapOnEditing(dataGridConfiguration, dataCell, details);
     }
   }
 
   void _handleDoubleTapOnEditing(DataGridConfiguration dataGridConfiguration,
-      DataCellBase dataCell, TapDownDetails details, bool isSecondaryTapDown) {
+      DataCellBase dataCell, TapDownDetails details) {
     if (tapTimer != null && tapTimer!.isActive) {
       tapTimer!.cancel();
     } else {
@@ -98,7 +97,6 @@ class _GridCellState extends State<GridCell> {
           return;
         }
         _handleOnTapUp(
-            isSecondaryTapDown: isSecondaryTapDown,
             tapDownDetails: details,
             tapUpDetails: null,
             dataGridConfiguration: dataGridConfiguration,
@@ -482,7 +480,7 @@ class _GridHeaderCellState extends State<GridHeaderCell> {
     final GridColumn gridColumn = widget.dataCell.gridColumn!;
     final bool isSortedColumn = dataGridConfiguration.source.sortedColumns.any(
         (SortColumnDetails element) => element.name == gridColumn.columnName);
-    final bool isSortNumberVisible = _sortNumber != 1;
+    final bool isSortNumberVisible = _sortNumber != -1;
 
     if ((isSortedColumn ||
             (gridColumn.allowSorting && dataGridConfiguration.allowSorting)) ||
@@ -674,6 +672,26 @@ class _GridHeaderCellState extends State<GridHeaderCell> {
     );
   }
 
+  bool _raiseColumnSortChanging(
+      SortColumnDetails? newSortedColumn, SortColumnDetails? oldSortedColumn) {
+    final DataGridConfiguration dataGridConfiguration = dataGridStateDetails();
+    if (dataGridConfiguration.onColumnSortChanging == null) {
+      return true;
+    }
+    return dataGridConfiguration.onColumnSortChanging!(
+        newSortedColumn, oldSortedColumn);
+  }
+
+  void _raiseColumnSortChanged(
+      SortColumnDetails? newSortedColumn, SortColumnDetails? oldSortedColumn) {
+    final DataGridConfiguration dataGridConfiguration = dataGridStateDetails();
+    if (dataGridConfiguration.onColumnSortChanged == null) {
+      return;
+    }
+    dataGridConfiguration.onColumnSortChanged!(
+        newSortedColumn, oldSortedColumn);
+  }
+
   void _sort(DataCellBase dataCell) {
     final DataGridConfiguration dataGridConfiguration = dataGridStateDetails();
     if (dataCell.dataRow?.rowType == RowType.headerRow &&
@@ -714,14 +732,20 @@ class _GridHeaderCellState extends State<GridHeaderCell> {
           final SortColumnDetails newSortColumn = SortColumnDetails(
               name: sortColumnName,
               sortDirection: DataGridSortDirection.ascending);
-          sortedColumns.add(newSortColumn);
+          if (_raiseColumnSortChanging(newSortColumn, sortedColumn)) {
+            sortedColumns.add(newSortColumn);
+            _raiseColumnSortChanged(newSortColumn, sortedColumn);
+          }
         } else {
           if (sortedColumn.sortDirection == DataGridSortDirection.descending &&
               dataGridConfiguration.allowTriStateSorting) {
             final SortColumnDetails? removedSortColumn =
                 sortedColumns.firstWhereOrNull((SortColumnDetails sortColumn) =>
                     sortColumn.name == sortColumnName);
-            sortedColumns.remove(removedSortColumn);
+            if (_raiseColumnSortChanging(null, removedSortColumn)) {
+              sortedColumns.remove(removedSortColumn);
+              _raiseColumnSortChanged(null, removedSortColumn);
+            }
           } else {
             sortedColumn = SortColumnDetails(
                 name: sortedColumn.name,
@@ -732,9 +756,12 @@ class _GridHeaderCellState extends State<GridHeaderCell> {
             final SortColumnDetails? removedSortColumn =
                 sortedColumns.firstWhereOrNull((SortColumnDetails sortColumn) =>
                     sortColumn.name == sortedColumn!.name);
-            sortedColumns
-              ..remove(removedSortColumn)
-              ..add(sortedColumn);
+            if (_raiseColumnSortChanging(sortedColumn, removedSortColumn)) {
+              sortedColumns
+                ..remove(removedSortColumn)
+                ..add(sortedColumn);
+              _raiseColumnSortChanged(sortedColumn, removedSortColumn);
+            }
           }
         }
       } else {
@@ -745,7 +772,10 @@ class _GridHeaderCellState extends State<GridHeaderCell> {
           if (currentSortColumn.sortDirection ==
                   DataGridSortDirection.descending &&
               dataGridConfiguration.allowTriStateSorting) {
-            sortedColumns.clear();
+            if (_raiseColumnSortChanging(null, currentSortColumn)) {
+              sortedColumns.clear();
+              _raiseColumnSortChanged(null, currentSortColumn);
+            }
           } else {
             currentSortColumn = SortColumnDetails(
                 name: currentSortColumn.name,
@@ -753,20 +783,38 @@ class _GridHeaderCellState extends State<GridHeaderCell> {
                         DataGridSortDirection.ascending
                     ? DataGridSortDirection.descending
                     : DataGridSortDirection.ascending);
-            sortedColumns
-              ..clear()
-              ..add(currentSortColumn);
+            final SortColumnDetails oldSortColumn = SortColumnDetails(
+                name: currentSortColumn.name,
+                sortDirection: currentSortColumn.sortDirection ==
+                        DataGridSortDirection.ascending
+                    ? DataGridSortDirection.descending
+                    : DataGridSortDirection.ascending);
+            if (_raiseColumnSortChanging(currentSortColumn, oldSortColumn)) {
+              sortedColumns
+                ..clear()
+                ..add(currentSortColumn);
+              _raiseColumnSortChanged(currentSortColumn, oldSortColumn);
+            }
           }
         } else {
           final SortColumnDetails sortColumn = SortColumnDetails(
               name: sortColumnName,
               sortDirection: DataGridSortDirection.ascending);
           if (sortedColumns.isNotEmpty) {
-            sortedColumns
-              ..clear()
-              ..add(sortColumn);
+            final SortColumnDetails oldSortColumn = SortColumnDetails(
+                name: sortedColumns.last.name,
+                sortDirection: sortedColumns.last.sortDirection);
+            if (_raiseColumnSortChanging(sortColumn, oldSortColumn)) {
+              sortedColumns
+                ..clear()
+                ..add(sortColumn);
+              _raiseColumnSortChanged(sortColumn, oldSortColumn);
+            }
           } else {
-            sortedColumns.add(sortColumn);
+            if (_raiseColumnSortChanging(sortColumn, null)) {
+              sortedColumns.add(sortColumn);
+              _raiseColumnSortChanged(sortColumn, null);
+            }
           }
         }
       }
@@ -814,7 +862,6 @@ class _SortIcon extends StatefulWidget {
 class _SortIconState extends State<_SortIcon>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _sortingAnimation;
 
   @override
   void initState() {
@@ -823,8 +870,7 @@ class _SortIconState extends State<_SortIcon>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _sortingAnimation = Tween<double>(begin: 0.0, end: pi).animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeIn));
+
     if (widget.sortDirection == DataGridSortDirection.descending) {
       _animationController.value = 1.0;
     }
@@ -844,15 +890,15 @@ class _SortIconState extends State<_SortIcon>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-        animation: _animationController,
-        builder: (BuildContext context, Widget? child) {
-          return Transform.rotate(
-              angle: _sortingAnimation.value,
-              child: widget.sortIcon ??
-                  Icon(Icons.arrow_upward,
-                      color: widget.sortIconColor, size: 16));
-        });
+    return RotationTransition(
+      turns: Tween<double>(begin: 0.0, end: 0.5).animate(_animationController),
+      child: widget.sortIcon ??
+          Icon(
+            Icons.arrow_upward,
+            color: widget.sortIconColor,
+            size: 16,
+          ),
+    );
   }
 
   @override
@@ -2385,44 +2431,46 @@ BorderDirectional _getCellBorder(
   final ColumnDragAndDropController dragAndDropController =
       dataGridConfiguration.columnDragAndDropController;
 
-  final bool canDrawLeftColumnDragAndDropIndicator = dataGridConfiguration
-          .allowColumnsDragging &&
-      dragAndDropController.canDrawRightIndicator != null &&
-      !dragAndDropController.canDrawRightIndicator! &&
-      dragAndDropController.columnIndex == dataCell.columnIndex &&
-      (!dataGridConfiguration.showCheckboxColumn
-          ? dragAndDropController.dragColumnStartIndex != dataCell.columnIndex
-          : dragAndDropController.dragColumnStartIndex! + 1 !=
-              dataCell.columnIndex) &&
-      isHeaderCell;
+  final int indentCount = dataGridConfiguration.source.groupedColumns.length;
 
-  final bool canDrawRightColumnDragAndDropIndicator = dataGridConfiguration
-          .allowColumnsDragging &&
-      dragAndDropController.canDrawRightIndicator != null &&
-      dragAndDropController.canDrawRightIndicator! &&
-      dragAndDropController.columnIndex == dataCell.columnIndex &&
-      (!dataGridConfiguration.showCheckboxColumn
-          ? dragAndDropController.dragColumnStartIndex != dataCell.columnIndex
-          : dragAndDropController.dragColumnStartIndex! + 1 !=
-              dataCell.columnIndex) &&
-      isHeaderCell;
+  final bool canDrawLeftColumnDragAndDropIndicator =
+      dataGridConfiguration.allowColumnsDragging &&
+          dragAndDropController.canDrawRightIndicator != null &&
+          !dragAndDropController.canDrawRightIndicator! &&
+          dragAndDropController.columnIndex == dataCell.columnIndex &&
+          (dragAndDropController.dragColumnStartIndex! +
+                  indentCount +
+                  (dataGridConfiguration.showCheckboxColumn ? 1 : 0)) !=
+              dataCell.columnIndex &&
+          isHeaderCell;
+
+  final bool canDrawRightColumnDragAndDropIndicator =
+      dataGridConfiguration.allowColumnsDragging &&
+          dragAndDropController.canDrawRightIndicator != null &&
+          dragAndDropController.canDrawRightIndicator! &&
+          dragAndDropController.columnIndex == dataCell.columnIndex &&
+          (dragAndDropController.dragColumnStartIndex! +
+                  indentCount +
+                  (dataGridConfiguration.showCheckboxColumn ? 1 : 0)) !=
+              dataCell.columnIndex &&
+          isHeaderCell;
 
   final bool canSkipLeftColumnDragAndDropIndicator =
       canDrawLeftColumnDragAndDropIndicator &&
-          (!dataGridConfiguration.showCheckboxColumn
-              ? dragAndDropController.dragColumnStartIndex! + 1 ==
-                  dataCell.columnIndex
-              : (dragAndDropController.dragColumnStartIndex! + 2 ==
-                      dataCell.columnIndex ||
+          (dragAndDropController.dragColumnStartIndex! +
+                      indentCount +
+                      (dataGridConfiguration.showCheckboxColumn ? 2 : 1) ==
+                  dataCell.columnIndex ||
+              (dataGridConfiguration.showCheckboxColumn &&
                   dragAndDropController.columnIndex == 0));
 
   final bool canSkipRightColumnDragAndDropIndicator =
       canDrawRightColumnDragAndDropIndicator &&
-          (!dataGridConfiguration.showCheckboxColumn
-              ? dragAndDropController.dragColumnStartIndex! - 1 ==
-                  dataCell.columnIndex
-              : (dragAndDropController.dragColumnStartIndex! ==
-                      dataCell.columnIndex ||
+          (dragAndDropController.dragColumnStartIndex! +
+                      indentCount -
+                      (dataGridConfiguration.showCheckboxColumn ? 0 : 1) ==
+                  dataCell.columnIndex ||
+              (dataGridConfiguration.showCheckboxColumn &&
                   dragAndDropController.columnIndex == 0));
 
   final bool canDrawHorizontalBorder =
@@ -2520,7 +2568,8 @@ BorderDirectional _getCellBorder(
       dataGridConfiguration.frozenColumnsCount.isFinite &&
           dataGridConfiguration.frozenColumnsCount > 0 &&
           grid_helper.getLastFrozenColumnIndex(dataGridConfiguration) ==
-              columnIndex;
+              columnIndex &&
+          !isStackedHeaderCell;
 
   final bool canDrawLeftFrozenBorder =
       dataGridConfiguration.footerFrozenColumnsCount.isFinite &&
@@ -2843,8 +2892,7 @@ Future<void> _handleOnTapUp(
     required TapDownDetails? tapDownDetails,
     required DataCellBase dataCell,
     required DataGridConfiguration dataGridConfiguration,
-    required PointerDeviceKind kind,
-    bool isSecondaryTapDown = false}) async {
+    required PointerDeviceKind kind}) async {
   // End edit the current editing cell if its editing mode is differed
   if (dataGridConfiguration.currentCell.isEditing) {
     if (await dataGridConfiguration.currentCell
@@ -2856,7 +2904,7 @@ Future<void> _handleOnTapUp(
     }
   }
 
-  if (!isSecondaryTapDown && dataGridConfiguration.onCellTap != null) {
+  if (dataGridConfiguration.onCellTap != null) {
     // Issue:
     // FLUT-865739-A null exception occurred when expanding the group alongside the onCellTap callback.
     //
@@ -2894,7 +2942,10 @@ Future<void> _handleOnTapUp(
     final int rowIndex = resolveStartRecordIndex(
         dataGridConfiguration, dataCell.dataRow!.rowIndex);
     if (rowIndex >= 0) {
-      final Group group = getGroupElement(dataGridConfiguration, rowIndex);
+      final dynamic group = getGroupElement(dataGridConfiguration, rowIndex);
+      if (group is! Group) {
+        return;
+      }
       if (group.isExpanded) {
         if (_invokeGroupChangingCallback(dataGridConfiguration, group)) {
           dataGridConfiguration.group!

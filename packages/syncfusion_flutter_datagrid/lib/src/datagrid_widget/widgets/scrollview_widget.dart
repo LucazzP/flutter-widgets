@@ -25,7 +25,8 @@ import 'rendering_widget.dart';
 class ScrollViewWidget extends StatefulWidget {
   /// Creates a [ScrollViewWidget] for the [SfDataGrid].
   const ScrollViewWidget(
-      {required this.width,
+      {super.key,
+      required this.width,
       required this.height,
       required this.dataGridStateDetails});
 
@@ -261,13 +262,27 @@ class _ScrollViewWidgetState extends State<ScrollViewWidget> {
                 // we need to set width as 0 if it's negative value
                 constraints:
                     BoxConstraints(minWidth: max(0, min(_width, extentWidth))),
-                child: _VisualContainer(
-                  key: const ValueKey<String>('SfDataGrid-VisualContainer'),
-                  isDirty: _container.isDirty,
-                  rowGenerator: rowGenerator,
-                  containerSize: containerSize,
-                  dataGridStateDetails: widget.dataGridStateDetails,
-                ),
+                child: _canShowPlaceHolder()
+                    ? SizedBox(
+                        width: extentWidth,
+                        child: Transform.translate(
+                          offset: Offset(_container.horizontalOffset, 0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: SizedBox(
+                                height: scrollViewHeight,
+                                width: min(_width, extentWidth),
+                                child: dataGridConfiguration.placeholder),
+                          ),
+                        ))
+                    : _VisualContainer(
+                        key: const ValueKey<String>(
+                            'SfDataGrid-VisualContainer'),
+                        isDirty: _container.isDirty,
+                        rowGenerator: rowGenerator,
+                        containerSize: containerSize,
+                        dataGridStateDetails: widget.dataGridStateDetails,
+                      ),
               ),
             ),
           ),
@@ -319,6 +334,15 @@ class _ScrollViewWidgetState extends State<ScrollViewWidget> {
     children.add(wrapScrollView);
   }
 
+  bool _canShowPlaceHolder() {
+    // Added a column header count manually with stacked header rows.
+    final int headerRowCount =
+        _dataGridConfiguration.stackedHeaderRows.length + 1;
+
+    return _dataGridConfiguration.placeholder != null &&
+        _dataGridConfiguration.container.rowCount == headerRowCount;
+  }
+
   void _addHeaderRows(List<Widget> children) {
     final DataGridConfiguration dataGridConfiguration = _dataGridConfiguration;
 
@@ -365,6 +389,9 @@ class _ScrollViewWidgetState extends State<ScrollViewWidget> {
 
     double getStartX() {
       if (dataGridConfiguration.textDirection == TextDirection.ltr) {
+        if (_horizontalController!.hasClients) {
+          _container.horizontalOffset = _horizontalController!.offset;
+        }
         return -_container.horizontalOffset;
       } else {
         if (!_horizontalController!.hasClients ||
@@ -503,7 +530,7 @@ class _ScrollViewWidgetState extends State<ScrollViewWidget> {
         dataGridThemeHelper.frozenPaneLineColor!;
 
     final Color frozenLineColorWithOpacity =
-        dataGridThemeHelper.frozenPaneLineColor!.withOpacity(0.14);
+        dataGridThemeHelper.frozenPaneLineColor!.withValues(alpha: 0.14);
 
     void drawElevation({
       EdgeInsets? margin,
@@ -2100,11 +2127,13 @@ class VisualContainerHelper {
   void _updateFreezePaneRows(DataGridConfiguration dataGridConfiguration) {
     final int frozenRowCount = grid_helper.resolveToRowIndex(
         dataGridConfiguration, dataGridConfiguration.frozenRowsCount);
-    if (frozenRowCount > 0 && rowCount >= frozenRowCount) {
-      frozenRows = headerLineCount + dataGridConfiguration.frozenRowsCount;
-    } else {
-      frozenRows = headerLineCount;
-    }
+
+    frozenRows = (frozenRowCount > 0 &&
+            rowCount >= frozenRowCount &&
+            dataGridConfiguration.frozenRowsCount <=
+                resolveEffectiveRowCount(dataGridConfiguration))
+        ? headerLineCount + dataGridConfiguration.frozenRowsCount
+        : headerLineCount;
 
     final int footerFrozenRowsCount =
         dataGridConfiguration.footerFrozenRowsCount;

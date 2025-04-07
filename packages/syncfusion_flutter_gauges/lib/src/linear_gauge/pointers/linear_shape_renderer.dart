@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:syncfusion_flutter_core/core.dart' as core;
@@ -230,7 +232,8 @@ class RenderLinearShapePointer extends RenderLinearPointerBase {
 
   @override
   void performLayout() {
-    size = Size(width, height);
+    size = Size(
+        min(width, constraints.maxWidth), min(height, constraints.maxHeight));
   }
 
   @override
@@ -293,9 +296,6 @@ class RenderLinearShapePointer extends RenderLinearPointerBase {
           break;
         case LinearShapePointerType.diamond:
           markerType = core.ShapeMarkerType.diamond;
-          break;
-        // ignore: no_default_cases
-        default:
           break;
       }
 

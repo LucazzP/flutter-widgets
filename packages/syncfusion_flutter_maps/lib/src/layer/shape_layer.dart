@@ -1128,6 +1128,7 @@ class MapShapeLayerController extends MapLayerController {
 // ignore_for_file: public_member_api_docs
 class GeoJSONLayer extends StatefulWidget {
   const GeoJSONLayer({
+    super.key,
     required this.source,
     required this.controller,
     this.initialLatLngBounds,
@@ -1377,7 +1378,8 @@ class _GeoJSONLayerState extends State<GeoJSONLayer>
           mapsThemeData.shapeHoverStrokeWidth ?? mapsThemeData.layerStrokeWidth,
       legendTextStyle: themeData.textTheme.bodySmall!
           .copyWith(
-              color: themeData.textTheme.bodySmall!.color!.withOpacity(0.87))
+              color:
+                  themeData.textTheme.bodySmall!.color!.withValues(alpha: 0.87))
           .merge(mapsThemeData.legendTextStyle)
           .merge(widget.legend?.textStyle),
       markerIconColor:
@@ -1572,10 +1574,9 @@ class _GeoJSONLayerState extends State<GeoJSONLayer>
           mapModel.legendMapperIndex = i;
           mapModel.colorValue = colorValue;
           if (mapper.minOpacity != null && mapper.maxOpacity != null) {
-            return mapper.color.withOpacity(lerpDouble(
-                mapper.minOpacity,
-                mapper.maxOpacity,
-                (colorValue - mapper.from!) / (mapper.to! - mapper.from!))!);
+            return mapper.color.withValues(
+                alpha: lerpDouble(mapper.minOpacity, mapper.maxOpacity,
+                    (colorValue - mapper.from!) / (mapper.to! - mapper.from!)));
           }
           return mapper.color;
         }
@@ -2681,7 +2682,7 @@ class _RenderGeoJSONLayer extends RenderStack
 
       _controller.gesture = null;
     }
-    // HACK: If the initial pinch zooming is performed then reinitialize
+    // Hack: If the initial pinch zooming is performed then reinitialize
     // the ScaleGestureRecognizer for the web platform alone
     if (!_initailPinchZooming && kIsWeb) {
       _scaleGestureRecognizer.dispose();
