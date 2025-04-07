@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../graphics/brushes/pdf_solid_brush.dart';
 import '../../graphics/fonts/pdf_font.dart';
@@ -92,11 +92,9 @@ class PdfPageNumberField extends PdfMultipleValueField {
   /// //Dispose the document.
   /// document.dispose();
   /// ```
-  PdfPageNumberField(
-      {super.font, super.brush, super.bounds, bool? isSectionPageNumber}) {
+  PdfPageNumberField({super.font, super.brush, super.bounds, bool? isSectionPageNumber}) {
     _helper = PdfPageNumberFieldHelper(this);
-    _helper._isSectionPageNumber =
-        isSectionPageNumber != null && isSectionPageNumber;
+    _helper._isSectionPageNumber = isSectionPageNumber != null && isSectionPageNumber;
   }
 
   // fields
@@ -176,9 +174,7 @@ class PdfPageNumberFieldHelper {
       return PdfAutomaticFieldHelper.convert(index, base.numberStyle);
     } else {
       final PdfDocument document = PdfSectionCollectionHelper.getHelper(
-              PdfSectionHelper.getHelper(
-                      PdfPageHelper.getHelper(page!).section!)
-                  .parent!)
+              PdfSectionHelper.getHelper(PdfPageHelper.getHelper(page!).section!).parent!)
           .document!;
       final int pageIndex = document.pages.indexOf(page) + 1;
       return PdfAutomaticFieldHelper.convert(pageIndex, base.numberStyle);

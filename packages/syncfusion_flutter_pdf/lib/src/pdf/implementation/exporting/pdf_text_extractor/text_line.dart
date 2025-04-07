@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../graphics/fonts/enums.dart';
 import 'text_word.dart';

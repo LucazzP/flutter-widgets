@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../interfaces/pdf_interface.dart';
 import '../io/pdf_constants.dart';
@@ -25,8 +25,7 @@ class PdfNamedDestination implements IPdfWrapper {
     _initialize();
   }
 
-  PdfNamedDestination._(
-      PdfDictionary dictionary, PdfCrossTable crossTable, bool isLoaded)
+  PdfNamedDestination._(PdfDictionary dictionary, PdfCrossTable crossTable, bool isLoaded)
       : super() {
     _helper = PdfNamedDestinationHelper(this);
     _helper.dictionary = dictionary;
@@ -65,14 +64,13 @@ class PdfNamedDestination implements IPdfWrapper {
     if (_isLoaded) {
       String? title = '';
       if (_helper.dictionary!.containsKey(PdfDictionaryProperties.title)) {
-        final PdfString str = _crossTable.getObject(
-            _helper.dictionary![PdfDictionaryProperties.title])! as PdfString;
+        final PdfString str =
+            _crossTable.getObject(_helper.dictionary![PdfDictionaryProperties.title])! as PdfString;
         title = str.value;
       }
       return title!;
     } else {
-      final PdfString? title =
-          _helper.dictionary![PdfDictionaryProperties.title] as PdfString?;
+      final PdfString? title = _helper.dictionary![PdfDictionaryProperties.title] as PdfString?;
       String? value;
       if (title != null) {
         value = title.value;
@@ -91,38 +89,33 @@ class PdfNamedDestination implements IPdfWrapper {
     _helper.dictionary!.beginSave = (Object sender, SavePdfPrimitiveArgs? ars) {
       _helper.dictionary!.setProperty(PdfDictionaryProperties.d, _destination);
     };
-    _helper.dictionary!.setProperty(
-        PdfDictionaryProperties.s, PdfName(PdfDictionaryProperties.goTo));
+    _helper.dictionary!
+        .setProperty(PdfDictionaryProperties.s, PdfName(PdfDictionaryProperties.goTo));
   }
 
   PdfDestination? _obtainDestination() {
-    if (_helper.dictionary!.containsKey(PdfDictionaryProperties.d) &&
-        (_destination == null)) {
+    if (_helper.dictionary!.containsKey(PdfDictionaryProperties.d) && (_destination == null)) {
       final IPdfPrimitive? obj =
           _crossTable.getObject(_helper.dictionary![PdfDictionaryProperties.d]);
       final PdfArray? destination = obj as PdfArray?;
       if (destination != null && destination.count > 1) {
-        final PdfReferenceHolder? referenceHolder =
-            destination[0] as PdfReferenceHolder?;
+        final PdfReferenceHolder? referenceHolder = destination[0] as PdfReferenceHolder?;
         PdfPage? page;
         if (referenceHolder != null) {
           final PdfDictionary? dictionary =
               _crossTable.getObject(referenceHolder) as PdfDictionary?;
           if (dictionary != null) {
             page =
-                PdfPageCollectionHelper.getHelper(_crossTable.document!.pages)
-                    .getPage(dictionary);
+                PdfPageCollectionHelper.getHelper(_crossTable.document!.pages).getPage(dictionary);
           }
         }
 
         final PdfName? mode = destination[1] as PdfName?;
         if (mode != null) {
-          if ((mode.name == 'FitBH' || mode.name == 'FitH') &&
-              destination.count > 2) {
+          if ((mode.name == 'FitBH' || mode.name == 'FitH') && destination.count > 2) {
             final PdfNumber? top = destination[2] as PdfNumber?;
             if (page != null) {
-              final double topValue =
-                  (top == null) ? 0 : page.size.height - top.value!;
+              final double topValue = (top == null) ? 0 : page.size.height - top.value!;
               _destination = PdfDestination(page, Offset(0, topValue));
               _destination!.mode = PdfDestinationMode.fitH;
             }
@@ -134,10 +127,8 @@ class PdfNamedDestination implements IPdfWrapper {
               zoom = destination[4]! as PdfNumber;
             }
             if (page != null) {
-              final double topValue =
-                  (top == null) ? 0 : page.size.height - top.value!;
-              final double leftValue =
-                  (left == null) ? 0 : left.value! as double;
+              final double topValue = (top == null) ? 0 : page.size.height - top.value!;
+              final double leftValue = (left == null) ? 0 : left.value! as double;
               _destination = PdfDestination(page, Offset(leftValue, topValue));
               if (zoom != null) {
                 _destination!.zoom = zoom.value!.toDouble();

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../interfaces/pdf_interface.dart';
 import '../actions/pdf_action.dart';
@@ -23,8 +23,7 @@ class PdfUriAnnotation extends PdfActionLinkAnnotation {
     this.uri = uri;
   }
 
-  PdfUriAnnotation._(
-      PdfDictionary dictionary, PdfCrossTable crossTable, String text) {
+  PdfUriAnnotation._(PdfDictionary dictionary, PdfCrossTable crossTable, String text) {
     _helper = PdfUriAnnotationHelper._(this, dictionary, crossTable);
     super.text = text;
   }
@@ -51,8 +50,9 @@ class PdfUriAnnotation extends PdfActionLinkAnnotation {
       if (_uri != value) {
         _uri = value;
         if (tempDictionary.containsKey(PdfDictionaryProperties.a)) {
-          final PdfDictionary? dictionary = PdfCrossTable.dereference(
-              tempDictionary[PdfDictionaryProperties.a]) as PdfDictionary?;
+          final PdfDictionary? dictionary =
+              PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a])
+                  as PdfDictionary?;
           if (dictionary != null) {
             dictionary.setString(PdfDictionaryProperties.uri, _uri);
             dictionary.modify();
@@ -66,8 +66,8 @@ class PdfUriAnnotation extends PdfActionLinkAnnotation {
         if (helper.isLoadedAnnotation) {
           PdfDictionary? dictionary = tempDictionary;
           if (tempDictionary.containsKey(PdfDictionaryProperties.a)) {
-            dictionary = PdfCrossTable.dereference(
-                tempDictionary[PdfDictionaryProperties.a]) as PdfDictionary?;
+            dictionary = PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a])
+                as PdfDictionary?;
             if (dictionary != null) {
               dictionary.setString(PdfDictionaryProperties.uri, _uri);
             }
@@ -111,17 +111,13 @@ class PdfUriAnnotation extends PdfActionLinkAnnotation {
 
   String? _getUriText() {
     String? uriText = '';
-    final PdfDictionary tempDictionary =
-        PdfAnnotationHelper.getHelper(this).dictionary!;
+    final PdfDictionary tempDictionary = PdfAnnotationHelper.getHelper(this).dictionary!;
     if (tempDictionary.containsKey(PdfDictionaryProperties.a)) {
       final PdfDictionary? dictionary =
-          PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a])
-              as PdfDictionary?;
-      if (dictionary != null &&
-          dictionary.containsKey(PdfDictionaryProperties.uri)) {
+          PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a]) as PdfDictionary?;
+      if (dictionary != null && dictionary.containsKey(PdfDictionaryProperties.uri)) {
         final PdfString? tempText =
-            PdfCrossTable.dereference(dictionary[PdfDictionaryProperties.uri])
-                as PdfString?;
+            PdfCrossTable.dereference(dictionary[PdfDictionaryProperties.uri]) as PdfString?;
         if (tempText != null) {
           uriText = tempText.value;
         }
@@ -134,20 +130,17 @@ class PdfUriAnnotation extends PdfActionLinkAnnotation {
 /// [PdfUriAnnotation] helper
 class PdfUriAnnotationHelper extends PdfActionLinkAnnotationHelper {
   /// internal constructor
-  PdfUriAnnotationHelper(this.uriAnnotation, Rect bounds)
-      : super(uriAnnotation, bounds) {
+  PdfUriAnnotationHelper(this.uriAnnotation, Rect bounds) : super(uriAnnotation, bounds) {
     _uriAction ??= PdfUriAction();
-    dictionary!.setProperty(PdfName(PdfDictionaryProperties.subtype),
-        PdfName(PdfDictionaryProperties.link));
+    dictionary!.setProperty(
+        PdfName(PdfDictionaryProperties.subtype), PdfName(PdfDictionaryProperties.link));
     final IPdfPrimitive? element = IPdfWrapper.getElement(_uriAction!);
     if (element == null) {
-      IPdfWrapper.setElement(
-          _uriAction!, PdfActionHelper.getHelper(_uriAction!).dictionary);
+      IPdfWrapper.setElement(_uriAction!, PdfActionHelper.getHelper(_uriAction!).dictionary);
     }
     dictionary!.setProperty(PdfName(PdfDictionaryProperties.a), element);
   }
-  PdfUriAnnotationHelper._(
-      this.uriAnnotation, PdfDictionary dictionary, PdfCrossTable crossTable)
+  PdfUriAnnotationHelper._(this.uriAnnotation, PdfDictionary dictionary, PdfCrossTable crossTable)
       : super.load(uriAnnotation, dictionary, crossTable);
 
   /// internal field
@@ -159,8 +152,7 @@ class PdfUriAnnotationHelper extends PdfActionLinkAnnotationHelper {
   IPdfPrimitive? element;
 
   /// internal method
-  static PdfUriAnnotation load(
-      PdfDictionary dictionary, PdfCrossTable crossTable, String text) {
+  static PdfUriAnnotation load(PdfDictionary dictionary, PdfCrossTable crossTable, String text) {
     return PdfUriAnnotation._(dictionary, crossTable, text);
   }
 

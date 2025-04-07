@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../graphics/brushes/pdf_solid_brush.dart';
 import '../../graphics/fonts/pdf_font.dart';
@@ -93,8 +93,7 @@ class PdfPageCountField extends PdfSingleValueField {
   /// //Dispose the document.
   /// document.dispose();
   /// ```
-  PdfPageCountField(
-      {PdfFont? font, PdfBrush? brush, Rect? bounds, bool? isSectionPageCount})
+  PdfPageCountField({PdfFont? font, PdfBrush? brush, Rect? bounds, bool? isSectionPageCount})
       : super(font, brush, bounds) {
     _isSectionPageCount = isSectionPageCount != null && isSectionPageCount;
   }
@@ -154,9 +153,7 @@ class PdfPageCountField extends PdfSingleValueField {
         return PdfAutomaticFieldHelper.convert(count, numberStyle);
       } else {
         final PdfDocument document = PdfSectionCollectionHelper.getHelper(
-                PdfSectionHelper.getHelper(
-                        PdfPageHelper.getHelper(page).section!)
-                    .parent!)
+                PdfSectionHelper.getHelper(PdfPageHelper.getHelper(page).section!).parent!)
             .document!;
         final int number = document.pages.count;
         return PdfAutomaticFieldHelper.convert(number, numberStyle);

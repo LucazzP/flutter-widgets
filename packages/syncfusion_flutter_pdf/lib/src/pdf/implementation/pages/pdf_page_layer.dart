@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../interfaces/pdf_interface.dart';
 import '../drawing/drawing.dart';
@@ -34,8 +34,7 @@ class PdfPageLayer implements IPdfWrapper {
     _initialize(pdfPage, true);
   }
 
-  PdfPageLayer._fromClipPageTemplate(PdfPage pdfPage,
-      [bool? clipPageTemplates]) {
+  PdfPageLayer._fromClipPageTemplate(PdfPage pdfPage, [bool? clipPageTemplates]) {
     _helper = PdfPageLayerHelper(this);
     _initialize(pdfPage, clipPageTemplates);
   }
@@ -80,9 +79,7 @@ class PdfPageLayer implements IPdfWrapper {
   bool get visible {
     if (_helper.dictionary != null &&
         _helper.dictionary!.containsKey(PdfDictionaryProperties.visible)) {
-      _visible =
-          (_helper.dictionary![PdfDictionaryProperties.visible]! as PdfBoolean)
-              .value!;
+      _visible = (_helper.dictionary![PdfDictionaryProperties.visible]! as PdfBoolean).value!;
     }
     return _visible;
   }
@@ -124,8 +121,7 @@ class PdfPageLayer implements IPdfWrapper {
       double ury = 0;
       final PdfArray? mediaBox = PdfPageHelper.getHelper(page)
           .dictionary!
-          .getValue(PdfDictionaryProperties.mediaBox,
-              PdfDictionaryProperties.parent) as PdfArray?;
+          .getValue(PdfDictionaryProperties.mediaBox, PdfDictionaryProperties.parent) as PdfArray?;
       final PdfReferenceHolder referenceHolder = PdfReferenceHolder(this);
       if (mediaBox != null) {
         // Lower Left X co-ordinate Value.
@@ -138,12 +134,10 @@ class PdfPageLayer implements IPdfWrapper {
         ury = (mediaBox[3]! as PdfNumber).value!.toDouble();
       }
       PdfArray? cropBox;
-      if (PdfPageHelper.getHelper(page)
-          .dictionary!
-          .containsKey(PdfDictionaryProperties.cropBox)) {
-        cropBox = PdfPageHelper.getHelper(page).dictionary!.getValue(
-                PdfDictionaryProperties.cropBox, PdfDictionaryProperties.parent)
-            as PdfArray?;
+      if (PdfPageHelper.getHelper(page).dictionary!.containsKey(PdfDictionaryProperties.cropBox)) {
+        cropBox = PdfPageHelper.getHelper(page)
+            .dictionary!
+            .getValue(PdfDictionaryProperties.cropBox, PdfDictionaryProperties.parent) as PdfArray?;
         final double cropX = (cropBox![0]! as PdfNumber).value!.toDouble();
         final double cropY = (cropBox[1]! as PdfNumber).value!.toDouble();
         final double cropRX = (cropBox[2]! as PdfNumber).value!.toDouble();
@@ -151,36 +145,27 @@ class PdfPageLayer implements IPdfWrapper {
         if ((cropX < 0 || cropY < 0 || cropRX < 0 || cropRY < 0) &&
             (cropY.abs().floor() == page.size.height.abs().floor()) &&
             (cropX.abs().floor()) == page.size.width.abs().floor()) {
-          final Size pageSize = Size(<double>[cropX, cropRX].reduce(max),
-              <double>[cropY, cropRY].reduce(max));
-          _helper.graphics =
-              PdfGraphicsHelper.load(pageSize, resources, _helper._content!);
-          if (!PdfPageHelper.getHelper(page)
-                  .contents
-                  .contains(referenceHolder) &&
+          final Size pageSize =
+              Size(<double>[cropX, cropRX].reduce(max), <double>[cropY, cropRY].reduce(max));
+          _helper.graphics = PdfGraphicsHelper.load(pageSize, resources, _helper._content!);
+          if (!PdfPageHelper.getHelper(page).contents.contains(referenceHolder) &&
               !PdfPageHelper.getHelper(page).isDefaultGraphics &&
-              !_isContainsPageContent(
-                  PdfPageHelper.getHelper(page).contents, referenceHolder)) {
+              !_isContainsPageContent(PdfPageHelper.getHelper(page).contents, referenceHolder)) {
             PdfPageHelper.getHelper(page).contents.add(referenceHolder);
           }
         } else {
-          _helper.graphics =
-              PdfGraphicsHelper.load(page.size, resources, _helper._content!);
+          _helper.graphics = PdfGraphicsHelper.load(page.size, resources, _helper._content!);
           PdfGraphicsHelper.getHelper(_helper.graphics!).cropBox = cropBox;
-          if (!PdfPageHelper.getHelper(page)
-                  .contents
-                  .contains(referenceHolder) &&
+          if (!PdfPageHelper.getHelper(page).contents.contains(referenceHolder) &&
               !PdfPageHelper.getHelper(page).isDefaultGraphics &&
-              !_isContainsPageContent(
-                  PdfPageHelper.getHelper(page).contents, referenceHolder)) {
+              !_isContainsPageContent(PdfPageHelper.getHelper(page).contents, referenceHolder)) {
             PdfPageHelper.getHelper(page).contents.add(referenceHolder);
           }
         }
       } else if ((llx < 0 || lly < 0 || urx < 0 || ury < 0) &&
           (lly.abs().floor() == page.size.height.abs().floor()) &&
           (urx.abs().floor() == page.size.width.abs().floor())) {
-        Size pageSize = Size(
-            <double>[llx, urx].reduce(max), <double>[lly, ury].reduce(max));
+        Size pageSize = Size(<double>[llx, urx].reduce(max), <double>[lly, ury].reduce(max));
         if (pageSize.width <= 0 || pageSize.height <= 0) {
           isInvalidSize = true;
           if (llx < 0) {
@@ -193,26 +178,19 @@ class PdfPageLayer implements IPdfWrapper {
           } else if (ury < 0) {
             ury = -ury;
           }
-          pageSize = Size(
-              <double>[llx, urx].reduce(max), <double>[lly, ury].reduce(max));
-          _helper.graphics =
-              PdfGraphicsHelper.load(pageSize, resources, _helper._content!);
-          if (!PdfPageHelper.getHelper(page)
-                  .contents
-                  .contains(referenceHolder) &&
+          pageSize = Size(<double>[llx, urx].reduce(max), <double>[lly, ury].reduce(max));
+          _helper.graphics = PdfGraphicsHelper.load(pageSize, resources, _helper._content!);
+          if (!PdfPageHelper.getHelper(page).contents.contains(referenceHolder) &&
               !PdfPageHelper.getHelper(page).isDefaultGraphics &&
-              !_isContainsPageContent(
-                  PdfPageHelper.getHelper(page).contents, referenceHolder)) {
+              !_isContainsPageContent(PdfPageHelper.getHelper(page).contents, referenceHolder)) {
             PdfPageHelper.getHelper(page).contents.add(referenceHolder);
           }
         }
       } else {
-        _helper.graphics =
-            PdfGraphicsHelper.load(page.size, resources, _helper._content!);
+        _helper.graphics = PdfGraphicsHelper.load(page.size, resources, _helper._content!);
         if (!PdfPageHelper.getHelper(page).contents.contains(referenceHolder) &&
             !PdfPageHelper.getHelper(page).isDefaultGraphics &&
-            !_isContainsPageContent(
-                PdfPageHelper.getHelper(page).contents, referenceHolder)) {
+            !_isContainsPageContent(PdfPageHelper.getHelper(page).contents, referenceHolder)) {
           PdfPageHelper.getHelper(page).contents.add(referenceHolder);
         }
       }
@@ -223,17 +201,12 @@ class PdfPageLayer implements IPdfWrapper {
       }
       if (!PdfPageHelper.getHelper(page).isLoadedPage) {
         final PdfSectionCollection? sectionCollection =
-            PdfSectionHelper.getHelper(PdfPageHelper.getHelper(page).section!)
-                .parent;
+            PdfSectionHelper.getHelper(PdfPageHelper.getHelper(page).section!).parent;
         if (sectionCollection != null) {
           _helper.graphics!.colorSpace =
-              PdfSectionCollectionHelper.getHelper(sectionCollection)
-                  .document!
-                  .colorSpace;
+              PdfSectionCollectionHelper.getHelper(sectionCollection).document!.colorSpace;
           _helper.colorSpace =
-              PdfSectionCollectionHelper.getHelper(sectionCollection)
-                  .document!
-                  .colorSpace;
+              PdfSectionCollectionHelper.getHelper(sectionCollection).document!.colorSpace;
         }
       }
       _helper._content!.beginSave = _beginSaveContent;
@@ -247,8 +220,7 @@ class PdfPageLayer implements IPdfWrapper {
     }
     PdfGraphicsHelper.getHelper(_helper.graphics!).initializeCoordinates();
     if (PdfGraphicsHelper.getHelper(_helper.graphics!).hasTransparencyBrush) {
-      PdfGraphicsHelper.getHelper(_helper.graphics!)
-          .setTransparencyGroup(page!);
+      PdfGraphicsHelper.getHelper(_helper.graphics!).setTransparencyGroup(page!);
     }
     if (page != null &&
         (!PdfPageHelper.getHelper(page).isLoadedPage) &&
@@ -257,12 +229,10 @@ class PdfPageLayer implements IPdfWrapper {
                 .dictionary!
                 .containsKey(PdfDictionaryProperties.rotate))) {
       PdfArray? cropBox;
-      if (PdfPageHelper.getHelper(page)
-          .dictionary!
-          .containsKey(PdfDictionaryProperties.cropBox)) {
-        cropBox = PdfPageHelper.getHelper(page).dictionary!.getValue(
-                PdfDictionaryProperties.cropBox, PdfDictionaryProperties.parent)
-            as PdfArray?;
+      if (PdfPageHelper.getHelper(page).dictionary!.containsKey(PdfDictionaryProperties.cropBox)) {
+        cropBox = PdfPageHelper.getHelper(page)
+            .dictionary!
+            .getValue(PdfDictionaryProperties.cropBox, PdfDictionaryProperties.parent) as PdfArray?;
       }
       _updatePageRotation(page, _helper.graphics, cropBox);
     }
@@ -273,36 +243,25 @@ class PdfPageLayer implements IPdfWrapper {
       if (_clipPageTemplates!) {
         if (PdfPageHelper.getHelper(page).origin.dx >= 0 &&
             PdfPageHelper.getHelper(page).origin.dy >= 0) {
-          PdfGraphicsHelper.getHelper(_helper.graphics!)
-              .clipTranslateMarginsWithBounds(clipRect);
+          PdfGraphicsHelper.getHelper(_helper.graphics!).clipTranslateMarginsWithBounds(clipRect);
         }
       } else {
-        final PdfMargins margins =
-            PdfPageHelper.getHelper(page).section!.pageSettings.margins;
+        final PdfMargins margins = PdfPageHelper.getHelper(page).section!.pageSettings.margins;
         PdfGraphicsHelper.getHelper(_helper.graphics!).clipTranslateMargins(
-            clipRect.x,
-            clipRect.y,
-            margins.left,
-            margins.top,
-            margins.right,
-            margins.bottom);
+            clipRect.x, clipRect.y, margins.left, margins.top, margins.right, margins.bottom);
       }
     }
     PdfGraphicsHelper.getHelper(_helper.graphics!).setLayer(this);
     _isSaved = false;
   }
 
-  void _updatePageRotation(
-      PdfPage page, PdfGraphics? graphics, PdfArray? cropBox) {
+  void _updatePageRotation(PdfPage page, PdfGraphics? graphics, PdfArray? cropBox) {
     PdfNumber? rotation;
-    if (PdfPageHelper.getHelper(page)
-        .dictionary!
-        .containsKey(PdfDictionaryProperties.rotate)) {
-      rotation = PdfPageHelper.getHelper(page)
-          .dictionary![PdfDictionaryProperties.rotate] as PdfNumber?;
+    if (PdfPageHelper.getHelper(page).dictionary!.containsKey(PdfDictionaryProperties.rotate)) {
+      rotation =
+          PdfPageHelper.getHelper(page).dictionary![PdfDictionaryProperties.rotate] as PdfNumber?;
       rotation ??= rotation = PdfCrossTable.dereference(
-          PdfPageHelper.getHelper(page)
-              .dictionary![PdfDictionaryProperties.rotate]) as PdfNumber?;
+          PdfPageHelper.getHelper(page).dictionary![PdfDictionaryProperties.rotate]) as PdfNumber?;
     } else if (page.rotation != PdfPageRotateAngle.rotateAngle0) {
       if (page.rotation == PdfPageRotateAngle.rotateAngle90) {
         rotation = PdfNumber(90);
@@ -317,22 +276,16 @@ class PdfPageLayer implements IPdfWrapper {
       graphics.rotateTransform(-90);
       if (cropBox != null) {
         final double height = (cropBox[3]! as PdfNumber).value!.toDouble();
-        final Size cropBoxSize = Size(
-            (cropBox[2]! as PdfNumber).value!.toDouble(),
-            height != 0
-                ? height
-                : (cropBox[1]! as PdfNumber).value!.toDouble());
-        final Offset cropBoxOffset = Offset(
-            (cropBox[0]! as PdfNumber).value!.toDouble(),
+        final Size cropBoxSize = Size((cropBox[2]! as PdfNumber).value!.toDouble(),
+            height != 0 ? height : (cropBox[1]! as PdfNumber).value!.toDouble());
+        final Offset cropBoxOffset = Offset((cropBox[0]! as PdfNumber).value!.toDouble(),
             (cropBox[1]! as PdfNumber).value!.toDouble());
         if (page.size.height < cropBoxSize.height) {
-          PdfGraphicsHelper.getHelper(graphics).clipBounds.size = PdfSize(
-              page.size.height - cropBoxOffset.dy,
-              cropBoxSize.width - cropBoxOffset.dx);
+          PdfGraphicsHelper.getHelper(graphics).clipBounds.size =
+              PdfSize(page.size.height - cropBoxOffset.dy, cropBoxSize.width - cropBoxOffset.dx);
         } else {
-          PdfGraphicsHelper.getHelper(graphics).clipBounds.size = PdfSize(
-              cropBoxSize.height - cropBoxOffset.dy,
-              cropBoxSize.width - cropBoxOffset.dx);
+          PdfGraphicsHelper.getHelper(graphics).clipBounds.size =
+              PdfSize(cropBoxSize.height - cropBoxOffset.dy, cropBoxSize.width - cropBoxOffset.dx);
         }
       } else {
         PdfGraphicsHelper.getHelper(graphics).clipBounds.size =
@@ -352,9 +305,7 @@ class PdfPageLayer implements IPdfWrapper {
   void _beginSaveContent(Object sender, SavePdfPrimitiveArgs? args) {
     if (_graphicsState != null) {
       if (_isEndState) {
-        PdfGraphicsHelper.getHelper(_helper.graphics!)
-            .streamWriter!
-            .write('EMC\n');
+        PdfGraphicsHelper.getHelper(_helper.graphics!).streamWriter!.write('EMC\n');
         _isEndState = false;
       }
       graphics.restore(_graphicsState);
@@ -376,10 +327,8 @@ class PdfPageLayer implements IPdfWrapper {
       final PdfDictionary? defaultView =
           oCProperties[PdfDictionaryProperties.defaultView] as PdfDictionary?;
       if (defaultView != null) {
-        PdfArray? ocgON =
-            defaultView[PdfDictionaryProperties.ocgOn] as PdfArray?;
-        PdfArray? ocgOFF =
-            defaultView[PdfDictionaryProperties.ocgOff] as PdfArray?;
+        PdfArray? ocgON = defaultView[PdfDictionaryProperties.ocgOn] as PdfArray?;
+        PdfArray? ocgOFF = defaultView[PdfDictionaryProperties.ocgOff] as PdfArray?;
         if (_helper.referenceHolder != null) {
           if (value == false) {
             if (ocgON != null) {
@@ -387,8 +336,7 @@ class PdfPageLayer implements IPdfWrapper {
             }
             if (ocgOFF == null) {
               ocgOFF = PdfArray();
-              defaultView.items![PdfName(PdfDictionaryProperties.ocgOff)] =
-                  ocgOFF;
+              defaultView.items![PdfName(PdfDictionaryProperties.ocgOff)] = ocgOFF;
             }
             ocgOFF.insert(ocgOFF.count, _helper.referenceHolder!);
           } else if (value ?? true) {
@@ -397,8 +345,7 @@ class PdfPageLayer implements IPdfWrapper {
             }
             if (ocgON == null) {
               ocgON = PdfArray();
-              defaultView.items![PdfName(PdfDictionaryProperties.ocgOn)] =
-                  ocgON;
+              defaultView.items![PdfName(PdfDictionaryProperties.ocgOn)] = ocgON;
             }
             ocgON.insert(ocgON.count, _helper.referenceHolder!);
           }
@@ -407,8 +354,7 @@ class PdfPageLayer implements IPdfWrapper {
     }
   }
 
-  bool _isContainsPageContent(
-      PdfArray content, PdfReferenceHolder referenceHolder) {
+  bool _isContainsPageContent(PdfArray content, PdfReferenceHolder referenceHolder) {
     for (int i = 0; i < content.count; i++) {
       final IPdfPrimitive? primitive = content.elements[i];
       if (primitive != null && primitive is PdfReferenceHolder) {
@@ -465,8 +411,7 @@ class PdfPageLayerHelper {
   }
 
   /// internal method
-  static PdfPageLayer fromClipPageTemplate(PdfPage pdfPage,
-      [bool? clipPageTemplates]) {
+  static PdfPageLayer fromClipPageTemplate(PdfPage pdfPage, [bool? clipPageTemplates]) {
     return PdfPageLayer._fromClipPageTemplate(pdfPage, clipPageTemplates);
   }
 

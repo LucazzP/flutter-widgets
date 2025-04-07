@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../interfaces/pdf_interface.dart';
 import '../annotations/enum.dart';
@@ -60,8 +60,7 @@ class PdfCheckBoxField extends PdfCheckFieldBase {
     final PdfArray? kids = _helper.kids;
     if (kids != null) {
       for (int i = 0; i < kids.count; ++i) {
-        final PdfDictionary? itemDictionary =
-            crossTable.getObject(kids[i]) as PdfDictionary?;
+        final PdfDictionary? itemDictionary = crossTable.getObject(kids[i]) as PdfDictionary?;
         PdfFieldItemCollectionHelper.getHelper(_items!)
             .add(PdfCheckBoxItemHelper.getItem(this, i, itemDictionary));
       }
@@ -86,15 +85,11 @@ class PdfCheckBoxField extends PdfCheckFieldBase {
                 .dictionary![PdfDictionaryProperties.usageApplication]);
         if (state == null) {
           final IPdfPrimitive? name = PdfFieldHelper.getValue(
-              _helper.dictionary!,
-              _helper.crossTable,
-              PdfDictionaryProperties.v,
-              false);
+              _helper.dictionary!, _helper.crossTable, PdfDictionaryProperties.v, false);
           if (name != null && name is PdfName) {
             _checked = name.name ==
                 _helper.getItemValue(
-                    PdfFieldItemHelper.getHelper(items![_helper.defaultIndex])
-                        .dictionary!,
+                    PdfFieldItemHelper.getHelper(items![_helper.defaultIndex]).dictionary!,
                     _helper.crossTable);
           }
         } else if (state is PdfName) {
@@ -104,13 +99,10 @@ class PdfCheckBoxField extends PdfCheckFieldBase {
       }
       if (_helper.dictionary!.containsKey(PdfDictionaryProperties.v)) {
         if (_helper.dictionary![PdfDictionaryProperties.v]! is PdfName) {
-          final PdfName chk =
-              _helper.dictionary![PdfDictionaryProperties.v]! as PdfName;
+          final PdfName chk = _helper.dictionary![PdfDictionaryProperties.v]! as PdfName;
           _checked = chk.name != 'Off';
-        } else if (_helper.dictionary![PdfDictionaryProperties.v]!
-            is PdfString) {
-          final PdfString chk =
-              _helper.dictionary![PdfDictionaryProperties.v]! as PdfString;
+        } else if (_helper.dictionary![PdfDictionaryProperties.v]! is PdfString) {
+          final PdfString chk = _helper.dictionary![PdfDictionaryProperties.v]! as PdfString;
           _checked = chk.value != 'Off';
         }
       }
@@ -122,17 +114,14 @@ class PdfCheckBoxField extends PdfCheckFieldBase {
     if (_helper.isLoadedField) {
       if (_helper.dictionary!.containsKey(PdfDictionaryProperties.v)) {
         if (_helper.dictionary![PdfDictionaryProperties.v]! is PdfName) {
-          final PdfName chk =
-              _helper.dictionary![PdfDictionaryProperties.v]! as PdfName;
+          final PdfName chk = _helper.dictionary![PdfDictionaryProperties.v]! as PdfName;
           if (chk.name!.isNotEmpty) {
             _checked = chk.name != 'Off';
           } else {
             _helper.dictionary!.remove(PdfDictionaryProperties.v);
           }
-        } else if (_helper.dictionary![PdfDictionaryProperties.v]!
-            is PdfString) {
-          final PdfString chk =
-              _helper.dictionary![PdfDictionaryProperties.v]! as PdfString;
+        } else if (_helper.dictionary![PdfDictionaryProperties.v]! is PdfString) {
+          final PdfString chk = _helper.dictionary![PdfDictionaryProperties.v]! as PdfString;
           if (chk.value!.isNotEmpty) {
             _checked = chk.value != 'Off';
           } else {
@@ -153,18 +142,15 @@ class PdfCheckBoxField extends PdfCheckFieldBase {
         val = _helper._enableItems(value, val);
       }
       if (_checked) {
-        _helper.dictionary!.setName(PdfName(PdfDictionaryProperties.v),
-            val ?? PdfDictionaryProperties.yes);
+        _helper.dictionary!
+            .setName(PdfName(PdfDictionaryProperties.v), val ?? PdfDictionaryProperties.yes);
         _helper.dictionary!.setProperty(
-            PdfDictionaryProperties.usageApplication,
-            PdfName(val ?? PdfDictionaryProperties.yes));
+            PdfDictionaryProperties.usageApplication, PdfName(val ?? PdfDictionaryProperties.yes));
       } else {
         _helper.dictionary!.remove(PdfDictionaryProperties.v);
-        if (_helper.dictionary!
-            .containsKey(PdfDictionaryProperties.usageApplication)) {
+        if (_helper.dictionary!.containsKey(PdfDictionaryProperties.usageApplication)) {
           _helper.dictionary!.setName(
-              PdfName(PdfDictionaryProperties.usageApplication),
-              PdfDictionaryProperties.off);
+              PdfName(PdfDictionaryProperties.usageApplication), PdfDictionaryProperties.off);
         }
       }
     }
@@ -194,8 +180,7 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
   }
 
   /// internal method
-  static PdfCheckBoxField loadCheckBoxField(
-      PdfDictionary dictionary, PdfCrossTable crossTable) {
+  static PdfCheckBoxField loadCheckBoxField(PdfDictionary dictionary, PdfCrossTable crossTable) {
     return PdfCheckBoxField._loaded(dictionary, crossTable);
   }
 
@@ -228,8 +213,8 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
     bool isChecked = false;
     String? val;
     if (dictionary!.containsKey(PdfDictionaryProperties.usageApplication)) {
-      final IPdfPrimitive? state = PdfCrossTable.dereference(
-          dictionary![PdfDictionaryProperties.usageApplication]);
+      final IPdfPrimitive? state =
+          PdfCrossTable.dereference(dictionary![PdfDictionaryProperties.usageApplication]);
       if (state != null && state is PdfName) {
         isChecked = state.name != PdfDictionaryProperties.off;
       }
@@ -250,8 +235,7 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
     if (checkBoxField.items != null && checkBoxField.items!.count > 0) {
       (checkBoxField.items![defaultIndex] as PdfCheckBoxItem).checked = check;
       final PdfDictionary? dic =
-          PdfFieldItemHelper.getHelper(checkBoxField.items![defaultIndex])
-              .dictionary;
+          PdfFieldItemHelper.getHelper(checkBoxField.items![defaultIndex]).dictionary;
       if (dic != null) {
         value = getItemValue(dic, crossTable);
       }
@@ -262,8 +246,7 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
   /// internal method
   void drawCheckAppearance() {
     final PaintParams paintParams = PaintParams(
-        bounds: Rect.fromLTWH(
-            0, 0, widget!.bounds.size.width, widget!.bounds.size.height),
+        bounds: Rect.fromLTWH(0, 0, widget!.bounds.size.width, widget!.bounds.size.height),
         backBrush: backBrush,
         foreBrush: foreBrush,
         borderPen: borderPen,
@@ -271,25 +254,17 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
         borderWidth: checkBoxField.borderWidth,
         shadowBrush: shadowBrush);
     PdfTemplate template = widget!.extendedAppearance!.normal.activate!;
-    FieldPainter().drawCheckBox(template.graphics!, paintParams,
-        styleToString(checkBoxField.style), PdfCheckFieldState.checked, font);
+    FieldPainter().drawCheckBox(template.graphics!, paintParams, styleToString(checkBoxField.style),
+        PdfCheckFieldState.checked, font);
     template = widget!.extendedAppearance!.normal.off!;
-    FieldPainter().drawCheckBox(template.graphics!, paintParams,
-        styleToString(checkBoxField.style), PdfCheckFieldState.unchecked, font);
+    FieldPainter().drawCheckBox(template.graphics!, paintParams, styleToString(checkBoxField.style),
+        PdfCheckFieldState.unchecked, font);
     template = widget!.extendedAppearance!.pressed.activate!;
-    FieldPainter().drawCheckBox(
-        template.graphics!,
-        paintParams,
-        styleToString(checkBoxField.style),
-        PdfCheckFieldState.pressedChecked,
-        font);
+    FieldPainter().drawCheckBox(template.graphics!, paintParams, styleToString(checkBoxField.style),
+        PdfCheckFieldState.pressedChecked, font);
     template = widget!.extendedAppearance!.pressed.off!;
-    FieldPainter().drawCheckBox(
-        template.graphics!,
-        paintParams,
-        styleToString(checkBoxField.style),
-        PdfCheckFieldState.pressedUnchecked,
-        font);
+    FieldPainter().drawCheckBox(template.graphics!, paintParams, styleToString(checkBoxField.style),
+        PdfCheckFieldState.pressedUnchecked, font);
   }
 
   /// internal method
@@ -298,8 +273,7 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
     final PdfArray? kids = obtainKids();
     if (kids != null) {
       for (int i = 0; i < kids.count; ++i) {
-        final PdfDictionary? widget =
-            crossTable!.getObject(kids[i]) as PdfDictionary?;
+        final PdfDictionary? widget = crossTable!.getObject(kids[i]) as PdfDictionary?;
         applyAppearance(widget, null, checkBoxField._items![i]);
       }
     } else {
@@ -311,9 +285,8 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
   @override
   void draw() {
     super.draw();
-    PdfCheckFieldState state = checkBoxField.isChecked
-        ? PdfCheckFieldState.checked
-        : PdfCheckFieldState.unchecked;
+    PdfCheckFieldState state =
+        checkBoxField.isChecked ? PdfCheckFieldState.checked : PdfCheckFieldState.unchecked;
     if (!isLoadedField) {
       final PaintParams params = PaintParams(
           bounds: checkBoxField.bounds,
@@ -333,21 +306,18 @@ class PdfCheckBoxFieldHelper extends PdfCheckFieldBaseHelper {
           params.style = item.borderStyle;
           params.borderWidth = item.borderWidth;
           params.shadowBrush = item._helper.shadowBrush;
-          FieldPainter().drawCheckBox(
-              item.page!.graphics, params, styleToString(item.style), state);
+          FieldPainter()
+              .drawCheckBox(item.page!.graphics, params, styleToString(item.style), state);
         }
       } else {
-        FieldPainter().drawCheckBox(checkBoxField.page!.graphics, params,
-            styleToString(checkBoxField.style), state);
+        FieldPainter().drawCheckBox(
+            checkBoxField.page!.graphics, params, styleToString(checkBoxField.style), state);
       }
     } else {
       if (kids != null) {
         for (int i = 0; i < kids!.count; ++i) {
-          final PdfCheckBoxItem item =
-              checkBoxField._items![i] as PdfCheckBoxItem;
-          state = item.checked
-              ? PdfCheckFieldState.checked
-              : PdfCheckFieldState.unchecked;
+          final PdfCheckBoxItem item = checkBoxField._items![i] as PdfCheckBoxItem;
+          state = item.checked ? PdfCheckFieldState.checked : PdfCheckFieldState.unchecked;
           if (item.page != null) {
             drawStateItem(item.page!.graphics, state, null, item);
           }
@@ -374,8 +344,7 @@ abstract class PdfCheckFieldBase extends PdfField {
   set style(PdfCheckBoxStyle value) {
     if (_checkBaseHelper.isLoadedField) {
       _checkBaseHelper.assignStyle(value);
-      if (this is PdfCheckBoxField &&
-          (this as PdfCheckBoxField).items != null) {
+      if (this is PdfCheckBoxField && (this as PdfCheckBoxField).items != null) {
         final PdfFieldItemCollection items = (this as PdfCheckBoxField).items!;
         for (int i = 0; i < items.count; i++) {
           PdfCheckBoxItemHelper.setStyle(items[i] as PdfCheckBoxItem, value);
@@ -388,9 +357,8 @@ abstract class PdfCheckFieldBase extends PdfField {
     } else {
       if (_style != value) {
         _style = value;
-        WidgetAnnotationHelper.getHelper(_checkBaseHelper.widget!)
-            .widgetAppearance!
-            .normalCaption = _checkBaseHelper.styleToString(_style);
+        WidgetAnnotationHelper.getHelper(_checkBaseHelper.widget!).widgetAppearance!.normalCaption =
+            _checkBaseHelper.styleToString(_style);
       }
     }
   }
@@ -476,8 +444,7 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
         highlightMode: highlightMode,
         borderStyle: borderStyle,
         tooltip: tooltip);
-    dictionary!.setProperty(
-        PdfDictionaryProperties.ft, PdfName(PdfDictionaryProperties.btn));
+    dictionary!.setProperty(PdfDictionaryProperties.ft, PdfName(PdfDictionaryProperties.btn));
     checkField._initValues(style);
   }
 
@@ -505,17 +472,13 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
   void save() {
     super.save();
     if (checkField.form != null) {
-      final Map<String, PdfTemplate> checkValue =
-          _createTemplate(_checkedTemplate);
+      final Map<String, PdfTemplate> checkValue = _createTemplate(_checkedTemplate);
       _checkedTemplate = checkValue['template'];
-      final Map<String, PdfTemplate> unCheckValue =
-          _createTemplate(_uncheckedTemplate);
+      final Map<String, PdfTemplate> unCheckValue = _createTemplate(_uncheckedTemplate);
       _uncheckedTemplate = unCheckValue['template'];
-      final Map<String, PdfTemplate> pressedValue =
-          _createTemplate(_pressedCheckedTemplate);
+      final Map<String, PdfTemplate> pressedValue = _createTemplate(_pressedCheckedTemplate);
       _pressedCheckedTemplate = pressedValue['template'];
-      final Map<String, PdfTemplate> unPressedValue =
-          _createTemplate(_pressedUncheckedTemplate);
+      final Map<String, PdfTemplate> unPressedValue = _createTemplate(_pressedUncheckedTemplate);
       _pressedUncheckedTemplate = unPressedValue['template'];
       widget!.extendedAppearance!.normal.activate = _checkedTemplate;
       widget!.extendedAppearance!.normal.off = _uncheckedTemplate;
@@ -532,8 +495,7 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
 
   Map<String, PdfTemplate> _createTemplate(PdfTemplate? template) {
     if (template == null) {
-      template =
-          PdfTemplate(widget!.bounds.size.width, widget!.bounds.size.height);
+      template = PdfTemplate(widget!.bounds.size.width, widget!.bounds.size.height);
     } else {
       template.reset(widget!.bounds.size.width, widget!.bounds.size.height);
     }
@@ -551,29 +513,24 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
     if (checkField is PdfCheckBoxField) {
       (checkField as PdfCheckBoxField)._helper.drawCheckAppearance();
     } else if (checkField is PdfRadioButtonListItem) {
-      PdfRadioButtonListItemHelper.getHelper(
-              checkField as PdfRadioButtonListItem)
+      PdfRadioButtonListItemHelper.getHelper(checkField as PdfRadioButtonListItem)
           .drawCheckAppearance();
     }
   }
 
   /// internal method
-  void applyAppearance(PdfDictionary? widget, PdfCheckFieldBase? item,
-      [PdfFieldItem? fieldItem]) {
+  void applyAppearance(PdfDictionary? widget, PdfCheckFieldBase? item, [PdfFieldItem? fieldItem]) {
     if (widget != null && item != null) {
-      if (item._checkBaseHelper.dictionary!
-              .containsKey(PdfDictionaryProperties.v) &&
+      if (item._checkBaseHelper.dictionary!.containsKey(PdfDictionaryProperties.v) &&
           item is! PdfRadioButtonListItem) {
+        widget.setName(PdfName(PdfDictionaryProperties.v), PdfDictionaryProperties.yes);
         widget.setName(
-            PdfName(PdfDictionaryProperties.v), PdfDictionaryProperties.yes);
-        widget.setName(PdfName(PdfDictionaryProperties.usageApplication),
-            PdfDictionaryProperties.yes);
-      } else if (!item._checkBaseHelper.dictionary!
-              .containsKey(PdfDictionaryProperties.v) &&
+            PdfName(PdfDictionaryProperties.usageApplication), PdfDictionaryProperties.yes);
+      } else if (!item._checkBaseHelper.dictionary!.containsKey(PdfDictionaryProperties.v) &&
           item is! PdfRadioButtonListItem) {
         widget.remove(PdfDictionaryProperties.v);
-        widget.setName(PdfName(PdfDictionaryProperties.usageApplication),
-            PdfDictionaryProperties.off);
+        widget.setName(
+            PdfName(PdfDictionaryProperties.usageApplication), PdfDictionaryProperties.off);
       }
     } else if (widget != null && fieldItem != null) {
       widget = PdfFieldItemHelper.getHelper(fieldItem).dictionary;
@@ -581,74 +538,58 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
       widget = item!._checkBaseHelper.dictionary;
     }
     if ((widget != null) && (widget.containsKey(PdfDictionaryProperties.ap))) {
-      final PdfDictionary? appearance = crossTable!
-          .getObject(widget[PdfDictionaryProperties.ap]) as PdfDictionary?;
-      if ((appearance != null) &&
-          (appearance.containsKey(PdfDictionaryProperties.n))) {
+      final PdfDictionary? appearance =
+          crossTable!.getObject(widget[PdfDictionaryProperties.ap]) as PdfDictionary?;
+      if ((appearance != null) && (appearance.containsKey(PdfDictionaryProperties.n))) {
         String? value = '';
         Rect rect;
         if (item != null) {
           value = getItemValue(widget, item._checkBaseHelper.crossTable);
           rect = item.bounds;
         } else if (fieldItem != null) {
-          value = getItemValue(
-              widget,
-              PdfFieldHelper.getHelper(
-                      PdfFieldItemHelper.getHelper(fieldItem).field)
-                  .crossTable);
+          value = getItemValue(widget,
+              PdfFieldHelper.getHelper(PdfFieldItemHelper.getHelper(fieldItem).field).crossTable);
           rect = fieldItem.bounds;
         } else {
           value = getItemValue(widget, crossTable);
           rect = checkField.bounds;
         }
-        IPdfPrimitive? holder =
-            PdfCrossTable.dereference(appearance[PdfDictionaryProperties.n]);
+        IPdfPrimitive? holder = PdfCrossTable.dereference(appearance[PdfDictionaryProperties.n]);
         PdfDictionary? normal = holder as PdfDictionary?;
         if (fieldChanged == true && normal != null) {
           normal = PdfDictionary();
-          final PdfTemplate checkedTemplate =
-              PdfTemplate(rect.width, rect.height);
-          final PdfTemplate unchekedTemplate =
-              PdfTemplate(rect.width, rect.height);
-          drawStateItem(checkedTemplate.graphics!, PdfCheckFieldState.checked,
-              item, fieldItem);
-          drawStateItem(unchekedTemplate.graphics!,
-              PdfCheckFieldState.unchecked, item, fieldItem);
+          final PdfTemplate checkedTemplate = PdfTemplate(rect.width, rect.height);
+          final PdfTemplate unchekedTemplate = PdfTemplate(rect.width, rect.height);
+          drawStateItem(checkedTemplate.graphics!, PdfCheckFieldState.checked, item, fieldItem);
+          drawStateItem(unchekedTemplate.graphics!, PdfCheckFieldState.unchecked, item, fieldItem);
           normal.setProperty(value, PdfReferenceHolder(checkedTemplate));
-          normal.setProperty(PdfDictionaryProperties.off,
-              PdfReferenceHolder(unchekedTemplate));
+          normal.setProperty(PdfDictionaryProperties.off, PdfReferenceHolder(unchekedTemplate));
           appearance.remove(PdfDictionaryProperties.n);
           appearance[PdfDictionaryProperties.n] = PdfReferenceHolder(normal);
         }
-        holder =
-            PdfCrossTable.dereference(appearance[PdfDictionaryProperties.d]);
+        holder = PdfCrossTable.dereference(appearance[PdfDictionaryProperties.d]);
         PdfDictionary? pressed = holder as PdfDictionary?;
         if (fieldChanged == true && pressed != null) {
           pressed = PdfDictionary();
-          final PdfTemplate checkedTemplate =
-              PdfTemplate(rect.width, rect.height);
-          final PdfTemplate unchekedTemplate =
-              PdfTemplate(rect.width, rect.height);
-          drawStateItem(checkedTemplate.graphics!,
-              PdfCheckFieldState.pressedChecked, item, fieldItem);
-          drawStateItem(unchekedTemplate.graphics!,
-              PdfCheckFieldState.pressedUnchecked, item, fieldItem);
-          pressed.setProperty(PdfDictionaryProperties.off,
-              PdfReferenceHolder(unchekedTemplate));
+          final PdfTemplate checkedTemplate = PdfTemplate(rect.width, rect.height);
+          final PdfTemplate unchekedTemplate = PdfTemplate(rect.width, rect.height);
+          drawStateItem(
+              checkedTemplate.graphics!, PdfCheckFieldState.pressedChecked, item, fieldItem);
+          drawStateItem(
+              unchekedTemplate.graphics!, PdfCheckFieldState.pressedUnchecked, item, fieldItem);
+          pressed.setProperty(PdfDictionaryProperties.off, PdfReferenceHolder(unchekedTemplate));
           pressed.setProperty(value, PdfReferenceHolder(checkedTemplate));
           appearance.remove(PdfDictionaryProperties.d);
           appearance[PdfDictionaryProperties.d] = PdfReferenceHolder(pressed);
         }
       }
       widget.setProperty(PdfDictionaryProperties.ap, appearance);
-    } else if (PdfFormHelper.getHelper(checkField.form!)
-        .setAppearanceDictionary) {
+    } else if (PdfFormHelper.getHelper(checkField.form!).setAppearanceDictionary) {
       PdfFormHelper.getHelper(checkField.form!).needAppearances = true;
     } else if (PdfFormHelper.getHelper(form!).setAppearanceDictionary &&
         !PdfFormHelper.getHelper(form!).needAppearances!) {
       final PdfDictionary dic = PdfDictionary();
-      final PdfTemplate template =
-          PdfTemplate(checkField.bounds.width, checkField.bounds.height);
+      final PdfTemplate template = PdfTemplate(checkField.bounds.width, checkField.bounds.height);
       drawAppearance(template);
       dic.setProperty(PdfDictionaryProperties.n, PdfReferenceHolder(template));
       widget!.setProperty(PdfDictionaryProperties.ap, dic);
@@ -659,8 +600,8 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
     final PdfDictionary widget = getWidgetAnnotation(dictionary!, crossTable);
     PdfCheckBoxStyle style = PdfCheckBoxStyle.check;
     if (widget.containsKey(PdfDictionaryProperties.mk)) {
-      final PdfDictionary bs = crossTable!
-          .getObject(widget[PdfDictionaryProperties.mk])! as PdfDictionary;
+      final PdfDictionary bs =
+          crossTable!.getObject(widget[PdfDictionaryProperties.mk])! as PdfDictionary;
       style = _createStyle(bs);
     }
     return style;
@@ -669,8 +610,7 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
   PdfCheckBoxStyle _createStyle(PdfDictionary bs) {
     PdfCheckBoxStyle style = PdfCheckBoxStyle.check;
     if (bs.containsKey(PdfDictionaryProperties.ca)) {
-      final PdfString? name =
-          crossTable!.getObject(bs[PdfDictionaryProperties.ca]) as PdfString?;
+      final PdfString? name = crossTable!.getObject(bs[PdfDictionaryProperties.ca]) as PdfString?;
       if (name != null) {
         final String ch = name.value!.toLowerCase();
         switch (ch) {
@@ -724,16 +664,16 @@ class PdfCheckFieldBaseHelper extends PdfFieldHelper {
           break;
       }
       if (widget[PdfDictionaryProperties.mk] is PdfReferenceHolder) {
-        final PdfDictionary widgetDict = crossTable!
-            .getObject(widget[PdfDictionaryProperties.mk])! as PdfDictionary;
+        final PdfDictionary widgetDict =
+            crossTable!.getObject(widget[PdfDictionaryProperties.mk])! as PdfDictionary;
         if (widgetDict.containsKey(PdfDictionaryProperties.ca)) {
           widgetDict[PdfDictionaryProperties.ca] = PdfString(style);
         } else {
           widgetDict.setProperty(PdfDictionaryProperties.ca, PdfString(style));
         }
       } else {
-        (widget[PdfDictionaryProperties.mk]!
-            as PdfDictionary)[PdfDictionaryProperties.ca] = PdfString(style);
+        (widget[PdfDictionaryProperties.mk]! as PdfDictionary)[PdfDictionaryProperties.ca] =
+            PdfString(style);
       }
       WidgetAnnotationHelper.getHelper(checkField._checkBaseHelper.widget!)
           .widgetAppearance!
@@ -787,13 +727,13 @@ class PdfRadioButtonListItem extends PdfCheckFieldBase {
     this.value = value;
     _radioButtonListItemHelper.dictionary!.beginSave =
         _radioButtonListItemHelper.dictionaryBeginSave;
-    WidgetAnnotationHelper.getHelper(_radioButtonListItemHelper.widget!)
-        .beginSave = _radioButtonListItemHelper._widgetSave;
+    WidgetAnnotationHelper.getHelper(_radioButtonListItemHelper.widget!).beginSave =
+        _radioButtonListItemHelper._widgetSave;
     style = PdfCheckBoxStyle.circle;
   }
 
-  PdfRadioButtonListItem._loaded(PdfDictionary dictionary,
-      PdfCrossTable crossTable, PdfRadioButtonListField field) {
+  PdfRadioButtonListItem._loaded(
+      PdfDictionary dictionary, PdfCrossTable crossTable, PdfRadioButtonListField field) {
     _radioButtonListItemHelper = PdfRadioButtonListItemHelper(this);
     _radioButtonListItemHelper.load(dictionary, crossTable);
     _radioButtonListItemHelper._field = field;
@@ -804,10 +744,8 @@ class PdfRadioButtonListItem extends PdfCheckFieldBase {
   ///Gets or sets the value.
   String get value {
     if (_radioButtonListItemHelper.isLoadedField) {
-      _radioButtonListItemHelper._value =
-          _radioButtonListItemHelper.getItemValue(
-              _radioButtonListItemHelper.dictionary!,
-              _radioButtonListItemHelper.crossTable);
+      _radioButtonListItemHelper._value = _radioButtonListItemHelper.getItemValue(
+          _radioButtonListItemHelper.dictionary!, _radioButtonListItemHelper.crossTable);
     }
     return _radioButtonListItemHelper._value!;
   }
@@ -824,27 +762,23 @@ class PdfRadioButtonListItem extends PdfCheckFieldBase {
 
   /// Gets the form of the field.{Read-Only}
   @override
-  PdfForm? get form => (_radioButtonListItemHelper._field != null)
-      ? _radioButtonListItemHelper._field!.form
-      : null;
+  PdfForm? get form =>
+      (_radioButtonListItemHelper._field != null) ? _radioButtonListItemHelper._field!.form : null;
 
   @override
   set style(PdfCheckBoxStyle value) {
     if (_radioButtonListItemHelper.isLoadedField) {
       _radioButtonListItemHelper.assignStyle(value);
       if (PdfFormHelper.getHelper(form!).needAppearances == false) {
-        PdfFieldHelper.getHelper(_radioButtonListItemHelper._field!).changed =
-            true;
-        PdfFieldHelper.getHelper(_radioButtonListItemHelper._field!)
-            .fieldChanged = true;
+        PdfFieldHelper.getHelper(_radioButtonListItemHelper._field!).changed = true;
+        PdfFieldHelper.getHelper(_radioButtonListItemHelper._field!).fieldChanged = true;
       }
     } else {
       if (super.style != value) {
         super.style = value;
         WidgetAnnotationHelper.getHelper(_radioButtonListItemHelper.widget!)
-                .widgetAppearance!
-                .normalCaption =
-            _radioButtonListItemHelper.styleToString(super.style);
+            .widgetAppearance!
+            .normalCaption = _radioButtonListItemHelper.styleToString(super.style);
       }
     }
   }
@@ -864,8 +798,8 @@ class PdfRadioButtonListItemHelper extends PdfCheckFieldBaseHelper {
   String? optionValue;
 
   /// internal method
-  static PdfRadioButtonListItem loaded(PdfDictionary dictionary,
-      PdfCrossTable crossTable, PdfRadioButtonListField field) {
+  static PdfRadioButtonListItem loaded(
+      PdfDictionary dictionary, PdfCrossTable crossTable, PdfRadioButtonListField field) {
     return PdfRadioButtonListItem._loaded(dictionary, crossTable, field);
   }
 
@@ -949,27 +883,24 @@ class PdfRadioButtonListItemHelper extends PdfCheckFieldBaseHelper {
   void _setItemValue(String value) {
     final String str = value;
     if (dictionary!.containsKey(PdfDictionaryProperties.ap)) {
-      PdfDictionary dic = crossTable!
-          .getObject(dictionary![PdfDictionaryProperties.ap])! as PdfDictionary;
+      PdfDictionary dic =
+          crossTable!.getObject(dictionary![PdfDictionaryProperties.ap])! as PdfDictionary;
       if (dic.containsKey(PdfDictionaryProperties.n)) {
-        final PdfReference normal =
-            crossTable!.getReference(dic[PdfDictionaryProperties.n]);
+        final PdfReference normal = crossTable!.getReference(dic[PdfDictionaryProperties.n]);
         dic = crossTable!.getObject(normal)! as PdfDictionary;
         final String? dicValue = getItemValue(dictionary!, crossTable);
         if (dic.containsKey(dicValue)) {
           final PdfReference valRef = crossTable!.getReference(dic[dicValue]);
           dic.remove(base.value);
-          dic.setProperty(
-              str, PdfReferenceHolder.fromReference(valRef, crossTable));
+          dic.setProperty(str, PdfReferenceHolder.fromReference(valRef, crossTable));
         }
       }
     }
     if (str == _field!.selectedValue) {
-      dictionary!
-          .setName(PdfName(PdfDictionaryProperties.usageApplication), str);
+      dictionary!.setName(PdfName(PdfDictionaryProperties.usageApplication), str);
     } else {
-      dictionary!.setName(PdfName(PdfDictionaryProperties.usageApplication),
-          PdfDictionaryProperties.off);
+      dictionary!
+          .setName(PdfName(PdfDictionaryProperties.usageApplication), PdfDictionaryProperties.off);
     }
   }
 
@@ -992,8 +923,8 @@ class PdfRadioButtonListItemHelper extends PdfCheckFieldBaseHelper {
     if ((_field!.selectedIndex >= 0) && (_field!.selectedValue == base.value)) {
       state = PdfCheckFieldState.checked;
     }
-    FieldPainter().drawRadioButton(
-        _field!.page!.graphics, params, styleToString(base.style), state);
+    FieldPainter()
+        .drawRadioButton(_field!.page!.graphics, params, styleToString(base.style), state);
   }
 
   /// internal method
@@ -1008,15 +939,13 @@ class PdfRadioButtonListItemHelper extends PdfCheckFieldBaseHelper {
       bounds = array.toRectangle().rect;
       double? y = 0;
       if ((PdfCrossTable.dereference(array[1])! as PdfNumber).value! < 0) {
-        y = (PdfCrossTable.dereference(array[1])! as PdfNumber).value
-            as double?;
+        y = (PdfCrossTable.dereference(array[1])! as PdfNumber).value as double?;
         if ((PdfCrossTable.dereference(array[1])! as PdfNumber).value! >
             (PdfCrossTable.dereference(array[3])! as PdfNumber).value!) {
           y = y! - bounds.height;
         }
       }
-      bounds = Rect.fromLTWH(
-          bounds.left, y! <= 0 ? bounds.top : y, bounds.width, bounds.height);
+      bounds = Rect.fromLTWH(bounds.left, y! <= 0 ? bounds.top : y, bounds.width, bounds.height);
     } else {
       bounds = Rect.zero;
     }
@@ -1026,8 +955,7 @@ class PdfRadioButtonListItemHelper extends PdfCheckFieldBaseHelper {
   /// internal method
   void drawCheckAppearance() {
     final PaintParams paintParams = PaintParams(
-        bounds: Rect.fromLTWH(
-            0, 0, widget!.bounds.size.width, widget!.bounds.size.height),
+        bounds: Rect.fromLTWH(0, 0, widget!.bounds.size.width, widget!.bounds.size.height),
         backBrush: PdfSolidBrush(base.backColor),
         foreBrush: PdfSolidBrush(base.foreColor),
         borderPen: borderPen,
@@ -1036,19 +964,19 @@ class PdfRadioButtonListItemHelper extends PdfCheckFieldBaseHelper {
         shadowBrush: PdfSolidBrush(base.backColor));
 
     PdfTemplate template = widget!.extendedAppearance!.normal.activate!;
-    FieldPainter().drawRadioButton(template.graphics, paintParams,
-        styleToString(base.style), PdfCheckFieldState.checked);
+    FieldPainter().drawRadioButton(
+        template.graphics, paintParams, styleToString(base.style), PdfCheckFieldState.checked);
 
     template = widget!.extendedAppearance!.normal.off!;
-    FieldPainter().drawRadioButton(template.graphics, paintParams,
-        styleToString(base.style), PdfCheckFieldState.unchecked);
+    FieldPainter().drawRadioButton(
+        template.graphics, paintParams, styleToString(base.style), PdfCheckFieldState.unchecked);
 
     template = widget!.extendedAppearance!.pressed.activate!;
-    FieldPainter().drawRadioButton(template.graphics, paintParams,
-        styleToString(base.style), PdfCheckFieldState.pressedChecked);
+    FieldPainter().drawRadioButton(template.graphics, paintParams, styleToString(base.style),
+        PdfCheckFieldState.pressedChecked);
 
     template = widget!.extendedAppearance!.pressed.off!;
-    FieldPainter().drawRadioButton(template.graphics, paintParams,
-        styleToString(base.style), PdfCheckFieldState.pressedUnchecked);
+    FieldPainter().drawRadioButton(template.graphics, paintParams, styleToString(base.style),
+        PdfCheckFieldState.pressedUnchecked);
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 import '../../../interfaces/pdf_interface.dart';
 import '../../primitives/pdf_stream.dart';
 import '../figures/base/pdf_shape_element.dart';

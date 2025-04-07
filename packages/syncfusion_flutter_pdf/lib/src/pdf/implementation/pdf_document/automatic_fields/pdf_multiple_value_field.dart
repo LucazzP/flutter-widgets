@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../drawing/drawing.dart';
 import '../../graphics/figures/pdf_template.dart';
@@ -14,14 +14,11 @@ abstract class PdfMultipleValueField extends PdfDynamicField {
   PdfMultipleValueField({super.font, super.brush, super.bounds});
 
   // fields
-  final Map<PdfGraphics, PdfTemplateValuePair> _list =
-      <PdfGraphics, PdfTemplateValuePair>{};
+  final Map<PdfGraphics, PdfTemplateValuePair> _list = <PdfGraphics, PdfTemplateValuePair>{};
 
   // implementation
-  void _performDraw(PdfGraphics graphics, PdfPoint? location, double scalingX,
-      double scalingY) {
-    final String? value =
-        PdfAutomaticFieldHelper.getHelper(this).getValue(graphics);
+  void _performDraw(PdfGraphics graphics, PdfPoint? location, double scalingX, double scalingY) {
+    final String? value = PdfAutomaticFieldHelper.getHelper(this).getValue(graphics);
     if (_list.containsKey(graphics)) {
       final PdfTemplateValuePair pair = _list[graphics]!;
       if (pair.value != value) {
@@ -41,19 +38,12 @@ abstract class PdfMultipleValueField extends PdfDynamicField {
       template.graphics!.drawString(value, font,
           pen: pen,
           brush: brush,
-          bounds: Rect.fromLTWH(
-              0,
-              0,
-              PdfAutomaticFieldHelper.getHelper(this).obtainSize().width,
+          bounds: Rect.fromLTWH(0, 0, PdfAutomaticFieldHelper.getHelper(this).obtainSize().width,
               PdfAutomaticFieldHelper.getHelper(this).obtainSize().height),
           format: stringFormat);
-      final Offset drawLocation =
-          Offset(location!.x + bounds.left, location.y + bounds.top);
-      graphics.drawPdfTemplate(
-          template,
-          drawLocation,
-          Size(
-              template.size.width * scalingX, template.size.height * scalingY));
+      final Offset drawLocation = Offset(location!.x + bounds.left, location.y + bounds.top);
+      graphics.drawPdfTemplate(template, drawLocation,
+          Size(template.size.width * scalingX, template.size.height * scalingY));
     }
   }
 }
@@ -62,8 +52,8 @@ abstract class PdfMultipleValueField extends PdfDynamicField {
 /// [PdfMultipleValueField] helper
 class PdfMultipleValueFieldHelper {
   /// internal method
-  static void performDraw(PdfMultipleValueField field, PdfGraphics graphics,
-      PdfPoint? location, double scalingX, double scalingY) {
+  static void performDraw(PdfMultipleValueField field, PdfGraphics graphics, PdfPoint? location,
+      double scalingX, double scalingY) {
     field._performDraw(graphics, location, scalingX, scalingY);
   }
 }

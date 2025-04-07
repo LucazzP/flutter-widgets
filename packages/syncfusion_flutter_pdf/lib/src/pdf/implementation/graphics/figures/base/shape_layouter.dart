@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../../drawing/drawing.dart';
 import '../../../pages/pdf_page.dart';
@@ -41,8 +41,7 @@ class ShapeLayouter extends ElementLayouter {
       currentBounds = PdfRectangle.fromRect(returnedValue['bounds']);
       EndPageLayoutArgs? endArgs;
       if (!cancel) {
-        pageResult = _layoutOnPage(
-            currentPage!, currentBounds, shapeLayoutBounds!, param);
+        pageResult = _layoutOnPage(currentPage!, currentBounds, shapeLayoutBounds!, param);
         endArgs = _raiseEndPageLayout(pageResult);
         cancel = endArgs != null && endArgs.cancel;
       }
@@ -60,12 +59,10 @@ class ShapeLayouter extends ElementLayouter {
     return result;
   }
 
-  Map<String, dynamic> _raiseBeforePageLayout(
-      PdfPage? currentPage, Rect currentBounds) {
+  Map<String, dynamic> _raiseBeforePageLayout(PdfPage? currentPage, Rect currentBounds) {
     bool cancel = false;
     if (PdfLayoutElementHelper.getHelper(element!).raiseBeginPageLayout) {
-      final BeginPageLayoutArgs args =
-          BeginPageLayoutArgs(currentBounds, currentPage!);
+      final BeginPageLayoutArgs args = BeginPageLayoutArgs(currentBounds, currentPage!);
       PdfLayoutElementHelper.getHelper(element!).onBeginPageLayout(args);
       cancel = args.cancel;
       currentBounds = args.bounds;
@@ -73,89 +70,68 @@ class ShapeLayouter extends ElementLayouter {
     return <String, dynamic>{'cancel': cancel, 'bounds': currentBounds};
   }
 
-  _ShapeLayoutResult _layoutOnPage(
-      PdfPage currentPage,
-      PdfRectangle currentBounds,
-      PdfRectangle shapeLayoutBounds,
-      PdfLayoutParams param) {
+  _ShapeLayoutResult _layoutOnPage(PdfPage currentPage, PdfRectangle currentBounds,
+      PdfRectangle shapeLayoutBounds, PdfLayoutParams param) {
     final _ShapeLayoutResult result = _ShapeLayoutResult();
-    currentBounds = _checkCorrectCurrentBounds(
-        currentPage, currentBounds, shapeLayoutBounds, param);
+    currentBounds =
+        _checkCorrectCurrentBounds(currentPage, currentBounds, shapeLayoutBounds, param);
     final bool fitToPage = _fitsToBounds(currentBounds, shapeLayoutBounds);
-    final bool canDraw =
-        !(param.format!.breakType == PdfLayoutBreakType.fitElement &&
-            !fitToPage &&
-            currentPage == param.page);
+    final bool canDraw = !(param.format!.breakType == PdfLayoutBreakType.fitElement &&
+        !fitToPage &&
+        currentPage == param.page);
     bool shapeFinished = false;
     if (canDraw) {
-      final PdfRectangle drawRectangle =
-          _getDrawBounds(currentBounds, shapeLayoutBounds);
+      final PdfRectangle drawRectangle = _getDrawBounds(currentBounds, shapeLayoutBounds);
       _drawShape(currentPage.graphics, currentBounds.rect, drawRectangle);
-      result._bounds =
-          _getPageResultBounds(currentBounds, shapeLayoutBounds).rect;
-      shapeFinished =
-          currentBounds.height.toInt() >= shapeLayoutBounds.height.toInt();
+      result._bounds = _getPageResultBounds(currentBounds, shapeLayoutBounds).rect;
+      shapeFinished = currentBounds.height.toInt() >= shapeLayoutBounds.height.toInt();
     }
-    result._end =
-        shapeFinished || param.format!.layoutType == PdfLayoutType.onePage;
+    result._end = shapeFinished || param.format!.layoutType == PdfLayoutType.onePage;
     result._page = currentPage;
     return result;
   }
 
-  PdfRectangle _checkCorrectCurrentBounds(
-      PdfPage currentPage,
-      PdfRectangle currentBounds,
-      PdfRectangle shapeLayoutBounds,
-      PdfLayoutParams param) {
+  PdfRectangle _checkCorrectCurrentBounds(PdfPage currentPage, PdfRectangle currentBounds,
+      PdfRectangle shapeLayoutBounds, PdfLayoutParams param) {
     final Size pageSize = currentPage.graphics.clientSize;
-    currentBounds.width = (currentBounds.width > 0)
-        ? currentBounds.width
-        : pageSize.width - currentBounds.x;
-    currentBounds.height = (currentBounds.height > 0)
-        ? currentBounds.height
-        : pageSize.height - currentBounds.y;
+    currentBounds.width =
+        (currentBounds.width > 0) ? currentBounds.width : pageSize.width - currentBounds.x;
+    currentBounds.height =
+        (currentBounds.height > 0) ? currentBounds.height : pageSize.height - currentBounds.y;
     return currentBounds;
   }
 
-  bool _fitsToBounds(
-      PdfRectangle currentBounds, PdfRectangle shapeLayoutBounds) {
+  bool _fitsToBounds(PdfRectangle currentBounds, PdfRectangle shapeLayoutBounds) {
     final bool fits = shapeLayoutBounds.height <= currentBounds.height;
     return fits;
   }
 
-  PdfRectangle _getDrawBounds(
-      PdfRectangle currentBounds, PdfRectangle shapeLayoutBounds) {
-    final PdfRectangle result = PdfRectangle(currentBounds.x, currentBounds.y,
-        currentBounds.width, currentBounds.height);
+  PdfRectangle _getDrawBounds(PdfRectangle currentBounds, PdfRectangle shapeLayoutBounds) {
+    final PdfRectangle result =
+        PdfRectangle(currentBounds.x, currentBounds.y, currentBounds.width, currentBounds.height);
     result.y -= shapeLayoutBounds.y;
     result.height += shapeLayoutBounds.y;
     return result;
   }
 
-  void _drawShape(
-      PdfGraphics g, Rect currentBounds, PdfRectangle drawRectangle) {
+  void _drawShape(PdfGraphics g, Rect currentBounds, PdfRectangle drawRectangle) {
     final PdfGraphicsState gState = g.save();
     try {
       g.setClip(bounds: currentBounds);
-      element!.draw(
-          graphics: g,
-          bounds: Rect.fromLTWH(drawRectangle.x, drawRectangle.y, 0, 0));
+      element!.draw(graphics: g, bounds: Rect.fromLTWH(drawRectangle.x, drawRectangle.y, 0, 0));
     } finally {
       g.restore(gState);
     }
   }
 
-  PdfRectangle _getPageResultBounds(
-      PdfRectangle currentBounds, PdfRectangle shapeLayoutBounds) {
+  PdfRectangle _getPageResultBounds(PdfRectangle currentBounds, PdfRectangle shapeLayoutBounds) {
     final PdfRectangle result = currentBounds;
-    result.height = (result.height > shapeLayoutBounds.height)
-        ? shapeLayoutBounds.height
-        : result.height;
+    result.height =
+        (result.height > shapeLayoutBounds.height) ? shapeLayoutBounds.height : result.height;
     return result;
   }
 
-  PdfRectangle _getNextShapeBounds(
-      PdfRectangle shapeLayoutBounds, _ShapeLayoutResult pageResult) {
+  PdfRectangle _getNextShapeBounds(PdfRectangle shapeLayoutBounds, _ShapeLayoutResult pageResult) {
     shapeLayoutBounds.y += pageResult._bounds!.height;
     shapeLayoutBounds.height -= pageResult._bounds!.height;
     return shapeLayoutBounds;

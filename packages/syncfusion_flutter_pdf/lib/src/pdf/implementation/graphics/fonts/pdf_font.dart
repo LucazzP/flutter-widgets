@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../../interfaces/pdf_interface.dart';
 import 'enums.dart';
@@ -128,8 +128,8 @@ abstract class PdfFont implements IPdfWrapper {
   Size measureString(String text, {Size? layoutArea, PdfStringFormat? format}) {
     layoutArea ??= Size.zero;
     final PdfStringLayouter layouter = PdfStringLayouter();
-    final PdfStringLayoutResult result = layouter.layout(text, this, format,
-        width: layoutArea.width, height: layoutArea.height);
+    final PdfStringLayoutResult result =
+        layouter.layout(text, this, format, width: layoutArea.width, height: layoutArea.height);
     return result.size.size;
   }
 
@@ -139,8 +139,7 @@ abstract class PdfFont implements IPdfWrapper {
   double _getLineWidth(String line, PdfStringFormat? format);
 
   /// Applies settings to the default line width.
-  double _applyFormatSettings(
-      String line, PdfStringFormat? format, double width) {
+  double _applyFormatSettings(String line, PdfStringFormat? format, double width) {
     double realWidth = width;
     if (format != null && width > 0) {
       if (format.characterSpacing != 0) {
@@ -210,18 +209,15 @@ class PdfFontHelper {
 
   /// internal field
   //ignore:unused_element
-  bool get isUnderline =>
-      fontStyle & getPdfFontStyle(PdfFontStyle.underline) > 0;
+  bool get isUnderline => fontStyle & getPdfFontStyle(PdfFontStyle.underline) > 0;
 
   /// internal field
   //ignore:unused_element
-  bool get isStrikeout =>
-      fontStyle & getPdfFontStyle(PdfFontStyle.strikethrough) > 0;
+  bool get isStrikeout => fontStyle & getPdfFontStyle(PdfFontStyle.strikethrough) > 0;
 
   /// Initializes a new instance of the [PdfFont] class
   /// with font size and style.
-  void initialize(double size,
-      {PdfFontStyle? style, List<PdfFontStyle>? multiStyle}) {
+  void initialize(double size, {PdfFontStyle? style, List<PdfFontStyle>? multiStyle}) {
     setSize(size);
     setStyle(style, multiStyle);
   }
@@ -277,11 +273,9 @@ class PdfFontHelper {
   }
 
   /// internal method
-  static double getLineWidth(
-      PdfFont font, String line, PdfStringFormat? format) {
+  static double getLineWidth(PdfFont font, String line, PdfStringFormat? format) {
     if (font is PdfCjkStandardFont) {
-      return PdfCjkStandardFontHelper.getHelper(font)
-          .getLineWidth(line, format);
+      return PdfCjkStandardFontHelper.getHelper(font).getLineWidth(line, format);
     } else if (font is PdfStandardFont) {
       return PdfStandardFontHelper.getHelper(font).getLineWidth(line, format);
     } else if (font is PdfTrueTypeFont) {

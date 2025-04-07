@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../interfaces/pdf_interface.dart';
 import '../annotations/enum.dart';
@@ -104,8 +104,7 @@ class PdfListBoxField extends PdfListField {
   /// Otherwise only the first index in the collection will be selected.
   List<int> get selectedIndexes => _helper.selectedIndexes;
   set selectedIndexes(List<int> value) {
-    _helper.selectedIndexes =
-        multiSelect || value.isEmpty ? value : <int>[value[0]];
+    _helper.selectedIndexes = multiSelect || value.isEmpty ? value : <int>[value[0]];
   }
 
   /// Gets or sets the selected values in the list.
@@ -114,8 +113,7 @@ class PdfListBoxField extends PdfListField {
   /// Otherwise only the first value in the collection will be selected.
   List<String> get selectedValues => _helper.selectedValues;
   set selectedValues(List<String> value) {
-    _helper.selectedValues =
-        multiSelect || value.isEmpty ? value : <String>[value[0]];
+    _helper.selectedValues = multiSelect || value.isEmpty ? value : <String>[value[0]];
   }
 
   /// Gets the selected items in the list.
@@ -140,8 +138,7 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
   void drawAppearance(PdfTemplate template) {
     super.drawAppearance(template);
     final PaintParams params = PaintParams(
-        bounds: Rect.fromLTWH(
-            0, 0, listBoxField.bounds.width, listBoxField.bounds.height),
+        bounds: Rect.fromLTWH(0, 0, listBoxField.bounds.width, listBoxField.bounds.height),
         backBrush: backBrush,
         foreBrush: foreBrush,
         borderPen: borderPen,
@@ -151,20 +148,17 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
     PdfFont font;
     if (listBoxField.font == null) {
       if (PdfPageHelper.getHelper(listBoxField.page!).document != null &&
-          PdfDocumentHelper.getHelper(
-                      PdfPageHelper.getHelper(listBoxField.page!).document!)
+          PdfDocumentHelper.getHelper(PdfPageHelper.getHelper(listBoxField.page!).document!)
                   .conformanceLevel !=
               PdfConformanceLevel.none) {
-        throw ArgumentError(
-            'Font data is not embedded to the conformance PDF.');
+        throw ArgumentError('Font data is not embedded to the conformance PDF.');
       }
-      font = PdfStandardFont(
-          PdfFontFamily.timesRoman, getFontHeight(PdfFontFamily.timesRoman));
+      font = PdfStandardFont(PdfFontFamily.timesRoman, getFontHeight(PdfFontFamily.timesRoman));
     } else {
       font = listBoxField.font!;
     }
-    FieldPainter().drawListBox(template.graphics!, params, listBoxField.items,
-        selectedIndexes, font, format);
+    FieldPainter()
+        .drawListBox(template.graphics!, params, listBoxField.items, selectedIndexes, font, format);
   }
 
   /// internal method
@@ -173,14 +167,13 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
     super.draw();
     if (!isLoadedField) {
       if (PdfAnnotationHelper.getHelper(widget!).appearance != null) {
-        listBoxField.page!.graphics.drawPdfTemplate(
-            widget!.appearance.normal, listBoxField.bounds.topLeft);
+        listBoxField.page!.graphics
+            .drawPdfTemplate(widget!.appearance.normal, listBoxField.bounds.topLeft);
       } else {
-        final Rect rect = Rect.fromLTWH(
-            0, 0, listBoxField.bounds.width, listBoxField.bounds.height);
+        final Rect rect =
+            Rect.fromLTWH(0, 0, listBoxField.bounds.width, listBoxField.bounds.height);
         final PdfFont font = listBoxField.font ??
-            PdfStandardFont(PdfFontFamily.helvetica,
-                getFontHeight(PdfFontFamily.helvetica));
+            PdfStandardFont(PdfFontFamily.helvetica, getFontHeight(PdfFontFamily.helvetica));
         final PaintParams parameters = PaintParams(
             bounds: rect,
             backBrush: backBrush,
@@ -190,8 +183,8 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
             borderWidth: listBoxField.borderWidth,
             shadowBrush: shadowBrush);
         final PdfTemplate template = PdfTemplate(rect.width, rect.height);
-        FieldPainter().drawListBox(template.graphics!, parameters,
-            listBoxField.items, listBoxField.selectedIndexes, font, format);
+        FieldPainter().drawListBox(template.graphics!, parameters, listBoxField.items,
+            listBoxField.selectedIndexes, font, format);
         listBoxField.page!.graphics
             .drawPdfTemplate(template, listBoxField.bounds.topLeft, rect.size);
       }
@@ -199,8 +192,7 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
       final PdfTemplate template =
           PdfTemplate(listBoxField.bounds.width, listBoxField.bounds.height);
       _drawListBox(template.graphics!);
-      listBoxField.page!.graphics
-          .drawPdfTemplate(template, listBoxField.bounds.topLeft);
+      listBoxField.page!.graphics.drawPdfTemplate(template, listBoxField.bounds.topLeft);
     }
   }
 
@@ -214,29 +206,22 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
   void _applyAppearance(PdfDictionary widget) {
     if (widget.containsKey(PdfDictionaryProperties.ap) &&
         !PdfFormHelper.getHelper(listBoxField.form!).needAppearances!) {
-      final IPdfPrimitive? appearance =
-          crossTable!.getObject(widget[PdfDictionaryProperties.ap]);
+      final IPdfPrimitive? appearance = crossTable!.getObject(widget[PdfDictionaryProperties.ap]);
       if (appearance != null &&
           appearance is PdfDictionary &&
           appearance.containsKey(PdfDictionaryProperties.n)) {
         final PdfTemplate template =
             PdfTemplate(listBoxField.bounds.width, listBoxField.bounds.height);
         PdfTemplateHelper.getHelper(template).writeTransformation = false;
-        beginMarkupSequence(PdfGraphicsHelper.getHelper(template.graphics!)
-            .streamWriter!
-            .stream!);
+        beginMarkupSequence(PdfGraphicsHelper.getHelper(template.graphics!).streamWriter!.stream!);
         PdfGraphicsHelper.getHelper(template.graphics!).initializeCoordinates();
         _drawListBox(template.graphics!);
-        endMarkupSequence(PdfGraphicsHelper.getHelper(template.graphics!)
-            .streamWriter!
-            .stream!);
+        endMarkupSequence(PdfGraphicsHelper.getHelper(template.graphics!).streamWriter!.stream!);
         appearance.remove(PdfDictionaryProperties.n);
-        appearance.setProperty(
-            PdfDictionaryProperties.n, PdfReferenceHolder(template));
+        appearance.setProperty(PdfDictionaryProperties.n, PdfReferenceHolder(template));
         widget.setProperty(PdfDictionaryProperties.ap, appearance);
       }
-    } else if (PdfFormHelper.getHelper(listBoxField.form!)
-            .setAppearanceDictionary &&
+    } else if (PdfFormHelper.getHelper(listBoxField.form!).setAppearanceDictionary &&
         !PdfFormHelper.getHelper(listBoxField.form!).needAppearances!) {
       final PdfDictionary dic = PdfDictionary();
       final PdfTemplate template =
@@ -249,8 +234,7 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
 
   void _drawListBox(PdfGraphics graphics) {
     final GraphicsProperties gp = GraphicsProperties(listBoxField);
-    gp.bounds = Rect.fromLTWH(
-        0, 0, listBoxField.bounds.width, listBoxField.bounds.height);
+    gp.bounds = Rect.fromLTWH(0, 0, listBoxField.bounds.width, listBoxField.bounds.height);
     final PaintParams prms = PaintParams(
         bounds: gp.bounds,
         backBrush: gp.backBrush,
@@ -263,8 +247,8 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
         !PdfFormHelper.getHelper(listBoxField.form!).flatten) {
       prms.backBrush = null;
     }
-    FieldPainter().drawListBox(graphics, prms, listBoxField.items,
-        selectedIndexes, gp.font!, gp.stringFormat);
+    FieldPainter().drawListBox(
+        graphics, prms, listBoxField.items, selectedIndexes, gp.font!, gp.stringFormat);
   }
 
   /// internal method
@@ -275,8 +259,7 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
       final PdfFont font = PdfStandardFont(family, 12);
       double max = font.measureString(listBoxField.items[0].text).width;
       for (int i = 1; i < listBoxField.items.count; ++i) {
-        final double temp =
-            font.measureString(listBoxField.items[i].text).width;
+        final double temp = font.measureString(listBoxField.items[i].text).width;
         max = (max > temp) ? max : temp;
       }
       s = (12 * (listBoxField.bounds.size.width - 4 * borderWidth)) / max;
@@ -286,8 +269,7 @@ class PdfListBoxFieldHelper extends PdfListFieldHelper {
   }
 
   /// internal method
-  static PdfListBoxField loadListBox(
-      PdfDictionary dictionary, PdfCrossTable crossTable) {
+  static PdfListBoxField loadListBox(PdfDictionary dictionary, PdfCrossTable crossTable) {
     return PdfListBoxField._load(dictionary, crossTable);
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../interfaces/pdf_interface.dart';
 import '../graphics/brushes/pdf_solid_brush.dart';
@@ -71,8 +71,7 @@ class PdfTextWebLink extends PdfAnnotation {
     this.url = url;
   }
 
-  PdfTextWebLink._(
-      PdfDictionary dictionary, PdfCrossTable crossTable, String? annotText) {
+  PdfTextWebLink._(PdfDictionary dictionary, PdfCrossTable crossTable, String? annotText) {
     _helper = PdfTextWebLinkHelper._(this, dictionary, crossTable);
     text = annotText != null && annotText.isNotEmpty ? annotText : '';
   }
@@ -216,12 +215,10 @@ class PdfTextWebLink extends PdfAnnotation {
     }
     _url = value;
     if (PdfAnnotationHelper.getHelper(this).isLoadedAnnotation) {
-      final PdfDictionary tempDictionary =
-          PdfAnnotationHelper.getHelper(this).dictionary!;
+      final PdfDictionary tempDictionary = PdfAnnotationHelper.getHelper(this).dictionary!;
       if (tempDictionary.containsKey(PdfDictionaryProperties.a)) {
         final PdfDictionary? dictionary =
-            PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a])
-                as PdfDictionary?;
+            PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a]) as PdfDictionary?;
         if (dictionary != null) {
           dictionary.setString(PdfDictionaryProperties.uri, _url);
         }
@@ -231,8 +228,8 @@ class PdfTextWebLink extends PdfAnnotation {
   }
 
   // implementation
-  void _initializeWebLink(String? annotText, PdfFont? font, PdfPen? pen,
-      PdfBrush? brush, PdfStringFormat? format) {
+  void _initializeWebLink(
+      String? annotText, PdfFont? font, PdfPen? pen, PdfBrush? brush, PdfStringFormat? format) {
     text = annotText != null && annotText.isNotEmpty ? annotText : '';
     if (font != null) {
       this.font = font;
@@ -271,11 +268,9 @@ class PdfTextWebLink extends PdfAnnotation {
   /// ```
   void draw(PdfPage page, Offset location) {
     if (!PdfAnnotationHelper.getHelper(this).isLoadedAnnotation) {
-      final PdfFont pdfFont =
-          font != null ? font! : PdfStandardFont(PdfFontFamily.helvetica, 8);
+      final PdfFont pdfFont = font != null ? font! : PdfStandardFont(PdfFontFamily.helvetica, 8);
       final Size textSize = pdfFont.measureString(text);
-      final Rect rect = Rect.fromLTWH(
-          location.dx, location.dy, textSize.width, textSize.height);
+      final Rect rect = Rect.fromLTWH(location.dx, location.dy, textSize.width, textSize.height);
       _uriAnnotation = PdfUriAnnotation(bounds: rect, uri: url);
       _uriAnnotation.border = PdfAnnotationBorder(0, 0, 0);
       page.annotations.add(_uriAnnotation);
@@ -290,17 +285,13 @@ class PdfTextWebLink extends PdfAnnotation {
 
   String? _obtainUrl() {
     String? url = '';
-    final PdfDictionary tempDictionary =
-        PdfAnnotationHelper.getHelper(this).dictionary!;
+    final PdfDictionary tempDictionary = PdfAnnotationHelper.getHelper(this).dictionary!;
     if (tempDictionary.containsKey(PdfDictionaryProperties.a)) {
       final PdfDictionary? dictionary =
-          PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a])
-              as PdfDictionary?;
-      if (dictionary != null &&
-          dictionary.containsKey(PdfDictionaryProperties.uri)) {
+          PdfCrossTable.dereference(tempDictionary[PdfDictionaryProperties.a]) as PdfDictionary?;
+      if (dictionary != null && dictionary.containsKey(PdfDictionaryProperties.uri)) {
         final PdfString? uriText =
-            PdfCrossTable.dereference(dictionary[PdfDictionaryProperties.uri])
-                as PdfString?;
+            PdfCrossTable.dereference(dictionary[PdfDictionaryProperties.uri]) as PdfString?;
         if (uriText != null) {
           url = uriText.value;
         }
@@ -318,8 +309,7 @@ class PdfTextWebLinkHelper extends PdfAnnotationHelper {
   }
 
   /// internal constructor
-  PdfTextWebLinkHelper._(
-      this.webLinkHelper, PdfDictionary dictionary, PdfCrossTable crossTable)
+  PdfTextWebLinkHelper._(this.webLinkHelper, PdfDictionary dictionary, PdfCrossTable crossTable)
       : super(webLinkHelper) {
     initializeExistingAnnotation(dictionary, crossTable);
   }
@@ -332,8 +322,7 @@ class PdfTextWebLinkHelper extends PdfAnnotationHelper {
   IPdfPrimitive? element;
 
   /// internal method
-  static PdfTextWebLink load(
-      PdfDictionary dictionary, PdfCrossTable crossTable, String text) {
+  static PdfTextWebLink load(PdfDictionary dictionary, PdfCrossTable crossTable, String text) {
     return PdfTextWebLink._(dictionary, crossTable, text);
   }
 

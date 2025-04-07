@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../drawing/drawing.dart';
 import '../graphics/pdf_margins.dart';
@@ -63,8 +63,7 @@ class PdfPageSettings {
   /// ```
   PdfMargins get margins => _margins;
   set margins(PdfMargins value) {
-    if (!PdfMarginsHelper.getHelper(_margins).equals(value) &&
-        !_helper.isPageAdded) {
+    if (!PdfMarginsHelper.getHelper(_margins).equals(value) && !_helper.isPageAdded) {
       _margins = value;
     }
   }
@@ -248,8 +247,7 @@ class PdfPageSettings {
   void setMargins(double all, [double? top, double? right, double? bottom]) {
     if (!_helper.isPageAdded) {
       if (top != null && right != null && bottom != null) {
-        PdfMarginsHelper.getHelper(margins)
-            .setMarginsAll(all, top, right, bottom);
+        PdfMarginsHelper.getHelper(margins).setMarginsAll(all, top, right, bottom);
       } else if (top != null && right == null) {
         PdfMarginsHelper.getHelper(margins).setMarginsLT(all, top);
       } else if (top == null && bottom != null) {

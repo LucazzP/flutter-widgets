@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../graphics/brushes/pdf_solid_brush.dart';
 import '../graphics/pdf_pen.dart';

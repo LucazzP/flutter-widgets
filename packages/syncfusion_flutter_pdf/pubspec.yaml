@@ -7,16 +7,11 @@ environment:
   sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
   intl: '>=0.18.0 <0.21.0'
   xml: ">=6.5.0 <7.0.0"
-  syncfusion_flutter_core:
-    path: ../syncfusion_flutter_core
-      
-      
   crypto: ">=3.0.0 <4.0.0"
   convert: ">=3.0.0 <4.0.0"
-  http: ^1.2.1
+  pure_dart_ui: ">=0.1.0 <0.2.0"
+  http: ">=1.2.1 <2.0.0"
 
 

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../graphics/fonts/enums.dart';
 import 'text_glyph.dart';
@@ -6,8 +6,8 @@ import 'text_glyph.dart';
 /// Details of a word present in the line.
 class TextWord {
   //constructor
-  TextWord._(this.text, this.fontName, this.fontStyle, List<TextGlyph> glyphs,
-      this.bounds, this.fontSize) {
+  TextWord._(this.text, this.fontName, this.fontStyle, List<TextGlyph> glyphs, this.bounds,
+      this.fontSize) {
     _glyphs = glyphs;
   }
 
@@ -37,8 +37,8 @@ class TextWord {
 /// [TextWord] helper
 class TextWordHelper {
   /// internal method
-  static TextWord initialize(String text, String fontName,
-      List<PdfFontStyle> fontStyle, List<TextGlyph> glyphs,
+  static TextWord initialize(
+      String text, String fontName, List<PdfFontStyle> fontStyle, List<TextGlyph> glyphs,
       [Rect bounds = Rect.zero, double fontSize = 0]) {
     return TextWord._(text, fontName, fontStyle, glyphs, bounds, fontSize);
   }

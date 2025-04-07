@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../drawing/drawing.dart';
 import '../../graphics/brushes/pdf_solid_brush.dart';
@@ -21,39 +21,26 @@ abstract class PdfStaticField extends PdfAutomaticField {
   final List<PdfGraphics> _graphicsList = <PdfGraphics>[];
 
   // implementation
-  void _performDraw(PdfGraphics graphics, PdfPoint? location, double scalingX,
-      double scalingY) {
-    final String? value =
-        PdfAutomaticFieldHelper.getHelper(this).getValue(graphics);
-    final Offset drawLocation =
-        Offset(location!.x + bounds.left, location.y + bounds.top);
+  void _performDraw(PdfGraphics graphics, PdfPoint? location, double scalingX, double scalingY) {
+    final String? value = PdfAutomaticFieldHelper.getHelper(this).getValue(graphics);
+    final Offset drawLocation = Offset(location!.x + bounds.left, location.y + bounds.top);
 
     if (_template == null) {
-      _template = PdfTemplate(
-          PdfAutomaticFieldHelper.getHelper(this).obtainSize().width,
+      _template = PdfTemplate(PdfAutomaticFieldHelper.getHelper(this).obtainSize().width,
           PdfAutomaticFieldHelper.getHelper(this).obtainSize().height);
       _template!.graphics!.drawString(value!, font,
           pen: pen,
           brush: brush,
-          bounds: Rect.fromLTWH(
-              0,
-              0,
-              PdfAutomaticFieldHelper.getHelper(this).obtainSize().width,
+          bounds: Rect.fromLTWH(0, 0, PdfAutomaticFieldHelper.getHelper(this).obtainSize().width,
               PdfAutomaticFieldHelper.getHelper(this).obtainSize().height),
           format: stringFormat);
-      graphics.drawPdfTemplate(
-          _template!,
-          drawLocation,
-          Size(_template!.size.width * scalingX,
-              _template!.size.height * scalingY));
+      graphics.drawPdfTemplate(_template!, drawLocation,
+          Size(_template!.size.width * scalingX, _template!.size.height * scalingY));
       _graphicsList.add(graphics);
     } else {
       if (!_graphicsList.contains(graphics)) {
-        graphics.drawPdfTemplate(
-            _template!,
-            drawLocation,
-            Size(_template!.size.width * scalingX,
-                _template!.size.height * scalingY));
+        graphics.drawPdfTemplate(_template!, drawLocation,
+            Size(_template!.size.width * scalingX, _template!.size.height * scalingY));
         _graphicsList.add(graphics);
       }
     }
@@ -64,8 +51,8 @@ abstract class PdfStaticField extends PdfAutomaticField {
 /// [PdfStaticField] helper
 class PdfStaticFieldHelper {
   /// internal method
-  static void performDraw(PdfStaticField staticField, PdfGraphics graphics,
-      PdfPoint? location, double scalingX, double scalingY) {
+  static void performDraw(PdfStaticField staticField, PdfGraphics graphics, PdfPoint? location,
+      double scalingX, double scalingY) {
     staticField._performDraw(graphics, location, scalingX, scalingY);
   }
 }

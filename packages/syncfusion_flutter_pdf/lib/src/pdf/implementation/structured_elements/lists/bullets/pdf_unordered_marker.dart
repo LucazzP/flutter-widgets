@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../../drawing/drawing.dart';
 import '../../../graphics/brushes/pdf_solid_brush.dart';
@@ -177,14 +177,12 @@ class PdfUnorderedMarkerHelper extends PdfMarkerHelper {
   late PdfFont unicodeFont;
 
   /// Draws the specified graphics.
-  void draw(PdfGraphics? graphics, Offset point, PdfBrush? brush, PdfPen? pen,
-      [PdfList? curList]) {
+  void draw(PdfGraphics? graphics, Offset point, PdfBrush? brush, PdfPen? pen, [PdfList? curList]) {
     final PdfTemplate templete = PdfTemplate(size!.width, size!.height);
     Offset offset = Offset(point.dx, point.dy);
     switch (base.style) {
       case PdfUnorderedMarkerStyle.customTemplate:
-        templete.graphics!
-            .drawPdfTemplate(base._template!, Offset.zero, size!.size);
+        templete.graphics!.drawPdfTemplate(base._template!, Offset.zero, size!.size);
         offset = Offset(
             point.dx,
             point.dy +
@@ -206,9 +204,7 @@ class PdfUnorderedMarkerHelper extends PdfMarkerHelper {
           location.y = location.y + pen.width;
         }
         templete.graphics!.drawString(getStyledText(), unicodeFont,
-            pen: pen,
-            brush: brush,
-            bounds: Rect.fromLTWH(location.x, location.y, 0, 0));
+            pen: pen, brush: brush, bounds: Rect.fromLTWH(location.x, location.y, 0, 0));
         break;
     }
     graphics!.drawPdfTemplate(templete, offset);

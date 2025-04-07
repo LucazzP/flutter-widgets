@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import 'package:intl/intl.dart' as bidi;
 
@@ -302,8 +302,8 @@ class TextElement {
   }
 
   MatrixHelper _getTextRenderingMatrix() {
-    return MatrixHelper(fontSize * (textHorizontalScaling! / 100), 0, 0,
-            -fontSize, 0, fontSize + rise!) *
+    return MatrixHelper(
+            fontSize * (textHorizontalScaling! / 100), 0, 0, -fontSize, 0, fontSize + rise!) *
         textLineMatrix! *
         currentTransformationMatrix!;
   }
@@ -343,13 +343,11 @@ class TextElement {
         glyph.charSpacing = characterSpacing!;
         if (structure.isStandardFont) {
           final PdfStandardFont font = structure.font! as PdfStandardFont;
-          glyph.width = PdfStandardFontHelper.getHelper(font)
-                  .getCharWidthInternal(character) *
+          glyph.width = PdfStandardFontHelper.getHelper(font).getCharWidthInternal(character) *
               PdfFontHelper.characterSizeMultiplier;
         } else if (structure.isStandardCJKFont) {
           final PdfCjkStandardFont font = structure.font! as PdfCjkStandardFont;
-          glyph.width = PdfCjkStandardFontHelper.getHelper(font)
-                  .getCharWidthInternal(character) *
+          glyph.width = PdfCjkStandardFontHelper.getHelper(font).getCharWidthInternal(character) *
               PdfFontHelper.characterSizeMultiplier;
         }
         final MatrixHelper identity = MatrixHelper.identity.clone();
@@ -363,8 +361,7 @@ class TextElement {
         double? tempFontSize = 0;
         if (glyph.transformMatrix.m11 > 0) {
           tempFontSize = glyph.transformMatrix.m11;
-        } else if (glyph.transformMatrix.m12 != 0 &&
-            glyph.transformMatrix.m21 != 0) {
+        } else if (glyph.transformMatrix.m12 != 0 && glyph.transformMatrix.m21 != 0) {
           if (glyph.transformMatrix.m12 < 0) {
             tempFontSize = -glyph.transformMatrix.m12;
           } else {
@@ -378,9 +375,7 @@ class TextElement {
         }
         glyph.boundingRect = Rect.fromLTWH(
             (matrix.offsetX / 1.3333333333333333) / zoomFactor!,
-            ((matrix.offsetY - (tempFontSize * zoomFactor!)) /
-                    1.3333333333333333) /
-                zoomFactor!,
+            ((matrix.offsetY - (tempFontSize * zoomFactor!)) / 1.3333333333333333) / zoomFactor!,
             glyph.width * tempFontSize,
             tempFontSize);
         textElementGlyphList.add(glyph);
@@ -392,8 +387,7 @@ class TextElement {
       txtMatrix = textLineMatrix;
     } else {
       int letterCount = 0;
-      if ((retrievedCharCodes != null &&
-              text.length != retrievedCharCodes.length) ||
+      if ((retrievedCharCodes != null && text.length != retrievedCharCodes.length) ||
           !bidi.Bidi.hasAnyRtl(text)) {
         retrievedCharCodes = null;
       }
@@ -408,12 +402,10 @@ class TextElement {
         letterCount += 1;
         final int charCode = letter.codeUnitAt(0);
         isTextGlyphAdded = false;
-        if (charCode.toUnsigned(8) > 126 &&
-            fontEncoding == 'MacRomanEncoding' &&
-            !isEmbeddedFont) {
+        if (charCode.toUnsigned(8) > 126 && fontEncoding == 'MacRomanEncoding' && !isEmbeddedFont) {
           isTextGlyphAdded = true;
-          final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-              letter, g!, txtMatrix, retrievedCharCode);
+          final MatrixHelper? tempMatrix =
+              drawSystemFontGlyphShape(letter, g!, txtMatrix, retrievedCharCode);
           if (tempMatrix != null) {
             txtMatrix = tempMatrix;
           } else {
@@ -422,35 +414,31 @@ class TextElement {
         } else {
           if (renderingMode == 1) {
             isTextGlyphAdded = true;
-            final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-                letter, g!, txtMatrix, retrievedCharCode);
+            final MatrixHelper? tempMatrix =
+                drawSystemFontGlyphShape(letter, g!, txtMatrix, retrievedCharCode);
             if (tempMatrix != null) {
               txtMatrix = tempMatrix;
             } else {
               isTextGlyphAdded = false;
             }
-          } else if (reverseMapTable!.isNotEmpty &&
-              reverseMapTable!.containsKey(letter)) {
+          } else if (reverseMapTable!.isNotEmpty && reverseMapTable!.containsKey(letter)) {
             final int tempCharCode = reverseMapTable![letter]!.toInt();
             if (fontGlyphWidths != null) {
-              currentGlyphWidth = (fontGlyphWidths!
-                          .containsKey(retrievedCharCode ?? tempCharCode)
+              currentGlyphWidth = (fontGlyphWidths!.containsKey(retrievedCharCode ?? tempCharCode)
                       ? fontGlyphWidths![retrievedCharCode ?? tempCharCode]
                       : defaultGlyphWidth)! *
                   charSizeMultiplier;
             } else {
               currentGlyphWidth = defaultGlyphWidth! * charSizeMultiplier;
             }
-            txtMatrix =
-                drawGlyphs(currentGlyphWidth, g!, txtMatrix, letter, false);
+            txtMatrix = drawGlyphs(currentGlyphWidth, g!, txtMatrix, letter, false);
             isTextGlyphAdded = true;
           } else {
-            if (characterMapTable.isNotEmpty &&
-                characterMapTable.containsKey(charCode)) {
+            if (characterMapTable.isNotEmpty && characterMapTable.containsKey(charCode)) {
               final String tempLetter = characterMapTable[charCode]![0];
               isTextGlyphAdded = true;
-              final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-                  tempLetter, g!, txtMatrix, retrievedCharCode);
+              final MatrixHelper? tempMatrix =
+                  drawSystemFontGlyphShape(tempLetter, g!, txtMatrix, retrievedCharCode);
               if (tempMatrix != null) {
                 txtMatrix = tempMatrix;
               } else {
@@ -459,8 +447,7 @@ class TextElement {
             }
           }
           if (!isTextGlyphAdded) {
-            if (characterMapTable.isNotEmpty &&
-                characterMapTable.containsKey(charCode)) {
+            if (characterMapTable.isNotEmpty && characterMapTable.containsKey(charCode)) {
               final String unicode = characterMapTable[charCode]![0];
               if (fontGlyphWidths == null) {
                 currentGlyphWidth = defaultGlyphWidth! * charSizeMultiplier;
@@ -470,33 +457,25 @@ class TextElement {
                       cidToGidReverseMapTable!.containsKey(charCode) &&
                       !structure.isMappingDone) {
                     currentGlyphWidth =
-                        fontGlyphWidths![cidToGidReverseMapTable![charCode]!]! *
-                            charSizeMultiplier;
+                        fontGlyphWidths![cidToGidReverseMapTable![charCode]!]! * charSizeMultiplier;
                   } else if (fontGlyphWidths!.containsKey(charCode)) {
-                    currentGlyphWidth =
-                        fontGlyphWidths![charCode]! * charSizeMultiplier;
+                    currentGlyphWidth = fontGlyphWidths![charCode]! * charSizeMultiplier;
                   } else {
                     if (reverseMapTable!.containsKey(unicode) &&
-                        !fontGlyphWidths!
-                            .containsKey(reverseMapTable![unicode]!.toInt())) {
-                      currentGlyphWidth =
-                          defaultGlyphWidth! * charSizeMultiplier;
+                        !fontGlyphWidths!.containsKey(reverseMapTable![unicode]!.toInt())) {
+                      currentGlyphWidth = defaultGlyphWidth! * charSizeMultiplier;
                     }
                   }
                 } else if (structure.fontType!.name == 'TrueType' &&
                     fontGlyphWidths!.containsKey(charCode)) {
-                  currentGlyphWidth =
-                      fontGlyphWidths![charCode]! * charSizeMultiplier;
+                  currentGlyphWidth = fontGlyphWidths![charCode]! * charSizeMultiplier;
                 }
               }
-            } else if (cidToGidReverseMapTable != null &&
-                cidToGidReverseMapTable!.isNotEmpty) {
+            } else if (cidToGidReverseMapTable != null && cidToGidReverseMapTable!.isNotEmpty) {
               if (cidToGidReverseMapTable!.containsKey(charCode)) {
                 final int? cidGidKey = cidToGidReverseMapTable![charCode];
-                if (fontGlyphWidths != null &&
-                    fontGlyphWidths!.containsKey(cidGidKey)) {
-                  currentGlyphWidth =
-                      fontGlyphWidths![cidGidKey!]! * charSizeMultiplier;
+                if (fontGlyphWidths != null && fontGlyphWidths!.containsKey(cidGidKey)) {
+                  currentGlyphWidth = fontGlyphWidths![cidGidKey!]! * charSizeMultiplier;
                 }
               }
             } else if (fontGlyphWidths != null) {
@@ -511,16 +490,12 @@ class TextElement {
           location = Offset(location.dx + characterSpacing!, location.dy);
         }
         if (!isTextGlyphAdded) {
-          txtMatrix =
-              drawGlyphs(currentGlyphWidth, g!, txtMatrix, letter, false);
+          txtMatrix = drawGlyphs(currentGlyphWidth, g!, txtMatrix, letter, false);
         }
       }
     }
     changeInX = location.dx - changeInX;
-    return <String, dynamic>{
-      'textElementWidth': changeInX,
-      'tempTextMatrix': txtMatrix
-    };
+    return <String, dynamic>{'textElementWidth': changeInX, 'tempTextMatrix': txtMatrix};
   }
 
   /// internal method
@@ -549,8 +524,7 @@ class TextElement {
         if (!isEmbeddedFont &&
             structure.font != null &&
             (structure.isStandardFont || structure.isStandardCJKFont)) {
-          final MatrixHelper defaultTransformations =
-              g!.transformMatrix!.clone();
+          final MatrixHelper defaultTransformations = g!.transformMatrix!.clone();
           if (word != '' && word[word.length - 1] == 's') {
             word = word.substring(0, word.length - 1);
           }
@@ -569,15 +543,13 @@ class TextElement {
             glyph.charSpacing = this.characterSpacing!;
             if (structure.isStandardFont) {
               final PdfStandardFont font = structure.font! as PdfStandardFont;
-              glyph.width = PdfStandardFontHelper.getHelper(font)
-                      .getCharWidthInternal(character) *
+              glyph.width = PdfStandardFontHelper.getHelper(font).getCharWidthInternal(character) *
                   PdfFontHelper.characterSizeMultiplier;
             } else if (structure.isStandardCJKFont) {
-              final PdfCjkStandardFont font =
-                  structure.font! as PdfCjkStandardFont;
-              glyph.width = PdfCjkStandardFontHelper.getHelper(font)
-                      .getCharWidthInternal(character) *
-                  PdfFontHelper.characterSizeMultiplier;
+              final PdfCjkStandardFont font = structure.font! as PdfCjkStandardFont;
+              glyph.width =
+                  PdfCjkStandardFontHelper.getHelper(font).getCharWidthInternal(character) *
+                      PdfFontHelper.characterSizeMultiplier;
             }
             final MatrixHelper identity = MatrixHelper.identity.clone();
             identity.scale(0.01, 0.01, 0.0, 0.0);
@@ -590,8 +562,7 @@ class TextElement {
             double? tempFontSize = 0;
             if (glyph.transformMatrix.m11 > 0) {
               tempFontSize = glyph.transformMatrix.m11;
-            } else if (glyph.transformMatrix.m12 != 0 &&
-                glyph.transformMatrix.m21 != 0) {
+            } else if (glyph.transformMatrix.m12 != 0 && glyph.transformMatrix.m21 != 0) {
               if (glyph.transformMatrix.m12 < 0) {
                 tempFontSize = -glyph.transformMatrix.m12;
               } else {
@@ -602,8 +573,7 @@ class TextElement {
             }
             glyph.boundingRect = Rect.fromLTWH(
                 (matrix.offsetX / 1.3333333333333333) / zoomFactor!,
-                ((matrix.offsetY - (tempFontSize * zoomFactor!)) /
-                        1.3333333333333333) /
+                ((matrix.offsetY - (tempFontSize * zoomFactor!)) / 1.3333333333333333) /
                     zoomFactor!,
                 glyph.width * tempFontSize,
                 tempFontSize);
@@ -619,9 +589,7 @@ class TextElement {
             word = word.substring(0, word.length - 1);
           }
           final bool containsRTL = bidi.Bidi.hasAnyRtl(word);
-          if ((keys != null &&
-                  word.length > keys.length &&
-                  keys.length > word.length + 2) ||
+          if ((keys != null && word.length > keys.length && keys.length > word.length + 2) ||
               !containsRTL) {
             keys = null;
           }
@@ -632,19 +600,16 @@ class TextElement {
                 reverseMapTable!.isNotEmpty &&
                 reverseMapTable!.containsKey(word)) {
               final int charCode = reverseMapTable![word]!.toInt();
-              final dynamic retrievedCharCode = (keys != null &&
-                      keys.isNotEmpty &&
-                      keys[0] != null &&
-                      keys[0] != 0)
-                  ? keys[0]
-                  : null;
-              if (characterMapTable.isNotEmpty &&
-                  characterMapTable.containsKey(charCode)) {
+              final dynamic retrievedCharCode =
+                  (keys != null && keys.isNotEmpty && keys[0] != null && keys[0] != 0)
+                      ? keys[0]
+                      : null;
+              if (characterMapTable.isNotEmpty && characterMapTable.containsKey(charCode)) {
                 final String tempLetter = characterMapTable[charCode]!;
                 isTextGlyphAdded = true;
                 isComplexScript = true;
-                final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-                    tempLetter, g!, txtMatrix, retrievedCharCode);
+                final MatrixHelper? tempMatrix =
+                    drawSystemFontGlyphShape(tempLetter, g!, txtMatrix, retrievedCharCode);
                 if (tempMatrix != null) {
                   txtMatrix = tempMatrix;
                 } else {
@@ -658,19 +623,17 @@ class TextElement {
                 final String letter = word[i];
                 letterCount += 1;
                 int charCode = letter.codeUnitAt(0);
-                final dynamic retrievedCharCode = (keys != null &&
-                        i < keys.length &&
-                        keys[i] != null &&
-                        keys[i] != 0)
-                    ? keys[i]
-                    : null;
+                final dynamic retrievedCharCode =
+                    (keys != null && i < keys.length && keys[i] != null && keys[i] != 0)
+                        ? keys[i]
+                        : null;
                 isTextGlyphAdded = false;
                 if (charCode.toUnsigned(8) > 126 &&
                     fontEncoding == 'MacRomanEncoding' &&
                     !isEmbeddedFont) {
                   isTextGlyphAdded = true;
-                  final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-                      letter, g!, txtMatrix, retrievedCharCode);
+                  final MatrixHelper? tempMatrix =
+                      drawSystemFontGlyphShape(letter, g!, txtMatrix, retrievedCharCode);
                   if (tempMatrix != null) {
                     txtMatrix = tempMatrix;
                   } else {
@@ -679,24 +642,22 @@ class TextElement {
                 } else {
                   if (renderingMode == 1) {
                     isTextGlyphAdded = true;
-                    final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-                        letter, g!, txtMatrix, retrievedCharCode);
+                    final MatrixHelper? tempMatrix =
+                        drawSystemFontGlyphShape(letter, g!, txtMatrix, retrievedCharCode);
                     if (tempMatrix != null) {
                       txtMatrix = tempMatrix;
                     } else {
                       isTextGlyphAdded = false;
                     }
                   } else {
-                    if (reverseMapTable!.isNotEmpty &&
-                        reverseMapTable!.containsKey(letter)) {
+                    if (reverseMapTable!.isNotEmpty && reverseMapTable!.containsKey(letter)) {
                       charCode = reverseMapTable![letter]!.toInt();
                     }
-                    if (characterMapTable.isNotEmpty &&
-                        characterMapTable.containsKey(charCode)) {
+                    if (characterMapTable.isNotEmpty && characterMapTable.containsKey(charCode)) {
                       final String tempLetter = characterMapTable[charCode]![0];
                       isTextGlyphAdded = true;
-                      final MatrixHelper? tempMatrix = drawSystemFontGlyphShape(
-                          tempLetter, g!, txtMatrix, retrievedCharCode);
+                      final MatrixHelper? tempMatrix =
+                          drawSystemFontGlyphShape(tempLetter, g!, txtMatrix, retrievedCharCode);
                       if (tempMatrix != null) {
                         txtMatrix = tempMatrix;
                       } else {
@@ -704,45 +665,37 @@ class TextElement {
                       }
                     }
                   }
-                  if (characterMapTable.isNotEmpty &&
-                      characterMapTable.containsKey(charCode)) {
+                  if (characterMapTable.isNotEmpty && characterMapTable.containsKey(charCode)) {
                     final String unicode = characterMapTable[charCode]![0];
                     if (fontGlyphWidths == null) {
-                      currentGlyphWidth =
-                          defaultGlyphWidth! * charSizeMultiplier;
+                      currentGlyphWidth = defaultGlyphWidth! * charSizeMultiplier;
                     } else {
                       if (structure.fontType!.name == 'Type0') {
                         if (cidToGidReverseMapTable != null &&
                             cidToGidReverseMapTable!.containsKey(charCode) &&
                             !structure.isMappingDone) {
-                          currentGlyphWidth = fontGlyphWidths![
-                                  cidToGidReverseMapTable![charCode]!]! *
-                              charSizeMultiplier;
-                        } else if (fontGlyphWidths!.containsKey(charCode)) {
                           currentGlyphWidth =
-                              fontGlyphWidths![charCode]! * charSizeMultiplier;
+                              fontGlyphWidths![cidToGidReverseMapTable![charCode]!]! *
+                                  charSizeMultiplier;
+                        } else if (fontGlyphWidths!.containsKey(charCode)) {
+                          currentGlyphWidth = fontGlyphWidths![charCode]! * charSizeMultiplier;
                         } else {
                           if (reverseMapTable!.containsKey(unicode) &&
-                              !fontGlyphWidths!.containsKey(
-                                  reverseMapTable![unicode]!.toInt())) {
-                            currentGlyphWidth =
-                                defaultGlyphWidth! * charSizeMultiplier;
+                              !fontGlyphWidths!.containsKey(reverseMapTable![unicode]!.toInt())) {
+                            currentGlyphWidth = defaultGlyphWidth! * charSizeMultiplier;
                           }
                         }
                       } else if (structure.fontType!.name == 'TrueType' &&
                           fontGlyphWidths!.containsKey(charCode)) {
-                        currentGlyphWidth =
-                            fontGlyphWidths![charCode]! * charSizeMultiplier;
+                        currentGlyphWidth = fontGlyphWidths![charCode]! * charSizeMultiplier;
                       }
                     }
                   } else if (cidToGidReverseMapTable != null &&
                       cidToGidReverseMapTable!.isNotEmpty) {
                     if (cidToGidReverseMapTable!.containsKey(charCode)) {
                       final int? cidGidKey = cidToGidReverseMapTable![charCode];
-                      if (fontGlyphWidths != null &&
-                          fontGlyphWidths!.containsKey(cidGidKey)) {
-                        currentGlyphWidth =
-                            fontGlyphWidths![cidGidKey!]! * charSizeMultiplier;
+                      if (fontGlyphWidths != null && fontGlyphWidths!.containsKey(cidGidKey)) {
+                        currentGlyphWidth = fontGlyphWidths![cidGidKey!]! * charSizeMultiplier;
                       }
                     }
                   } else if (fontGlyphWidths != null) {
@@ -753,15 +706,12 @@ class TextElement {
                   }
                 }
                 if (letterCount < word.length) {
-                  location =
-                      Offset(location.dx + this.characterSpacing!, location.dy);
+                  location = Offset(location.dx + this.characterSpacing!, location.dy);
                 }
                 if (!isTextGlyphAdded &&
                     (retrievedCharCode == null ||
-                        (retrievedCharCode != null &&
-                            retrievedCharCode is! String))) {
-                  txtMatrix = drawGlyphs(
-                      currentGlyphWidth, g!, txtMatrix, letter, i == 0);
+                        (retrievedCharCode != null && retrievedCharCode is! String))) {
+                  txtMatrix = drawGlyphs(currentGlyphWidth, g!, txtMatrix, letter, i == 0);
                 }
               }
             }
@@ -770,15 +720,12 @@ class TextElement {
       }
     });
     changeInX = location.dx - changeInX;
-    return <String, dynamic>{
-      'textElementWidth': changeInX,
-      'tempTextMatrix': txtMatrix
-    };
+    return <String, dynamic>{'textElementWidth': changeInX, 'tempTextMatrix': txtMatrix};
   }
 
   /// internal method
-  MatrixHelper? drawGlyphs(double? glyphwidth, GraphicsObject g,
-      MatrixHelper? temptextmatrix, String? glyphChar, bool renderWithSpace) {
+  MatrixHelper? drawGlyphs(double? glyphwidth, GraphicsObject g, MatrixHelper? temptextmatrix,
+      String? glyphChar, bool renderWithSpace) {
     final MatrixHelper defaultTransformations = g.transformMatrix!.clone();
     g.transformMatrix = MatrixHelper(1, 0, 0, 1, 0, 0);
     final Glyph glyph = Glyph();
@@ -804,16 +751,14 @@ class TextElement {
       if (cidToGidReverseMapTable != null &&
           cidToGidReverseMapTable!.containsKey(glyphChar!.codeUnitAt(0)) &&
           (structure.characterMapTable.isNotEmpty)) {
-        glyphChar = characterMapTable[
-            cidToGidReverseMapTable![glyphChar.codeUnitAt(0)]];
+        glyphChar = characterMapTable[cidToGidReverseMapTable![glyphChar.codeUnitAt(0)]];
       } else if (structure.characterMapTable.isNotEmpty) {
         glyphChar = structure.mapCharactersFromTable(glyphChar!);
       } else if (structure.differencesDictionary.isNotEmpty) {
         glyphChar = structure.mapDifferences(glyphChar);
-      } else if (structure.cidToGidReverseMapTable
-          .containsKey(glyphChar!.codeUnitAt(0))) {
-        glyphChar = String.fromCharCode(
-            structure.cidToGidReverseMapTable[glyphChar.codeUnitAt(0)]!);
+      } else if (structure.cidToGidReverseMapTable.containsKey(glyphChar!.codeUnitAt(0))) {
+        glyphChar =
+            String.fromCharCode(structure.cidToGidReverseMapTable[glyphChar.codeUnitAt(0)]!);
       }
       if (glyphChar!.contains('\u0092')) {
         glyphChar = glyphChar.replaceAll('\u0092', '’');
@@ -822,17 +767,14 @@ class TextElement {
     double? tempFontSize;
     if (glyph.transformMatrix.m11 > 0) {
       tempFontSize = glyph.transformMatrix.m11;
-    } else if (glyph.transformMatrix.m12 != 0 &&
-        glyph.transformMatrix.m21 != 0) {
-      tempFontSize = glyph.transformMatrix.m12 < 0
-          ? -glyph.transformMatrix.m12
-          : glyph.transformMatrix.m12;
+    } else if (glyph.transformMatrix.m12 != 0 && glyph.transformMatrix.m21 != 0) {
+      tempFontSize =
+          glyph.transformMatrix.m12 < 0 ? -glyph.transformMatrix.m12 : glyph.transformMatrix.m12;
     } else {
       tempFontSize = glyph.fontSize;
     }
     final String glyphText = glyphChar!;
-    if (!structure.macRomanEncoded &&
-        structure.fontEncoding == 'MacRomanEncoding') {
+    if (!structure.macRomanEncoded && structure.fontEncoding == 'MacRomanEncoding') {
       String tempstring = '';
       for (int i = 0; i < glyphText.length; i++) {
         final int b = glyphText[i].codeUnitAt(0).toUnsigned(8);
@@ -859,14 +801,11 @@ class TextElement {
       } else if (matrix.m12 < 0 && matrix.m21 < 0) {
         glyph.rotationAngle = 180;
       }
-      final double x = ((matrix.offsetX +
-                  ((tempFontSize + (glyph.ascent / 1000.0)) * matrix.m21)) /
+      final double x = ((matrix.offsetX + ((tempFontSize + (glyph.ascent / 1000.0)) * matrix.m21)) /
               1.3333333333333333) /
           zoomFactor!;
       double y = ((matrix.offsetY -
-                  ((pageRotation == 270
-                          ? tempFontSize
-                          : (glyph.width * tempFontSize)) *
+                  ((pageRotation == 270 ? tempFontSize : (glyph.width * tempFontSize)) *
                       zoomFactor!)) /
               1.3333333333333333) /
           zoomFactor!;
@@ -876,8 +815,7 @@ class TextElement {
         if (textElementGlyphList.isEmpty || renderWithSpace) {
           y += width;
         } else {
-          final Glyph tempGlyph =
-              textElementGlyphList[textElementGlyphList.length - 1];
+          final Glyph tempGlyph = textElementGlyphList[textElementGlyphList.length - 1];
           if (textElementGlyphList.length == 1 && tempGlyph.toUnicode == ' ') {
             y += width;
           } else {
@@ -891,9 +829,7 @@ class TextElement {
     } else {
       glyph.boundingRect = Rect.fromLTWH(
           (matrix.offsetX / 1.3333333333333333) / zoomFactor!,
-          ((matrix.offsetY - (tempFontSize * zoomFactor!)) /
-                  1.3333333333333333) /
-              zoomFactor!,
+          ((matrix.offsetY - (tempFontSize * zoomFactor!)) / 1.3333333333333333) / zoomFactor!,
           glyph.width * tempFontSize,
           tempFontSize);
     }
@@ -944,8 +880,7 @@ class TextElement {
           }
         }
       } else if (fontGlyphWidths!.containsKey(letter.codeUnitAt(0))) {
-        systemFontGlyph =
-            fontGlyphWidths![letter.codeUnitAt(0)]! * charSizeMultiplier;
+        systemFontGlyph = fontGlyphWidths![letter.codeUnitAt(0)]! * charSizeMultiplier;
       }
     } else if (defaultGlyphWidth != null && defaultGlyphWidth! > 0) {
       systemFontGlyph = defaultGlyphWidth! * charSizeMultiplier;
@@ -963,9 +898,8 @@ class TextElement {
     if (gly.transformMatrix.m11 > 0) {
       tempFontSize = gly.transformMatrix.m11;
     } else if (gly.transformMatrix.m12 != 0 && gly.transformMatrix.m21 != 0) {
-      tempFontSize = gly.transformMatrix.m12 < 0
-          ? -gly.transformMatrix.m12
-          : gly.transformMatrix.m12;
+      tempFontSize =
+          gly.transformMatrix.m12 < 0 ? -gly.transformMatrix.m12 : gly.transformMatrix.m12;
     } else {
       tempFontSize = gly.fontSize;
     }
@@ -974,23 +908,20 @@ class TextElement {
       if (cidToGidReverseMapTable != null &&
           cidToGidReverseMapTable!.containsKey(glyphName.codeUnitAt(0)) &&
           (structure.characterMapTable.isNotEmpty)) {
-        glyphName = characterMapTable[
-            cidToGidReverseMapTable![glyphName.codeUnitAt(0)]];
+        glyphName = characterMapTable[cidToGidReverseMapTable![glyphName.codeUnitAt(0)]];
       } else if (structure.characterMapTable.isNotEmpty) {
         glyphName = structure.mapCharactersFromTable(glyphName);
       } else if (structure.differencesDictionary.isNotEmpty) {
         glyphName = structure.mapDifferences(glyphName);
-      } else if (structure.cidToGidReverseMapTable
-          .containsKey(glyphName.codeUnitAt(0))) {
-        glyphName = String.fromCharCode(
-            structure.cidToGidReverseMapTable[glyphName.codeUnitAt(0)]!);
+      } else if (structure.cidToGidReverseMapTable.containsKey(glyphName.codeUnitAt(0))) {
+        glyphName =
+            String.fromCharCode(structure.cidToGidReverseMapTable[glyphName.codeUnitAt(0)]!);
       }
       if (glyphName!.contains('\u0092')) {
         glyphName = glyphName.replaceAll('\u0092', '’');
       }
     }
-    if (!structure.macRomanEncoded &&
-        structure.fontEncoding == 'MacRomanEncoding') {
+    if (!structure.macRomanEncoded && structure.fontEncoding == 'MacRomanEncoding') {
       String tempstring = '';
       for (int i = 0; i < glyphName.length; i++) {
         final int b = glyphName[i].codeUnitAt(0).toUnsigned(8);
@@ -1010,16 +941,14 @@ class TextElement {
     gly.toUnicode = glyphName;
     gly.boundingRect = Rect.fromLTWH(
         (matrix.offsetX / 1.3333333333333333) / zoomFactor!,
-        ((matrix.offsetY - (tempFontSize * zoomFactor!)) / 1.3333333333333333) /
-            zoomFactor!,
+        ((matrix.offsetY - (tempFontSize * zoomFactor!)) / 1.3333333333333333) / zoomFactor!,
         gly.width * tempFontSize,
         tempFontSize);
     textElementGlyphList.add(gly);
     if (isExtractTextData && gly.toUnicode.length != 1) {
       for (int i = 0; i < gly.toUnicode.length - 1; i++) {
         final Glyph emptyGlyph = Glyph();
-        emptyGlyph.boundingRect =
-            Rect.fromLTWH(gly.boundingRect.right, gly.boundingRect.top, 0, 0);
+        emptyGlyph.boundingRect = Rect.fromLTWH(gly.boundingRect.right, gly.boundingRect.top, 0, 0);
         textElementGlyphList.add(emptyGlyph);
       }
     }
@@ -1051,18 +980,16 @@ class TextElement {
       glyph.wordSpacing = wordSpacing!;
     }
     final double width = glyph.width;
-    final double offsetX =
-        (width * glyph.fontSize + glyph.charSpacing + glyph.wordSpacing) *
-            (glyph.horizontalScaling / 100);
+    final double offsetX = (width * glyph.fontSize + glyph.charSpacing + glyph.wordSpacing) *
+        (glyph.horizontalScaling / 100);
     return MatrixHelper(1.0, 0.0, 0.0, 1.0, offsetX, 0.0) * m;
   }
 }
 
 class TransformationStack {
   TransformationStack([MatrixHelper? transformMatrix]) {
-    _initialTransform = (transformMatrix != null)
-        ? transformMatrix
-        : MatrixHelper(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    _initialTransform =
+        (transformMatrix != null) ? transformMatrix : MatrixHelper(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     transformStack = Queue<MatrixHelper>();
   }
 

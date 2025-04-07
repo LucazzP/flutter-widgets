@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../drawing/drawing.dart';
 import '../../graphics/brushes/pdf_solid_brush.dart';
@@ -529,10 +529,7 @@ class PdfGrid extends PdfLayoutElement {
   /// ```
   @override
   PdfLayoutResult? draw(
-      {Rect? bounds,
-      PdfLayoutFormat? format,
-      PdfGraphics? graphics,
-      PdfPage? page}) {
+      {Rect? bounds, PdfLayoutFormat? format, PdfGraphics? graphics, PdfPage? page}) {
     final PdfRectangle rectangle =
         bounds != null ? PdfRectangle.fromRect(bounds) : PdfRectangle.empty;
     _helper.initialWidth = rectangle.width == 0
@@ -542,8 +539,7 @@ class PdfGrid extends PdfLayoutElement {
         : rectangle.width;
     _helper.isWidthSet = true;
     if (page != null) {
-      final PdfLayoutResult? result =
-          super.draw(page: page, bounds: bounds, format: format);
+      final PdfLayoutResult? result = super.draw(page: page, bounds: bounds, format: format);
       _helper.isComplete = true;
       return result;
     } else if (graphics != null) {
@@ -591,8 +587,7 @@ class PdfGrid extends PdfLayoutElement {
   /// //Dispose the document.
   /// document.dispose();
   /// ```
-  void applyBuiltInStyle(PdfGridBuiltInStyle gridStyle,
-      {PdfGridBuiltInStyleSettings? settings}) {
+  void applyBuiltInStyle(PdfGridBuiltInStyle gridStyle, {PdfGridBuiltInStyleSettings? settings}) {
     _intializeBuiltInStyle(gridStyle, settings: settings);
   }
 
@@ -619,16 +614,14 @@ class PdfGrid extends PdfLayoutElement {
     _boldFontCache ??= <PdfTrueTypeFont, PdfTrueTypeFont>{};
     if (font is PdfStandardFont) {
       final PdfStandardFont standardFont = font;
-      return PdfStandardFont(standardFont.fontFamily, font.size,
-          style: PdfFontStyle.bold);
+      return PdfStandardFont(standardFont.fontFamily, font.size, style: PdfFontStyle.bold);
     } else {
       if (_boldFontCache!.containsKey(font)) {
         return _boldFontCache![font as PdfTrueTypeFont];
       } else {
         final PdfTrueTypeFont trueTypeFont = font as PdfTrueTypeFont;
         final PdfFont boldStyleFont = PdfTrueTypeFont(
-            PdfTrueTypeFontHelper.getHelper(trueTypeFont).fontInternal.fontData,
-            font.size,
+            PdfTrueTypeFontHelper.getHelper(trueTypeFont).fontInternal.fontData, font.size,
             style: PdfFontStyle.bold);
         _boldFontCache![font] = boldStyleFont as PdfTrueTypeFont;
         return boldStyleFont;
@@ -640,16 +633,14 @@ class PdfGrid extends PdfLayoutElement {
     _regularFontCache ??= <PdfTrueTypeFont, PdfTrueTypeFont>{};
     if (font is PdfStandardFont) {
       final PdfStandardFont standardFont = font;
-      return PdfStandardFont(standardFont.fontFamily, font.size,
-          style: PdfFontStyle.regular);
+      return PdfStandardFont(standardFont.fontFamily, font.size, style: PdfFontStyle.regular);
     } else {
       if (_regularFontCache!.containsKey(font)) {
         return _regularFontCache![font as PdfTrueTypeFont];
       } else {
         final PdfTrueTypeFont trueTypeFont = font as PdfTrueTypeFont;
         final PdfFont ttfFont = PdfTrueTypeFont(
-            PdfTrueTypeFontHelper.getHelper(trueTypeFont).fontInternal.fontData,
-            font.size,
+            PdfTrueTypeFontHelper.getHelper(trueTypeFont).fontInternal.fontData, font.size,
             style: PdfFontStyle.regular);
         _regularFontCache![font] = ttfFont as PdfTrueTypeFont;
         return ttfFont;
@@ -661,19 +652,16 @@ class PdfGrid extends PdfLayoutElement {
     _italicFontCache ??= <PdfTrueTypeFont, PdfTrueTypeFont>{};
     if (font is PdfStandardFont) {
       final PdfStandardFont standardFont = font;
-      return PdfStandardFont(standardFont.fontFamily, font.size,
-          style: PdfFontStyle.italic);
+      return PdfStandardFont(standardFont.fontFamily, font.size, style: PdfFontStyle.italic);
     } else {
       if (_italicFontCache!.containsKey(font)) {
         return _italicFontCache![font! as PdfTrueTypeFont];
       } else {
         final PdfTrueTypeFont trueTypeFont = font! as PdfTrueTypeFont;
         final PdfFont italicStyleFont = PdfTrueTypeFont(
-            PdfTrueTypeFontHelper.getHelper(trueTypeFont).fontInternal.fontData,
-            font.size,
+            PdfTrueTypeFontHelper.getHelper(trueTypeFont).fontInternal.fontData, font.size,
             style: PdfFontStyle.italic);
-        _italicFontCache![font as PdfTrueTypeFont] =
-            italicStyleFont as PdfTrueTypeFont;
+        _italicFontCache![font as PdfTrueTypeFont] = italicStyleFont as PdfTrueTypeFont;
         return italicStyleFont;
       }
     }
@@ -689,8 +677,7 @@ class PdfGrid extends PdfLayoutElement {
     return pdfFont;
   }
 
-  PdfBrush? _applyBandedColStyle(
-      bool firstColumn, PdfColor backColor, int cellIndex) {
+  PdfBrush? _applyBandedColStyle(bool firstColumn, PdfColor backColor, int cellIndex) {
     PdfBrush? backBrush;
     if (firstColumn) {
       if (cellIndex.isEven) {
@@ -704,8 +691,7 @@ class PdfGrid extends PdfLayoutElement {
     return backBrush;
   }
 
-  PdfBrush? _applyBandedRowStyle(
-      bool headerRow, PdfColor backColor, int rowIndex) {
+  PdfBrush? _applyBandedRowStyle(bool headerRow, PdfColor backColor, int rowIndex) {
     PdfBrush? backBrush;
     if (headerRow) {
       if (rowIndex.isOdd) {
@@ -757,8 +743,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.font = _changeFontStyle(font);
             cell.style.borders.all = borderPen;
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
             if (_lastColumn && j == row.cells.count) {
               cell.style.backgroundBrush = null;
@@ -810,26 +795,21 @@ class PdfGrid extends PdfLayoutElement {
         }
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
           }
         }
         if (_lastColumn && j == row.cells.count) {
           if (!(_totalRow && i == rows.count)) {
             cell.style.backgroundBrush = null;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             }
             final PdfFont font = cell.style.font ??
                 row.style.font ??
@@ -848,8 +828,7 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.borders.top = PdfPen(borderColor);
           if (_bandedColumn) {
             if (!(_lastColumn && j == row.cells.count)) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
           }
         }
@@ -980,8 +959,7 @@ class PdfGrid extends PdfLayoutElement {
           final PdfGridCell cell = row.cells[j - 1];
           cell.style.borders.all = whitePen;
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_headerRow) {
             final PdfFont font = cell.style.font ??
@@ -1054,11 +1032,9 @@ class PdfGrid extends PdfLayoutElement {
         final PdfGridCell cell = row.cells[j - 1];
         cell.style.borders.all = whitePen;
         if (_bandedRow && _bandedColumn) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
           if (_firstColumn && j == 2) {
             cell.style.borders.left = borderPen;
           }
@@ -1067,8 +1043,7 @@ class PdfGrid extends PdfLayoutElement {
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               if (_firstColumn && j == 2) {
                 cell.style.borders.left = borderPen;
@@ -1079,8 +1054,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             if (_firstColumn && j == 2) {
               cell.style.borders.left = borderPen;
             }
@@ -1104,8 +1078,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.value = cellvalue.toUpperCase();
           }
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               if (_firstColumn && j == 2) {
                 cell.style.borders.left = borderPen;
@@ -1141,8 +1114,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.backgroundBrush = null;
 
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             }
             cell.style.borders.all = whitePen;
           } else if (_bandedColumn) {
@@ -1168,8 +1140,7 @@ class PdfGrid extends PdfLayoutElement {
           final PdfGridCell cell = row.cells[j - 1];
           cell.style.borders.all = whitePen;
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_headerRow) {
             final PdfFont font = cell.style.font ??
@@ -1182,8 +1153,7 @@ class PdfGrid extends PdfLayoutElement {
               cell.value = cellvalue.toUpperCase();
             }
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
             if (_lastColumn && j == row.cells.count) {
               cell.style.backgroundBrush = null;
@@ -1247,26 +1217,21 @@ class PdfGrid extends PdfLayoutElement {
           }
         }
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
           }
         }
         if (_lastColumn && j == row.cells.count) {
           if (!(_totalRow && i == rows.count)) {
             cell.style.backgroundBrush = null;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             }
             final PdfFont font = cell.style.font ??
                 row.style.font ??
@@ -1297,8 +1262,7 @@ class PdfGrid extends PdfLayoutElement {
           }
           if (_bandedColumn) {
             if (!(_lastColumn && j == row.cells.count)) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
           }
         }
@@ -1331,8 +1295,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (cell.style.backgroundBrush != null) {
                 if (_firstColumn && j == 2) {
                   cell.style.borders.left = borderPen;
@@ -1384,10 +1347,8 @@ class PdfGrid extends PdfLayoutElement {
         final PdfGridCell cell = row.cells[j - 1];
         cell.style.borders.all = whitePen;
         if (_bandedRow && _bandedColumn) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
           if (cell.style.backgroundBrush != null) {
             if (_firstColumn && j == 2) {
               cell.style.borders.left = borderPen;
@@ -1397,8 +1358,7 @@ class PdfGrid extends PdfLayoutElement {
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               if (_firstColumn && j == 2) {
                 cell.style.borders.left = borderPen;
@@ -1408,8 +1368,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             if (_firstColumn && j == 2) {
               cell.style.borders.left = borderPen;
             } else {
@@ -1563,8 +1522,7 @@ class PdfGrid extends PdfLayoutElement {
                 _helper.defaultFont;
             cell.style.font = _changeFontStyle(font);
             cell.style.borders.all = PdfPen(PdfColor.empty);
-            if (PdfGridRowHelper.getHelper(
-                        PdfGridCellHelper.getHelper(cell).row!)
+            if (PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(cell).row!)
                     .grid
                     .style
                     .cellSpacing >
@@ -1573,8 +1531,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (cell.style.backgroundBrush != null) {
                 if (j == 1) {
                   cell.style.borders.left = backColorPen;
@@ -1639,10 +1596,8 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.borders.right = emptyPen;
         }
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedRowStyle(_headerRow, backColor, i);
-          cell.style.backgroundBrush ??=
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedColStyle(_firstColumn, backColor, j);
           if (cell.style.backgroundBrush != null) {
             if (j == 1) {
               cell.style.borders.left = backColorPen;
@@ -1652,8 +1607,7 @@ class PdfGrid extends PdfLayoutElement {
           }
         } else {
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
 
             if (cell.style.backgroundBrush != null) {
               if (j == 1) {
@@ -1664,8 +1618,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           }
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               if (j == 1) {
                 cell.style.borders.left = backColorPen;
@@ -1703,8 +1656,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.font = _changeFontStyle(font);
             cell.style.backgroundBrush = null;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
               if (cell.style.backgroundBrush == null) {
                 cell.style.borders.right = emptyPen;
               }
@@ -1742,8 +1694,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.borders.all = whitePen;
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
             if (_bandedRow) {
               if (i % 2 != 0) {
@@ -1780,19 +1731,15 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.borders.all = borderPen;
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
           }
         }
         if (_totalRow && i == rows.count) {
@@ -1840,8 +1787,7 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyGridTable4(
-      PdfColor borderColor, PdfColor backColor, PdfColor headerBackColor) {
+  void _applyGridTable4(PdfColor borderColor, PdfColor backColor, PdfColor headerBackColor) {
     final PdfPen borderPen = PdfPen(borderColor, width: 0.5);
     final PdfBrush backBrush = PdfSolidBrush(backColor);
     final PdfPen headerBackColorPen = PdfPen(headerBackColor, width: 0.5);
@@ -1862,8 +1808,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.backgroundBrush = PdfSolidBrush(headerBackColor);
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
             if (_bandedRow) {
               if (i % 2 != 0) {
@@ -1880,8 +1825,7 @@ class PdfGrid extends PdfLayoutElement {
             if (_lastColumn && j == row.cells.count) {
               cell.style.backgroundBrush = null;
               if (_bandedColumn) {
-                cell.style.backgroundBrush =
-                    _applyBandedColStyle(_firstColumn, backColor, j);
+                cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               }
               final PdfFont font = cell.style.font ??
                   row.style.font ??
@@ -1910,25 +1854,20 @@ class PdfGrid extends PdfLayoutElement {
         }
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
           }
         }
         if (_totalRow && i == rows.count) {
           cell.style.backgroundBrush = null;
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
 
           final PdfFont font = cell.style.font ??
@@ -1942,8 +1881,7 @@ class PdfGrid extends PdfLayoutElement {
           if (!(_totalRow && i == rows.count)) {
             cell.style.backgroundBrush = null;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             }
 
             final PdfFont font = cell.style.font ??
@@ -1965,8 +1903,8 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyGridTable5Dark(PdfColor headerBackColor, PdfColor oddRowBackColor,
-      PdfColor evenRowBackColor) {
+  void _applyGridTable5Dark(
+      PdfColor headerBackColor, PdfColor oddRowBackColor, PdfColor evenRowBackColor) {
     final PdfPen whitePen = PdfPen(PdfColor(255, 255, 255), width: 0.5);
     final PdfBrush evenRowBrush = PdfSolidBrush(evenRowBackColor);
     final PdfBrush oddRowBrush = PdfSolidBrush(oddRowBackColor);
@@ -1996,8 +1934,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, oddRowBackColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, oddRowBackColor, j);
 
               cell.style.backgroundBrush ??= evenRowBrush;
             }
@@ -2006,8 +1943,7 @@ class PdfGrid extends PdfLayoutElement {
                 cell.style.backgroundBrush = oddRowBrush;
               }
             }
-            if ((_firstColumn && j == 1) ||
-                (_lastColumn && j == row.cells.count)) {
+            if ((_firstColumn && j == 1) || (_lastColumn && j == row.cells.count)) {
               cell.style.backgroundBrush = headerBrush;
               final PdfFont font = cell.style.font ??
                   row.style.font ??
@@ -2029,24 +1965,20 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.backgroundBrush = evenRowBrush;
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, oddRowBackColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, oddRowBackColor, j);
           if (cell.style.backgroundBrush == null) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, oddRowBackColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, oddRowBackColor, i);
 
             cell.style.backgroundBrush ??= evenRowBrush;
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, oddRowBackColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, oddRowBackColor, j);
 
             cell.style.backgroundBrush ??= evenRowBrush;
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, oddRowBackColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, oddRowBackColor, i);
 
             cell.style.backgroundBrush ??= evenRowBrush;
           }
@@ -2082,8 +2014,7 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyGridTable6Colorful(
-      PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
+  void _applyGridTable6Colorful(PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
     final PdfPen borderPen = PdfPen(borderColor, width: 0.5);
     final PdfBrush backBrush = PdfSolidBrush(backColor);
     final PdfPen headerBottomPen = PdfPen(borderColor);
@@ -2096,8 +2027,7 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.borders.all = borderPen;
           cell.style.textBrush = textBrush;
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_headerRow) {
             final PdfFont font = cell.style.font ??
@@ -2145,26 +2075,21 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.textBrush = textBrush;
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
           }
         }
         if (_totalRow && i == rows.count) {
           cell.style.backgroundBrush = null;
           if (_bandedColumn && (!(_lastColumn && j == row.cells.count))) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           final PdfFont font = cell.style.font ??
               row.style.font ??
@@ -2186,8 +2111,7 @@ class PdfGrid extends PdfLayoutElement {
           if (!(_totalRow && i == rows.count)) {
             cell.style.backgroundBrush = null;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             }
             final PdfFont font = cell.style.font ??
                 row.style.font ??
@@ -2204,8 +2128,7 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyGridTable7Colorful(
-      PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
+  void _applyGridTable7Colorful(PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
     final PdfPen borderPen = PdfPen(borderColor, width: 0.5);
     final PdfBrush backBrush = PdfSolidBrush(backColor);
     final PdfBrush textBrush = PdfSolidBrush(textColor);
@@ -2227,8 +2150,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.borders.all = PdfPen(PdfColor(255, 255, 255));
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
 
             if (_bandedRow) {
@@ -2267,19 +2189,15 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.borders.all = borderPen;
         cell.style.textBrush = textBrush;
         if (_bandedRow && _bandedColumn) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
           }
         }
         if (_totalRow && i == rows.count) {
@@ -2353,8 +2271,7 @@ class PdfGrid extends PdfLayoutElement {
             }
             if (_bandedColumn) {
               if (_lastColumn && j == rows.count) {
-                cell.style.backgroundBrush =
-                    _applyBandedColStyle(_firstColumn, backColor, j);
+                cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               }
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.all = backBrushPen;
@@ -2366,8 +2283,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.all = backBrushPen;
               }
@@ -2411,25 +2327,21 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.borders.all = emptyPen;
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
           if (cell.style.backgroundBrush != null) {
             cell.style.borders.all = backBrushPen;
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.all = backBrushPen;
             }
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.all = backBrushPen;
             }
@@ -2451,8 +2363,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.backgroundBrush = null;
             cell.style.borders.all = emptyPen;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             }
             final PdfFont font = cell.style.font ??
                 row.style.font ??
@@ -2471,8 +2382,7 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.font = _changeFontStyle(font);
           if (_bandedColumn) {
             if (!(_lastColumn && j == row.cells.count)) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.all = backBrushPen;
@@ -2510,8 +2420,7 @@ class PdfGrid extends PdfLayoutElement {
                 _helper.defaultFont;
             cell.style.font = _changeFontStyle(font);
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (_lastColumn && j == row.cells.count) {
                 cell.style.backgroundBrush = null;
               }
@@ -2522,8 +2431,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.right = backColorPen;
                 cell.style.borders.left = backColorPen;
@@ -2573,27 +2481,23 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.borders.bottom = borderPen;
         cell.style.borders.top = borderPen;
         if (_bandedRow && _bandedColumn) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
           if (cell.style.backgroundBrush != null) {
             cell.style.borders.right = backColorPen;
             cell.style.borders.left = backColorPen;
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.right = backColorPen;
               cell.style.borders.left = backColorPen;
             }
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.left = backColorPen;
               cell.style.borders.right = backColorPen;
@@ -2614,8 +2518,7 @@ class PdfGrid extends PdfLayoutElement {
 
           if (_bandedColumn) {
             if (!(j == row.cells.count && _lastColumn)) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             }
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.right = backColorPen;
@@ -2638,8 +2541,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.borders.left = emptyPen;
             cell.style.borders.right = emptyPen;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.right = backColorPen;
               }
@@ -2755,8 +2657,7 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyListTable4(
-      PdfColor borderColor, PdfColor headerBackColor, PdfColor bandRowColor) {
+  void _applyListTable4(PdfColor borderColor, PdfColor headerBackColor, PdfColor bandRowColor) {
     final PdfPen borderColorPen = PdfPen(borderColor, width: 0.5);
     final PdfBrush headerBrush = PdfSolidBrush(headerBackColor);
     final PdfBrush bandRowBrush = PdfSolidBrush(bandRowColor);
@@ -2785,8 +2686,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.textBrush = PdfSolidBrush(PdfColor(255, 255, 255));
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, bandRowColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, bandRowColor, j);
             }
             if (_bandedRow) {
               if (i % 2 != 0) {
@@ -2829,18 +2729,14 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.borders.right = borderColorPen;
         }
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, bandRowColor, j);
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, bandRowColor, i);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, bandRowColor, j);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, bandRowColor, i);
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, bandRowColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, bandRowColor, j);
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, bandRowColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, bandRowColor, i);
           }
         }
         if (_totalRow && i == rows.count) {
@@ -2853,8 +2749,7 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.borders.top = PdfPen(borderColor);
           if (_bandedColumn) {
             if (!(_lastColumn && j == rows.count)) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, bandRowColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, bandRowColor, j);
             }
           }
         }
@@ -2870,8 +2765,7 @@ class PdfGrid extends PdfLayoutElement {
         if (_lastColumn && j == row.cells.count) {
           if (!(_totalRow && i == rows.count)) {
             cell.style.backgroundBrush = null;
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, bandRowColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, bandRowColor, i);
             final PdfFont font = cell.style.font ??
                 row.style.font ??
                 PdfGridRowHelper.getHelper(row).grid.style.font ??
@@ -2909,8 +2803,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.font = _changeFontStyle(font);
             cell.style.backgroundBrush = backColorBrush;
             cell.style.textBrush = whiteBrush;
-            cell.style.borders.bottom =
-                PdfPen(PdfColor(255, 255, 255), width: 2);
+            cell.style.borders.bottom = PdfPen(PdfColor(255, 255, 255), width: 2);
             if (_bandedColumn) {
               if (j > 1) {
                 cell.style.borders.left = whitePen;
@@ -3007,8 +2900,7 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyListTable6Colorful(
-      PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
+  void _applyListTable6Colorful(PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
     final PdfBrush backColorBrush = PdfSolidBrush(backColor);
     final PdfPen borderColorPen = PdfPen(borderColor, width: 0.5);
     final PdfPen backColorPen = PdfPen(backColor, width: 0.5);
@@ -3026,8 +2918,7 @@ class PdfGrid extends PdfLayoutElement {
           if (_headerRow) {
             if (_bandedColumn) {
               if (!(_lastColumn && j == row.cells.count)) {
-                cell.style.backgroundBrush =
-                    _applyBandedColStyle(_firstColumn, backColor, j);
+                cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               }
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.left = backColorPen;
@@ -3043,8 +2934,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.borders.bottom = borderColorPen;
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (cell.style.backgroundBrush != null) {
                 if (i == 1 && _headerRow) {
                   cell.style.borders.top = borderColorPen;
@@ -3106,11 +2996,9 @@ class PdfGrid extends PdfLayoutElement {
         }
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
           if (cell.style.backgroundBrush != null) {
             if (j == 1) {
               cell.style.borders.left = backColorPen;
@@ -3123,8 +3011,7 @@ class PdfGrid extends PdfLayoutElement {
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.left = backColorPen;
               cell.style.borders.right = backColorPen;
@@ -3134,8 +3021,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             if (j == 1) {
               cell.style.borders.left = backColorPen;
             } else if (j == row.cells.count) {
@@ -3161,8 +3047,7 @@ class PdfGrid extends PdfLayoutElement {
             cell.style.borders.left = emptyPen;
             cell.style.borders.right = emptyPen;
             if (_bandedRow) {
-              cell.style.backgroundBrush =
-                  _applyBandedRowStyle(_headerRow, backColor, i);
+              cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.right = backColorPen;
               }
@@ -3191,8 +3076,7 @@ class PdfGrid extends PdfLayoutElement {
           cell.style.font = _changeFontStyle(font);
           cell.style.borders.top = PdfPen(borderColor);
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (_lastColumn && j == row.cells.count) {
               cell.style.backgroundBrush = null;
             }
@@ -3206,8 +3090,7 @@ class PdfGrid extends PdfLayoutElement {
     }
   }
 
-  void _applyListTable7Colorful(
-      PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
+  void _applyListTable7Colorful(PdfColor borderColor, PdfColor backColor, PdfColor textColor) {
     final PdfPen borderPen = PdfPen(borderColor, width: 0.5);
     final PdfPen emptyPen = PdfPen(PdfColor.empty);
     final PdfBrush backBrush = PdfSolidBrush(backColor);
@@ -3234,8 +3117,7 @@ class PdfGrid extends PdfLayoutElement {
             }
           } else {
             if (_bandedColumn) {
-              cell.style.backgroundBrush =
-                  _applyBandedColStyle(_firstColumn, backColor, j);
+              cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
               if (cell.style.backgroundBrush != null) {
                 cell.style.borders.all = backColorPen;
               }
@@ -3283,25 +3165,21 @@ class PdfGrid extends PdfLayoutElement {
         cell.style.textBrush = textBrush;
 
         if (_bandedColumn && _bandedRow) {
-          cell.style.backgroundBrush =
-              _applyBandedColStyle(_firstColumn, backColor, j);
+          cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
 
-          cell.style.backgroundBrush ??=
-              _applyBandedRowStyle(_headerRow, backColor, i);
+          cell.style.backgroundBrush ??= _applyBandedRowStyle(_headerRow, backColor, i);
           if (cell.style.backgroundBrush != null) {
             cell.style.borders.all = backColorPen;
           }
         } else {
           if (_bandedColumn) {
-            cell.style.backgroundBrush =
-                _applyBandedColStyle(_firstColumn, backColor, j);
+            cell.style.backgroundBrush = _applyBandedColStyle(_firstColumn, backColor, j);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.all = backColorPen;
             }
           }
           if (_bandedRow) {
-            cell.style.backgroundBrush =
-                _applyBandedRowStyle(_headerRow, backColor, i);
+            cell.style.backgroundBrush = _applyBandedRowStyle(_headerRow, backColor, i);
             if (cell.style.backgroundBrush != null) {
               cell.style.borders.all = backColorPen;
             }
@@ -3447,8 +3325,7 @@ class PdfGridHelper {
   /// internal method
   PdfSize _measure() {
     double height = 0;
-    final double width =
-        PdfGridColumnCollectionHelper.getHelper(base.columns).columnWidth;
+    final double width = PdfGridColumnCollectionHelper.getHelper(base.columns).columnWidth;
     for (int i = 0; i < base.headers.count; i++) {
       height += base.headers[i].height;
     }
@@ -3473,12 +3350,10 @@ class PdfGridHelper {
             !PdfGridCellHelper.getHelper(cell).isRowMergeContinue &&
             (cell.columnSpan > 1 || cell.rowSpan > 1)) {
           if (cell.columnSpan + j > row.cells.count) {
-            throw ArgumentError.value(
-                'Invalid span specified at row $j column $i');
+            throw ArgumentError.value('Invalid span specified at row $j column $i');
           }
           if (cell.rowSpan + i > base.headers.count) {
-            throw ArgumentError.value(
-                'Invalid span specified at row $j column $i');
+            throw ArgumentError.value('Invalid span specified at row $j column $i');
           }
           if (cell.columnSpan > 1 && cell.rowSpan > 1) {
             colSpan = cell.columnSpan;
@@ -3487,10 +3362,8 @@ class PdfGridHelper {
             currentRowIndex = i;
             while (colSpan > 1) {
               currentCellIndex++;
-              PdfGridCellHelper.getHelper(row.cells[currentCellIndex])
-                  .isCellMergeContinue = true;
-              PdfGridCellHelper.getHelper(row.cells[currentCellIndex])
-                  .isRowMergeContinue = true;
+              PdfGridCellHelper.getHelper(row.cells[currentCellIndex]).isCellMergeContinue = true;
+              PdfGridCellHelper.getHelper(row.cells[currentCellIndex]).isRowMergeContinue = true;
               row.cells[currentCellIndex].rowSpan = rowSpan;
               colSpan--;
             }
@@ -3498,20 +3371,16 @@ class PdfGridHelper {
             colSpan = cell.columnSpan;
             while (rowSpan > 1) {
               currentRowIndex++;
-              PdfGridCellHelper.getHelper(
-                      base.headers[currentRowIndex].cells[j])
+              PdfGridCellHelper.getHelper(base.headers[currentRowIndex].cells[j])
                   .isRowMergeContinue = true;
-              PdfGridCellHelper.getHelper(
-                      base.headers[currentRowIndex].cells[currentCellIndex])
+              PdfGridCellHelper.getHelper(base.headers[currentRowIndex].cells[currentCellIndex])
                   .isRowMergeContinue = true;
               rowSpan--;
               while (colSpan > 1) {
                 currentCellIndex++;
-                PdfGridCellHelper.getHelper(
-                        base.headers[currentRowIndex].cells[currentCellIndex])
+                PdfGridCellHelper.getHelper(base.headers[currentRowIndex].cells[currentCellIndex])
                     .isCellMergeContinue = true;
-                PdfGridCellHelper.getHelper(
-                        base.headers[currentRowIndex].cells[currentCellIndex])
+                PdfGridCellHelper.getHelper(base.headers[currentRowIndex].cells[currentCellIndex])
                     .isRowMergeContinue = true;
                 colSpan--;
               }
@@ -3523,8 +3392,7 @@ class PdfGridHelper {
             currentCellIndex = j;
             while (colSpan > 1) {
               currentCellIndex++;
-              PdfGridCellHelper.getHelper(row.cells[currentCellIndex])
-                  .isCellMergeContinue = true;
+              PdfGridCellHelper.getHelper(row.cells[currentCellIndex]).isCellMergeContinue = true;
               colSpan--;
             }
           } else if (cell.columnSpan == 1 && cell.rowSpan > 1) {
@@ -3532,8 +3400,7 @@ class PdfGridHelper {
             currentRowIndex = i;
             while (rowSpan > 1) {
               currentRowIndex++;
-              PdfGridCellHelper.getHelper(
-                      base.headers[currentRowIndex].cells[j])
+              PdfGridCellHelper.getHelper(base.headers[currentRowIndex].cells[j])
                   .isRowMergeContinue = true;
               rowSpan--;
             }
@@ -3555,12 +3422,10 @@ class PdfGridHelper {
               !PdfGridCellHelper.getHelper(cell).isRowMergeContinue &&
               (cell.columnSpan > 1 || cell.rowSpan > 1)) {
             if (cell.columnSpan + j > row.cells.count) {
-              throw ArgumentError.value(
-                  'Invalid span specified at row $j column $i');
+              throw ArgumentError.value('Invalid span specified at row $j column $i');
             }
             if (cell.rowSpan + i > base.rows.count) {
-              throw ArgumentError.value(
-                  'Invalid span specified at row $j column $i');
+              throw ArgumentError.value('Invalid span specified at row $j column $i');
             }
             if (cell.columnSpan > 1 && cell.rowSpan > 1) {
               colSpan = cell.columnSpan;
@@ -3569,10 +3434,8 @@ class PdfGridHelper {
               currentRowIndex = i;
               while (colSpan > 1) {
                 currentCellIndex++;
-                PdfGridCellHelper.getHelper(row.cells[currentCellIndex])
-                    .isCellMergeContinue = true;
-                PdfGridCellHelper.getHelper(row.cells[currentCellIndex])
-                    .isRowMergeContinue = true;
+                PdfGridCellHelper.getHelper(row.cells[currentCellIndex]).isCellMergeContinue = true;
+                PdfGridCellHelper.getHelper(row.cells[currentCellIndex]).isRowMergeContinue = true;
                 colSpan--;
               }
               currentCellIndex = j;
@@ -3581,19 +3444,16 @@ class PdfGridHelper {
                 currentRowIndex++;
                 PdfGridCellHelper.getHelper(base.rows[currentRowIndex].cells[j])
                     .isRowMergeContinue = true;
-                PdfGridCellHelper.getHelper(
-                        base.rows[currentRowIndex].cells[currentCellIndex])
+                PdfGridCellHelper.getHelper(base.rows[currentRowIndex].cells[currentCellIndex])
                     .isRowMergeContinue = true;
                 rowSpan--;
                 while (colSpan > 1) {
                   currentCellIndex++;
-                  PdfGridCellHelper.getHelper(
-                          PdfGridRowHelper.getHelper(base.rows[currentRowIndex])
-                              .cells![currentCellIndex])
+                  PdfGridCellHelper.getHelper(PdfGridRowHelper.getHelper(base.rows[currentRowIndex])
+                          .cells![currentCellIndex])
                       .isCellMergeContinue = true;
-                  PdfGridCellHelper.getHelper(
-                          PdfGridRowHelper.getHelper(base.rows[currentRowIndex])
-                              .cells![currentCellIndex])
+                  PdfGridCellHelper.getHelper(PdfGridRowHelper.getHelper(base.rows[currentRowIndex])
+                          .cells![currentCellIndex])
                       .isRowMergeContinue = true;
                   colSpan--;
                 }
@@ -3605,8 +3465,7 @@ class PdfGridHelper {
               currentCellIndex = j;
               while (colSpan > 1) {
                 currentCellIndex++;
-                PdfGridCellHelper.getHelper(row.cells[currentCellIndex])
-                    .isCellMergeContinue = true;
+                PdfGridCellHelper.getHelper(row.cells[currentCellIndex]).isCellMergeContinue = true;
                 colSpan--;
               }
             } else if (cell.columnSpan == 1 && cell.rowSpan > 1) {
@@ -3646,31 +3505,18 @@ class PdfGridHelper {
       cellWidth = 0;
       for (int i = 0; i < base.columns.count; i++) {
         for (int j = 0; j < base.rows.count; j++) {
-          final bool isGrid = base.rows[j].cells[i].value != null &&
-              base.rows[j].cells[i].value is PdfGrid;
+          final bool isGrid =
+              base.rows[j].cells[i].value != null && base.rows[j].cells[i].value is PdfGrid;
           if ((base.rows[j].cells[i].columnSpan == 1 &&
-                  !PdfGridCellHelper.getHelper(base.rows[j].cells[i])
-                      .isCellMergeContinue) ||
+                  !PdfGridCellHelper.getHelper(base.rows[j].cells[i]).isCellMergeContinue) ||
               isGrid) {
             if (isGrid &&
-                !PdfGridRowHelper.getHelper(base.rows[j])
-                    .grid
-                    .style
-                    .allowHorizontalOverflow &&
+                !PdfGridRowHelper.getHelper(base.rows[j]).grid.style.allowHorizontalOverflow &&
                 initialWidth != 0) {
-              PdfGridHelper.getHelper(base.rows[j].cells[i].value as PdfGrid)
-                      .initialWidth =
+              PdfGridHelper.getHelper(base.rows[j].cells[i].value as PdfGrid).initialWidth =
                   initialWidth -
-                      (PdfGridRowHelper.getHelper(base.rows[j])
-                              .grid
-                              .style
-                              .cellPadding
-                              .right +
-                          PdfGridRowHelper.getHelper(base.rows[j])
-                              .grid
-                              .style
-                              .cellPadding
-                              .left +
+                      (PdfGridRowHelper.getHelper(base.rows[j]).grid.style.cellPadding.right +
+                          PdfGridRowHelper.getHelper(base.rows[j]).grid.style.cellPadding.left +
                           base.rows[j].cells[i].style.borders.left.width / 2 +
                           base._gridLocation.x);
             }
@@ -3707,21 +3553,19 @@ class PdfGridHelper {
         }
       }
       if (isChildGrid! && initialWidth != 0) {
-        widths = PdfGridColumnCollectionHelper.getHelper(base.columns)
-            .getDefaultWidths(initialWidth);
+        widths =
+            PdfGridColumnCollectionHelper.getHelper(base.columns).getDefaultWidths(initialWidth);
       }
       for (int i = 0; i < base.columns.count; i++) {
         if (base.columns[i].width < 0 ||
             (base.columns[i].width > 0 &&
-                !PdfGridColumnHelper.getHelper(base.columns[i])
-                    .isCustomWidth)) {
+                !PdfGridColumnHelper.getHelper(base.columns[i]).isCustomWidth)) {
           PdfGridColumnHelper.getHelper(base.columns[i]).width = widths[i]!;
         }
       }
     } else {
-      List<double?> widths =
-          PdfGridColumnCollectionHelper.getHelper(base.columns)
-              .getDefaultWidths(bounds.width - bounds.x);
+      List<double?> widths = PdfGridColumnCollectionHelper.getHelper(base.columns)
+          .getDefaultWidths(bounds.width - bounds.x);
       for (int i = 0; i < base.columns.count; i++) {
         if (base.columns[i].width < 0) {
           PdfGridColumnHelper.getHelper(base.columns[i]).width = widths[i]!;
@@ -3734,8 +3578,7 @@ class PdfGridHelper {
       }
       if (parentCell != null &&
           (!base.style.allowHorizontalOverflow) &&
-          (!PdfGridRowHelper.getHelper(
-                  PdfGridCellHelper.getHelper(parentCell!).row!)
+          (!PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(parentCell!).row!)
               .grid
               .style
               .allowHorizontalOverflow)) {
@@ -3743,25 +3586,21 @@ class PdfGridHelper {
         double columnWidth = 0;
         int columnCount = base.columns.count;
         if (parentCell!.style.cellPadding != null) {
-          padding += parentCell!.style.cellPadding!.left +
-              parentCell!.style.cellPadding!.right;
+          padding += parentCell!.style.cellPadding!.left + parentCell!.style.cellPadding!.right;
         } else {
-          padding += PdfGridRowHelper.getHelper(
-                      PdfGridCellHelper.getHelper(parentCell!).row!)
+          padding += PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(parentCell!).row!)
                   .grid
                   .style
                   .cellPadding
                   .left +
-              PdfGridRowHelper.getHelper(
-                      PdfGridCellHelper.getHelper(parentCell!).row!)
+              PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(parentCell!).row!)
                   .grid
                   .style
                   .cellPadding
                   .right;
         }
         for (int i = 0; i < parentCell!.columnSpan; i++) {
-          columnWidth += PdfGridRowHelper.getHelper(
-                  PdfGridCellHelper.getHelper(parentCell!).row!)
+          columnWidth += PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(parentCell!).row!)
               .grid
               .columns[parentCellIndex + i]
               .width;
@@ -3774,32 +3613,25 @@ class PdfGridHelper {
           }
         }
         if (columnWidth > padding) {
-          final double childGridColumnWidth =
-              (columnWidth - padding) / columnCount;
-          if (parentCell != null &&
-              parentCell!.stringFormat.alignment != PdfTextAlignment.right) {
+          final double childGridColumnWidth = (columnWidth - padding) / columnCount;
+          if (parentCell != null && parentCell!.stringFormat.alignment != PdfTextAlignment.right) {
             for (int j = 0; j < base.columns.count; j++) {
-              if (!PdfGridColumnHelper.getHelper(base.columns[j])
-                  .isCustomWidth) {
-                PdfGridColumnHelper.getHelper(base.columns[j]).width =
-                    childGridColumnWidth;
+              if (!PdfGridColumnHelper.getHelper(base.columns[j]).isCustomWidth) {
+                PdfGridColumnHelper.getHelper(base.columns[j]).width = childGridColumnWidth;
               }
             }
           }
         }
       }
       if (parentCell != null &&
-          PdfGridRowHelper.getHelper(
-                      PdfGridCellHelper.getHelper(parentCell!).row!)
-                  .getWidth() >
+          PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(parentCell!).row!).getWidth() >
               0) {
         if (isChildGrid! &&
             size.width >
-                PdfGridRowHelper.getHelper(
-                        PdfGridCellHelper.getHelper(parentCell!).row!)
+                PdfGridRowHelper.getHelper(PdfGridCellHelper.getHelper(parentCell!).row!)
                     .getWidth()) {
-          widths = PdfGridColumnCollectionHelper.getHelper(base.columns)
-              .getDefaultWidths(bounds.width);
+          widths =
+              PdfGridColumnCollectionHelper.getHelper(base.columns).getDefaultWidths(bounds.width);
           for (int i = 0; i < base.columns.count; i++) {
             base.columns[i].width = widths[i]!;
           }
@@ -3864,8 +3696,7 @@ class PdfGridHelper {
         break;
 
       case PdfGridBuiltInStyle.plainTable1:
-        base._applyPlainTable1(
-            PdfColor(191, 191, 191), PdfColor(242, 242, 242));
+        base._applyPlainTable1(PdfColor(191, 191, 191), PdfColor(242, 242, 242));
         break;
 
       case PdfGridBuiltInStyle.plainTable2:
@@ -3873,8 +3704,7 @@ class PdfGridHelper {
         break;
 
       case PdfGridBuiltInStyle.plainTable3:
-        base._applyPlainTable3(
-            PdfColor(127, 127, 127), PdfColor(242, 242, 242));
+        base._applyPlainTable3(PdfColor(127, 127, 127), PdfColor(242, 242, 242));
         break;
 
       case PdfGridBuiltInStyle.plainTable4:
@@ -3882,42 +3712,34 @@ class PdfGridHelper {
         break;
 
       case PdfGridBuiltInStyle.plainTable5:
-        base._applyPlainTable5(
-            PdfColor(127, 127, 127), PdfColor(242, 242, 242));
+        base._applyPlainTable5(PdfColor(127, 127, 127), PdfColor(242, 242, 242));
         break;
       case PdfGridBuiltInStyle.gridTable1Light:
-        base._applyGridTable1Light(
-            PdfColor(153, 153, 153), PdfColor(102, 102, 102));
+        base._applyGridTable1Light(PdfColor(153, 153, 153), PdfColor(102, 102, 102));
         break;
 
       case PdfGridBuiltInStyle.gridTable1LightAccent1:
-        base._applyGridTable1Light(
-            PdfColor(189, 214, 238), PdfColor(156, 194, 229));
+        base._applyGridTable1Light(PdfColor(189, 214, 238), PdfColor(156, 194, 229));
         break;
 
       case PdfGridBuiltInStyle.gridTable1LightAccent2:
-        base._applyGridTable1Light(
-            PdfColor(247, 202, 172), PdfColor(244, 176, 131));
+        base._applyGridTable1Light(PdfColor(247, 202, 172), PdfColor(244, 176, 131));
         break;
 
       case PdfGridBuiltInStyle.gridTable1LightAccent3:
-        base._applyGridTable1Light(
-            PdfColor(219, 219, 219), PdfColor(201, 201, 201));
+        base._applyGridTable1Light(PdfColor(219, 219, 219), PdfColor(201, 201, 201));
         break;
 
       case PdfGridBuiltInStyle.gridTable1LightAccent4:
-        base._applyGridTable1Light(
-            PdfColor(255, 229, 153), PdfColor(255, 217, 102));
+        base._applyGridTable1Light(PdfColor(255, 229, 153), PdfColor(255, 217, 102));
         break;
 
       case PdfGridBuiltInStyle.gridTable1LightAccent5:
-        base._applyGridTable1Light(
-            PdfColor(180, 198, 231), PdfColor(142, 170, 219));
+        base._applyGridTable1Light(PdfColor(180, 198, 231), PdfColor(142, 170, 219));
         break;
 
       case PdfGridBuiltInStyle.gridTable1LightAccent6:
-        base._applyGridTable1Light(
-            PdfColor(192, 224, 179), PdfColor(168, 208, 141));
+        base._applyGridTable1Light(PdfColor(192, 224, 179), PdfColor(168, 208, 141));
         break;
 
       case PdfGridBuiltInStyle.gridTable2:
@@ -3977,177 +3799,169 @@ class PdfGridHelper {
         break;
 
       case PdfGridBuiltInStyle.gridTable4:
-        base._applyGridTable4(PdfColor(102, 102, 102), PdfColor(204, 204, 204),
-            PdfColor(0, 0, 0));
+        base._applyGridTable4(PdfColor(102, 102, 102), PdfColor(204, 204, 204), PdfColor(0, 0, 0));
         break;
 
       case PdfGridBuiltInStyle.gridTable4Accent1:
-        base._applyGridTable4(PdfColor(156, 194, 229), PdfColor(222, 234, 246),
-            PdfColor(91, 155, 213));
+        base._applyGridTable4(
+            PdfColor(156, 194, 229), PdfColor(222, 234, 246), PdfColor(91, 155, 213));
         break;
 
       case PdfGridBuiltInStyle.gridTable4Accent2:
-        base._applyGridTable4(PdfColor(244, 176, 131), PdfColor(251, 228, 213),
-            PdfColor(237, 125, 49));
+        base._applyGridTable4(
+            PdfColor(244, 176, 131), PdfColor(251, 228, 213), PdfColor(237, 125, 49));
         break;
 
       case PdfGridBuiltInStyle.gridTable4Accent3:
-        base._applyGridTable4(PdfColor(201, 201, 201), PdfColor(237, 237, 237),
-            PdfColor(165, 165, 165));
+        base._applyGridTable4(
+            PdfColor(201, 201, 201), PdfColor(237, 237, 237), PdfColor(165, 165, 165));
         break;
 
       case PdfGridBuiltInStyle.gridTable4Accent4:
-        base._applyGridTable4(PdfColor(255, 217, 102), PdfColor(255, 242, 204),
-            PdfColor(255, 192, 0));
+        base._applyGridTable4(
+            PdfColor(255, 217, 102), PdfColor(255, 242, 204), PdfColor(255, 192, 0));
         break;
 
       case PdfGridBuiltInStyle.gridTable4Accent5:
-        base._applyGridTable4(PdfColor(142, 170, 219), PdfColor(217, 226, 243),
-            PdfColor(68, 114, 196));
+        base._applyGridTable4(
+            PdfColor(142, 170, 219), PdfColor(217, 226, 243), PdfColor(68, 114, 196));
         break;
 
       case PdfGridBuiltInStyle.gridTable4Accent6:
-        base._applyGridTable4(PdfColor(168, 208, 141), PdfColor(226, 239, 217),
-            PdfColor(112, 173, 71));
+        base._applyGridTable4(
+            PdfColor(168, 208, 141), PdfColor(226, 239, 217), PdfColor(112, 173, 71));
         break;
 
       case PdfGridBuiltInStyle.gridTable5Dark:
-        base._applyGridTable5Dark(PdfColor(0, 0, 0), PdfColor(153, 153, 153),
-            PdfColor(204, 204, 204));
+        base._applyGridTable5Dark(
+            PdfColor(0, 0, 0), PdfColor(153, 153, 153), PdfColor(204, 204, 204));
         break;
 
       case PdfGridBuiltInStyle.gridTable5DarkAccent1:
-        base._applyGridTable5Dark(PdfColor(91, 155, 213),
-            PdfColor(189, 214, 238), PdfColor(222, 234, 246));
+        base._applyGridTable5Dark(
+            PdfColor(91, 155, 213), PdfColor(189, 214, 238), PdfColor(222, 234, 246));
         break;
 
       case PdfGridBuiltInStyle.gridTable5DarkAccent2:
-        base._applyGridTable5Dark(PdfColor(237, 125, 49),
-            PdfColor(247, 202, 172), PdfColor(251, 228, 213));
+        base._applyGridTable5Dark(
+            PdfColor(237, 125, 49), PdfColor(247, 202, 172), PdfColor(251, 228, 213));
         break;
 
       case PdfGridBuiltInStyle.gridTable5DarkAccent3:
-        base._applyGridTable5Dark(PdfColor(165, 165, 165),
-            PdfColor(219, 219, 219), PdfColor(237, 237, 237));
+        base._applyGridTable5Dark(
+            PdfColor(165, 165, 165), PdfColor(219, 219, 219), PdfColor(237, 237, 237));
         break;
 
       case PdfGridBuiltInStyle.gridTable5DarkAccent4:
-        base._applyGridTable5Dark(PdfColor(255, 192, 0),
-            PdfColor(255, 229, 153), PdfColor(255, 242, 204));
+        base._applyGridTable5Dark(
+            PdfColor(255, 192, 0), PdfColor(255, 229, 153), PdfColor(255, 242, 204));
         break;
 
       case PdfGridBuiltInStyle.gridTable5DarkAccent5:
-        base._applyGridTable5Dark(PdfColor(68, 114, 196),
-            PdfColor(180, 198, 231), PdfColor(217, 226, 243));
+        base._applyGridTable5Dark(
+            PdfColor(68, 114, 196), PdfColor(180, 198, 231), PdfColor(217, 226, 243));
         break;
 
       case PdfGridBuiltInStyle.gridTable5DarkAccent6:
-        base._applyGridTable5Dark(PdfColor(112, 171, 71),
-            PdfColor(197, 224, 179), PdfColor(226, 239, 217));
+        base._applyGridTable5Dark(
+            PdfColor(112, 171, 71), PdfColor(197, 224, 179), PdfColor(226, 239, 217));
         break;
 
       case PdfGridBuiltInStyle.gridTable6Colorful:
-        base._applyGridTable6Colorful(PdfColor(102, 102, 102),
-            PdfColor(204, 204, 204), PdfColor(0, 0, 0));
+        base._applyGridTable6Colorful(
+            PdfColor(102, 102, 102), PdfColor(204, 204, 204), PdfColor(0, 0, 0));
         break;
 
       case PdfGridBuiltInStyle.gridTable6ColorfulAccent1:
-        base._applyGridTable6Colorful(PdfColor(156, 194, 229),
-            PdfColor(222, 234, 246), PdfColor(46, 116, 181));
+        base._applyGridTable6Colorful(
+            PdfColor(156, 194, 229), PdfColor(222, 234, 246), PdfColor(46, 116, 181));
         break;
 
       case PdfGridBuiltInStyle.gridTable6ColorfulAccent2:
-        base._applyGridTable6Colorful(PdfColor(244, 176, 131),
-            PdfColor(251, 228, 213), PdfColor(196, 89, 17));
+        base._applyGridTable6Colorful(
+            PdfColor(244, 176, 131), PdfColor(251, 228, 213), PdfColor(196, 89, 17));
         break;
 
       case PdfGridBuiltInStyle.gridTable6ColorfulAccent3:
-        base._applyGridTable6Colorful(PdfColor(201, 201, 201),
-            PdfColor(237, 237, 237), PdfColor(123, 123, 123));
+        base._applyGridTable6Colorful(
+            PdfColor(201, 201, 201), PdfColor(237, 237, 237), PdfColor(123, 123, 123));
         break;
 
       case PdfGridBuiltInStyle.gridTable6ColorfulAccent4:
-        base._applyGridTable6Colorful(PdfColor(255, 217, 102),
-            PdfColor(255, 242, 204), PdfColor(191, 143, 0));
+        base._applyGridTable6Colorful(
+            PdfColor(255, 217, 102), PdfColor(255, 242, 204), PdfColor(191, 143, 0));
         break;
 
       case PdfGridBuiltInStyle.gridTable6ColorfulAccent5:
-        base._applyGridTable6Colorful(PdfColor(142, 170, 219),
-            PdfColor(217, 226, 243), PdfColor(47, 84, 150));
+        base._applyGridTable6Colorful(
+            PdfColor(142, 170, 219), PdfColor(217, 226, 243), PdfColor(47, 84, 150));
         break;
 
       case PdfGridBuiltInStyle.gridTable6ColorfulAccent6:
-        base._applyGridTable6Colorful(PdfColor(168, 208, 141),
-            PdfColor(226, 239, 217), PdfColor(83, 129, 53));
+        base._applyGridTable6Colorful(
+            PdfColor(168, 208, 141), PdfColor(226, 239, 217), PdfColor(83, 129, 53));
         break;
 
       case PdfGridBuiltInStyle.gridTable7Colorful:
-        base._applyGridTable7Colorful(PdfColor(102, 102, 102),
-            PdfColor(204, 204, 204), PdfColor(0, 0, 0));
+        base._applyGridTable7Colorful(
+            PdfColor(102, 102, 102), PdfColor(204, 204, 204), PdfColor(0, 0, 0));
         break;
 
       case PdfGridBuiltInStyle.gridTable7ColorfulAccent1:
-        base._applyGridTable7Colorful(PdfColor(156, 194, 229),
-            PdfColor(222, 234, 246), PdfColor(46, 116, 181));
+        base._applyGridTable7Colorful(
+            PdfColor(156, 194, 229), PdfColor(222, 234, 246), PdfColor(46, 116, 181));
         break;
 
       case PdfGridBuiltInStyle.gridTable7ColorfulAccent2:
-        base._applyGridTable7Colorful(PdfColor(244, 176, 131),
-            PdfColor(251, 228, 213), PdfColor(196, 89, 17));
+        base._applyGridTable7Colorful(
+            PdfColor(244, 176, 131), PdfColor(251, 228, 213), PdfColor(196, 89, 17));
         break;
 
       case PdfGridBuiltInStyle.gridTable7ColorfulAccent3:
-        base._applyGridTable7Colorful(PdfColor(201, 201, 201),
-            PdfColor(237, 237, 237), PdfColor(123, 123, 123));
+        base._applyGridTable7Colorful(
+            PdfColor(201, 201, 201), PdfColor(237, 237, 237), PdfColor(123, 123, 123));
         break;
 
       case PdfGridBuiltInStyle.gridTable7ColorfulAccent4:
-        base._applyGridTable7Colorful(PdfColor(255, 217, 102),
-            PdfColor(255, 242, 204), PdfColor(191, 143, 0));
+        base._applyGridTable7Colorful(
+            PdfColor(255, 217, 102), PdfColor(255, 242, 204), PdfColor(191, 143, 0));
         break;
 
       case PdfGridBuiltInStyle.gridTable7ColorfulAccent5:
-        base._applyGridTable7Colorful(PdfColor(142, 170, 219),
-            PdfColor(217, 226, 243), PdfColor(47, 84, 150));
+        base._applyGridTable7Colorful(
+            PdfColor(142, 170, 219), PdfColor(217, 226, 243), PdfColor(47, 84, 150));
         break;
 
       case PdfGridBuiltInStyle.gridTable7ColorfulAccent6:
-        base._applyGridTable7Colorful(PdfColor(168, 208, 141),
-            PdfColor(226, 239, 217), PdfColor(83, 129, 53));
+        base._applyGridTable7Colorful(
+            PdfColor(168, 208, 141), PdfColor(226, 239, 217), PdfColor(83, 129, 53));
         break;
       case PdfGridBuiltInStyle.listTable1Light:
-        base._applyListTable1Light(
-            PdfColor(102, 102, 102), PdfColor(204, 204, 204));
+        base._applyListTable1Light(PdfColor(102, 102, 102), PdfColor(204, 204, 204));
         break;
 
       case PdfGridBuiltInStyle.listTable1LightAccent1:
-        base._applyListTable1Light(
-            PdfColor(156, 194, 229), PdfColor(222, 234, 246));
+        base._applyListTable1Light(PdfColor(156, 194, 229), PdfColor(222, 234, 246));
         break;
 
       case PdfGridBuiltInStyle.listTable1LightAccent2:
-        base._applyListTable1Light(
-            PdfColor(244, 176, 131), PdfColor(251, 228, 213));
+        base._applyListTable1Light(PdfColor(244, 176, 131), PdfColor(251, 228, 213));
         break;
 
       case PdfGridBuiltInStyle.listTable1LightAccent3:
-        base._applyListTable1Light(
-            PdfColor(201, 201, 201), PdfColor(237, 237, 237));
+        base._applyListTable1Light(PdfColor(201, 201, 201), PdfColor(237, 237, 237));
         break;
 
       case PdfGridBuiltInStyle.listTable1LightAccent4:
-        base._applyListTable1Light(
-            PdfColor(255, 217, 102), PdfColor(255, 242, 204));
+        base._applyListTable1Light(PdfColor(255, 217, 102), PdfColor(255, 242, 204));
         break;
 
       case PdfGridBuiltInStyle.listTable1LightAccent5:
-        base._applyListTable1Light(
-            PdfColor(142, 170, 219), PdfColor(217, 226, 243));
+        base._applyListTable1Light(PdfColor(142, 170, 219), PdfColor(217, 226, 243));
         break;
 
       case PdfGridBuiltInStyle.listTable1LightAccent6:
-        base._applyListTable1Light(
-            PdfColor(168, 208, 141), PdfColor(226, 239, 217));
+        base._applyListTable1Light(PdfColor(168, 208, 141), PdfColor(226, 239, 217));
         break;
 
       case PdfGridBuiltInStyle.listTable2:
@@ -4207,38 +4021,37 @@ class PdfGridHelper {
         break;
 
       case PdfGridBuiltInStyle.listTable4:
-        base._applyListTable4(PdfColor(102, 102, 102), PdfColor(0, 0, 0),
-            PdfColor(204, 204, 204));
+        base._applyListTable4(PdfColor(102, 102, 102), PdfColor(0, 0, 0), PdfColor(204, 204, 204));
         break;
 
       case PdfGridBuiltInStyle.listTable4Accent1:
-        base._applyListTable4(PdfColor(156, 194, 229), PdfColor(91, 155, 213),
-            PdfColor(222, 234, 246));
+        base._applyListTable4(
+            PdfColor(156, 194, 229), PdfColor(91, 155, 213), PdfColor(222, 234, 246));
         break;
 
       case PdfGridBuiltInStyle.listTable4Accent2:
-        base._applyListTable4(PdfColor(244, 176, 131), PdfColor(237, 125, 49),
-            PdfColor(251, 228, 213));
+        base._applyListTable4(
+            PdfColor(244, 176, 131), PdfColor(237, 125, 49), PdfColor(251, 228, 213));
         break;
 
       case PdfGridBuiltInStyle.listTable4Accent3:
-        base._applyListTable4(PdfColor(201, 201, 201), PdfColor(165, 165, 165),
-            PdfColor(237, 237, 237));
+        base._applyListTable4(
+            PdfColor(201, 201, 201), PdfColor(165, 165, 165), PdfColor(237, 237, 237));
         break;
 
       case PdfGridBuiltInStyle.listTable4Accent4:
-        base._applyListTable4(PdfColor(255, 217, 102), PdfColor(255, 192, 0),
-            PdfColor(255, 242, 204));
+        base._applyListTable4(
+            PdfColor(255, 217, 102), PdfColor(255, 192, 0), PdfColor(255, 242, 204));
         break;
 
       case PdfGridBuiltInStyle.listTable4Accent5:
-        base._applyListTable4(PdfColor(142, 170, 219), PdfColor(68, 114, 196),
-            PdfColor(217, 226, 243));
+        base._applyListTable4(
+            PdfColor(142, 170, 219), PdfColor(68, 114, 196), PdfColor(217, 226, 243));
         break;
 
       case PdfGridBuiltInStyle.listTable4Accent6:
-        base._applyListTable4(PdfColor(168, 208, 141), PdfColor(112, 173, 71),
-            PdfColor(226, 239, 217));
+        base._applyListTable4(
+            PdfColor(168, 208, 141), PdfColor(112, 173, 71), PdfColor(226, 239, 217));
         break;
 
       case PdfGridBuiltInStyle.listTable5Dark:
@@ -4270,73 +4083,73 @@ class PdfGridHelper {
         break;
 
       case PdfGridBuiltInStyle.listTable6Colorful:
-        base._applyListTable6Colorful(PdfColor(102, 102, 102),
-            PdfColor(204, 204, 204), PdfColor(0, 0, 0));
+        base._applyListTable6Colorful(
+            PdfColor(102, 102, 102), PdfColor(204, 204, 204), PdfColor(0, 0, 0));
         break;
 
       case PdfGridBuiltInStyle.listTable6ColorfulAccent1:
-        base._applyListTable6Colorful(PdfColor(91, 155, 213),
-            PdfColor(222, 234, 246), PdfColor(46, 116, 181));
+        base._applyListTable6Colorful(
+            PdfColor(91, 155, 213), PdfColor(222, 234, 246), PdfColor(46, 116, 181));
         break;
 
       case PdfGridBuiltInStyle.listTable6ColorfulAccent2:
-        base._applyListTable6Colorful(PdfColor(237, 125, 49),
-            PdfColor(251, 228, 213), PdfColor(196, 89, 17));
+        base._applyListTable6Colorful(
+            PdfColor(237, 125, 49), PdfColor(251, 228, 213), PdfColor(196, 89, 17));
         break;
 
       case PdfGridBuiltInStyle.listTable6ColorfulAccent3:
-        base._applyListTable6Colorful(PdfColor(165, 165, 165),
-            PdfColor(237, 237, 237), PdfColor(123, 123, 123));
+        base._applyListTable6Colorful(
+            PdfColor(165, 165, 165), PdfColor(237, 237, 237), PdfColor(123, 123, 123));
         break;
 
       case PdfGridBuiltInStyle.listTable6ColorfulAccent4:
-        base._applyListTable6Colorful(PdfColor(255, 192, 0),
-            PdfColor(255, 242, 204), PdfColor(191, 143, 0));
+        base._applyListTable6Colorful(
+            PdfColor(255, 192, 0), PdfColor(255, 242, 204), PdfColor(191, 143, 0));
         break;
 
       case PdfGridBuiltInStyle.listTable6ColorfulAccent5:
-        base._applyListTable6Colorful(PdfColor(68, 114, 196),
-            PdfColor(217, 226, 243), PdfColor(47, 84, 150));
+        base._applyListTable6Colorful(
+            PdfColor(68, 114, 196), PdfColor(217, 226, 243), PdfColor(47, 84, 150));
         break;
 
       case PdfGridBuiltInStyle.listTable6ColorfulAccent6:
-        base._applyListTable6Colorful(PdfColor(112, 173, 71),
-            PdfColor(226, 239, 217), PdfColor(83, 129, 53));
+        base._applyListTable6Colorful(
+            PdfColor(112, 173, 71), PdfColor(226, 239, 217), PdfColor(83, 129, 53));
         break;
 
       case PdfGridBuiltInStyle.listTable7Colorful:
-        base._applyListTable7Colorful(PdfColor(102, 102, 102),
-            PdfColor(204, 204, 204), PdfColor(0, 0, 0));
+        base._applyListTable7Colorful(
+            PdfColor(102, 102, 102), PdfColor(204, 204, 204), PdfColor(0, 0, 0));
         break;
 
       case PdfGridBuiltInStyle.listTable7ColorfulAccent1:
-        base._applyListTable7Colorful(PdfColor(91, 155, 213),
-            PdfColor(222, 234, 246), PdfColor(46, 116, 181));
+        base._applyListTable7Colorful(
+            PdfColor(91, 155, 213), PdfColor(222, 234, 246), PdfColor(46, 116, 181));
         break;
 
       case PdfGridBuiltInStyle.listTable7ColorfulAccent2:
-        base._applyListTable7Colorful(PdfColor(237, 125, 49),
-            PdfColor(251, 228, 213), PdfColor(196, 89, 17));
+        base._applyListTable7Colorful(
+            PdfColor(237, 125, 49), PdfColor(251, 228, 213), PdfColor(196, 89, 17));
         break;
 
       case PdfGridBuiltInStyle.listTable7ColorfulAccent3:
-        base._applyListTable7Colorful(PdfColor(165, 165, 165),
-            PdfColor(237, 237, 237), PdfColor(123, 123, 123));
+        base._applyListTable7Colorful(
+            PdfColor(165, 165, 165), PdfColor(237, 237, 237), PdfColor(123, 123, 123));
         break;
 
       case PdfGridBuiltInStyle.listTable7ColorfulAccent4:
-        base._applyListTable7Colorful(PdfColor(255, 192, 0),
-            PdfColor(255, 242, 204), PdfColor(191, 143, 0));
+        base._applyListTable7Colorful(
+            PdfColor(255, 192, 0), PdfColor(255, 242, 204), PdfColor(191, 143, 0));
         break;
 
       case PdfGridBuiltInStyle.listTable7ColorfulAccent5:
-        base._applyListTable7Colorful(PdfColor(68, 114, 196),
-            PdfColor(217, 226, 243), PdfColor(47, 84, 150));
+        base._applyListTable7Colorful(
+            PdfColor(68, 114, 196), PdfColor(217, 226, 243), PdfColor(47, 84, 150));
         break;
 
       case PdfGridBuiltInStyle.listTable7ColorfulAccent6:
-        base._applyListTable7Colorful(PdfColor(112, 173, 71),
-            PdfColor(226, 239, 217), PdfColor(83, 129, 53));
+        base._applyListTable7Colorful(
+            PdfColor(112, 173, 71), PdfColor(226, 239, 217), PdfColor(83, 129, 53));
         break;
 
       // ignore: no_default_cases
@@ -4350,20 +4163,13 @@ typedef PdfGridBeginCellLayoutCallback = void Function(
     Object sender, PdfGridBeginCellLayoutArgs args);
 
 /// Delegate for handling EndCellLayoutEvent.
-typedef PdfGridEndCellLayoutCallback = void Function(
-    Object sender, PdfGridEndCellLayoutArgs args);
+typedef PdfGridEndCellLayoutCallback = void Function(Object sender, PdfGridEndCellLayoutArgs args);
 
 /// Represents arguments of StartCellLayout Event.
 class PdfGridBeginCellLayoutArgs extends GridCellLayoutArgs {
   //Constructor
-  PdfGridBeginCellLayoutArgs._(
-      PdfGraphics graphics,
-      int rowIndex,
-      int cellInder,
-      PdfRectangle bounds,
-      String value,
-      PdfGridCellStyle? style,
-      bool isHeaderRow)
+  PdfGridBeginCellLayoutArgs._(PdfGraphics graphics, int rowIndex, int cellInder,
+      PdfRectangle bounds, String value, PdfGridCellStyle? style, bool isHeaderRow)
       : super._(graphics, rowIndex, cellInder, bounds, value, isHeaderRow) {
     if (style != null) {
       this.style = style;
@@ -4421,14 +4227,8 @@ class PdfGridBeginCellLayoutArgs extends GridCellLayoutArgs {
 /// [PdfGridBeginCellLayoutArgs] helper
 class PdfGridBeginCellLayoutArgsHelper {
   /// internal method
-  static PdfGridBeginCellLayoutArgs load(
-      PdfGraphics graphics,
-      int rowIndex,
-      int cellInder,
-      PdfRectangle bounds,
-      String value,
-      PdfGridCellStyle? style,
-      bool isHeaderRow) {
+  static PdfGridBeginCellLayoutArgs load(PdfGraphics graphics, int rowIndex, int cellInder,
+      PdfRectangle bounds, String value, PdfGridCellStyle? style, bool isHeaderRow) {
     return PdfGridBeginCellLayoutArgs._(
         graphics, rowIndex, cellInder, bounds, value, style, isHeaderRow);
   }
@@ -4437,14 +4237,8 @@ class PdfGridBeginCellLayoutArgsHelper {
 /// Represents arguments of EndCellLayout Event.
 class PdfGridEndCellLayoutArgs extends GridCellLayoutArgs {
   //Constructor
-  PdfGridEndCellLayoutArgs._(
-      PdfGraphics graphics,
-      int rowIndex,
-      int cellInder,
-      PdfRectangle bounds,
-      String value,
-      PdfGridCellStyle? style,
-      bool isHeaderRow)
+  PdfGridEndCellLayoutArgs._(PdfGraphics graphics, int rowIndex, int cellInder, PdfRectangle bounds,
+      String value, PdfGridCellStyle? style, bool isHeaderRow)
       : super._(graphics, rowIndex, cellInder, bounds, value, isHeaderRow) {
     if (style != null) {
       this.style = style;
@@ -4459,14 +4253,8 @@ class PdfGridEndCellLayoutArgs extends GridCellLayoutArgs {
 /// [PdfGridEndCellLayoutArgs] helper
 class PdfGridEndCellLayoutArgsHelper {
   /// internal method
-  static PdfGridEndCellLayoutArgs load(
-      PdfGraphics graphics,
-      int rowIndex,
-      int cellInder,
-      PdfRectangle bounds,
-      String value,
-      PdfGridCellStyle? style,
-      bool isHeaderRow) {
+  static PdfGridEndCellLayoutArgs load(PdfGraphics graphics, int rowIndex, int cellInder,
+      PdfRectangle bounds, String value, PdfGridCellStyle? style, bool isHeaderRow) {
     return PdfGridEndCellLayoutArgs._(
         graphics, rowIndex, cellInder, bounds, value, style, isHeaderRow);
   }
@@ -4476,8 +4264,8 @@ class PdfGridEndCellLayoutArgsHelper {
 abstract class GridCellLayoutArgs {
   //Constructors
   /// Initializes a new instance of the [StartCellLayoutArgs] class.
-  GridCellLayoutArgs._(PdfGraphics graphics, int rowIndex, int cellIndex,
-      PdfRectangle bounds, String value, bool isHeaderRow) {
+  GridCellLayoutArgs._(PdfGraphics graphics, int rowIndex, int cellIndex, PdfRectangle bounds,
+      String value, bool isHeaderRow) {
     _rowIndex = rowIndex;
     _cellIndex = cellIndex;
     _value = value;
@@ -4818,8 +4606,7 @@ class PdfGridBeginPageLayoutArgs extends BeginPageLayoutArgs {
 /// [PdfGridBeginPageLayoutArgs] helper
 class PdfGridBeginPageLayoutArgsHelper {
   /// internal method
-  static PdfGridBeginPageLayoutArgs load(
-      Rect bounds, PdfPage page, int? startRow) {
+  static PdfGridBeginPageLayoutArgs load(Rect bounds, PdfPage page, int? startRow) {
     return PdfGridBeginPageLayoutArgs._(bounds, page, startRow);
   }
 }

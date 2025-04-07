@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../drawing/drawing.dart';
 import '../../graphics/brushes/pdf_solid_brush.dart';
@@ -19,40 +19,29 @@ abstract class PdfSingleValueField extends PdfDynamicField {
       : super(font: font, bounds: bounds, brush: brush);
 
   // field
-  final Map<PdfDocument?, PdfTemplateValuePair> _list =
-      <PdfDocument?, PdfTemplateValuePair>{};
+  final Map<PdfDocument?, PdfTemplateValuePair> _list = <PdfDocument?, PdfTemplateValuePair>{};
   final List<PdfGraphics> _painterGraphics = <PdfGraphics>[];
 
   // implementation
-  void _performDraw(PdfGraphics graphics, PdfPoint? location, double scalingX,
-      double scalingY) {
+  void _performDraw(PdfGraphics graphics, PdfPoint? location, double scalingX, double scalingY) {
     if (PdfGraphicsHelper.getHelper(graphics).page is PdfPage) {
       final PdfPage page = PdfDynamicField.getPageFromGraphics(graphics);
       final PdfDocument? document = PdfPageHelper.getHelper(page).document;
-      final String? value =
-          PdfAutomaticFieldHelper.getHelper(this).getValue(graphics);
+      final String? value = PdfAutomaticFieldHelper.getHelper(this).getValue(graphics);
 
       if (_list.containsKey(document)) {
         final PdfTemplateValuePair pair = _list[document]!;
         if (pair.value != value) {
-          final Size size =
-              PdfAutomaticFieldHelper.getHelper(this).obtainSize();
+          final Size size = PdfAutomaticFieldHelper.getHelper(this).obtainSize();
           pair.template.reset(size.width, size.height);
           pair.template.graphics!.drawString(value!, font,
-              pen: pen,
-              brush: brush,
-              bounds: bounds.topLeft & size,
-              format: stringFormat);
+              pen: pen, brush: brush, bounds: bounds.topLeft & size, format: stringFormat);
         }
 
         if (!_painterGraphics.contains(graphics)) {
-          final Offset drawLocation =
-              Offset(location!.x + bounds.left, location.y + bounds.top);
-          graphics.drawPdfTemplate(
-              pair.template,
-              drawLocation,
-              Size(pair.template.size.width * scalingX,
-                  pair.template.size.height * scalingY));
+          final Offset drawLocation = Offset(location!.x + bounds.left, location.y + bounds.top);
+          graphics.drawPdfTemplate(pair.template, drawLocation,
+              Size(pair.template.size.width * scalingX, pair.template.size.height * scalingY));
           _painterGraphics.add(graphics);
         }
       } else {
@@ -64,16 +53,11 @@ abstract class PdfSingleValueField extends PdfDynamicField {
         template.graphics!.drawString(value, font,
             pen: pen,
             brush: brush,
-            bounds: Rect.fromLTWH(
-                bounds.left, bounds.top, bounds.width, bounds.height),
+            bounds: Rect.fromLTWH(bounds.left, bounds.top, bounds.width, bounds.height),
             format: stringFormat);
-        final Offset drawLocation =
-            Offset(location!.x + bounds.left, location.y + bounds.top);
-        graphics.drawPdfTemplate(
-            pair.template,
-            drawLocation,
-            Size(pair.template.size.width * scalingX,
-                pair.template.size.height * scalingY));
+        final Offset drawLocation = Offset(location!.x + bounds.left, location.y + bounds.top);
+        graphics.drawPdfTemplate(pair.template, drawLocation,
+            Size(pair.template.size.width * scalingX, pair.template.size.height * scalingY));
         _painterGraphics.add(graphics);
       }
     }
@@ -84,8 +68,8 @@ abstract class PdfSingleValueField extends PdfDynamicField {
 /// [PdfSingleValueField] value
 class PdfSingleValueFieldHelper {
   /// internal method
-  static void performDraw(PdfSingleValueField field, PdfGraphics graphics,
-      PdfPoint? location, double scalingX, double scalingY) {
+  static void performDraw(PdfSingleValueField field, PdfGraphics graphics, PdfPoint? location,
+      double scalingX, double scalingY) {
     field._performDraw(graphics, location, scalingX, scalingY);
   }
 }

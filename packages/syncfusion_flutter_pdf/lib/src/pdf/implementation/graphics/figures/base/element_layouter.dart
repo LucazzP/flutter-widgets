@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../../drawing/drawing.dart';
 import '../../../pages/pdf_page.dart';
@@ -49,8 +49,7 @@ abstract class ElementLayouter {
   PdfRectangle getPaginateBounds(PdfLayoutParams param) {
     return param.format!._boundsSet
         ? PdfRectangle.fromRect(param.format!.paginateBounds)
-        : PdfRectangle(
-            param.bounds!.x, 0, param.bounds!.width, param.bounds!.height);
+        : PdfRectangle(param.bounds!.x, 0, param.bounds!.width, param.bounds!.height);
   }
 }
 
@@ -59,9 +58,7 @@ class PdfLayoutFormat {
   //Constructor
   /// Initializes a new instance of the [PdfLayoutFormat] class.
   PdfLayoutFormat(
-      {PdfLayoutType? layoutType,
-      PdfLayoutBreakType? breakType,
-      Rect? paginateBounds}) {
+      {PdfLayoutType? layoutType, PdfLayoutBreakType? breakType, Rect? paginateBounds}) {
     this.breakType = breakType ?? PdfLayoutBreakType.fitPage;
     this.layoutType = layoutType ?? PdfLayoutType.paginate;
     if (paginateBounds != null) {

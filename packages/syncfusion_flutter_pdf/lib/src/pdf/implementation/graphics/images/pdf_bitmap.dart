@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:ui';
+import 'package:pure_dart_ui/pure_dart_ui.dart';
 
 import '../../drawing/drawing.dart';
 import '../../graphics/pdf_graphics.dart';
@@ -186,8 +186,7 @@ class PdfBitmap extends PdfImage {
         _height = _decoder!.height;
         _width = _decoder!.width;
       }
-      PdfImageHelper.setJpegOrientationAngle(
-          this, _decoder!.jpegDecoderOrientationAngle);
+      PdfImageHelper.setJpegOrientationAngle(this, _decoder!.jpegDecoderOrientationAngle);
       _imageStatus = false;
     } else {
       throw UnsupportedError('Invalid/Unsupported image stream');
@@ -196,38 +195,31 @@ class PdfBitmap extends PdfImage {
 
   void _setColorSpace() {
     final PdfStream stream = PdfImageHelper.getImageStream(this)!;
-    final PdfName? color =
-        stream[PdfDictionaryProperties.colorSpace] as PdfName?;
+    final PdfName? color = stream[PdfDictionaryProperties.colorSpace] as PdfName?;
     if (color!.name == PdfDictionaryProperties.deviceCMYK) {
       _helper.colorSpace = PdfColorSpace.cmyk;
     } else if (color.name == PdfDictionaryProperties.deviceGray) {
       _helper.colorSpace = PdfColorSpace.grayScale;
     }
-    if (_decoder is PngDecoder &&
-        (_decoder! as PngDecoder).colorSpace != null) {
+    if (_decoder is PngDecoder && (_decoder! as PngDecoder).colorSpace != null) {
       _helper.colorSpace = PdfColorSpace.indexed;
     }
     switch (_helper.colorSpace) {
       case PdfColorSpace.cmyk:
         stream[PdfDictionaryProperties.decode] =
             PdfArray(<double>[1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]);
-        stream[PdfDictionaryProperties.colorSpace] =
-            PdfName(PdfDictionaryProperties.deviceCMYK);
+        stream[PdfDictionaryProperties.colorSpace] = PdfName(PdfDictionaryProperties.deviceCMYK);
         break;
       case PdfColorSpace.grayScale:
         stream[PdfDictionaryProperties.decode] = PdfArray(<double>[0.0, 1.0]);
-        stream[PdfDictionaryProperties.colorSpace] =
-            PdfName(PdfDictionaryProperties.deviceGray);
+        stream[PdfDictionaryProperties.colorSpace] = PdfName(PdfDictionaryProperties.deviceGray);
         break;
       case PdfColorSpace.rgb:
-        stream[PdfDictionaryProperties.decode] =
-            PdfArray(<double>[0.0, 1.0, 0.0, 1.0, 0.0, 1.0]);
-        stream[PdfDictionaryProperties.colorSpace] =
-            PdfName(PdfDictionaryProperties.deviceRGB);
+        stream[PdfDictionaryProperties.decode] = PdfArray(<double>[0.0, 1.0, 0.0, 1.0, 0.0, 1.0]);
+        stream[PdfDictionaryProperties.colorSpace] = PdfName(PdfDictionaryProperties.deviceRGB);
         break;
       case PdfColorSpace.indexed:
-        stream[PdfDictionaryProperties.colorSpace] =
-            (_decoder! as PngDecoder).colorSpace;
+        stream[PdfDictionaryProperties.colorSpace] = (_decoder! as PngDecoder).colorSpace;
         break;
       // ignore: no_default_cases
       default:
@@ -256,8 +248,7 @@ class PdfBitmapHelper {
   void save() {
     if (!bitmap._imageStatus) {
       bitmap._imageStatus = true;
-      PdfImageHelper.setImageStream(
-          bitmap, bitmap._decoder!.getImageDictionary());
+      PdfImageHelper.setImageStream(bitmap, bitmap._decoder!.getImageDictionary());
       if (bitmap._decoder!.format == ImageType.png) {
         final PngDecoder? decoder = bitmap._decoder as PngDecoder?;
         if (decoder != null && decoder.isDecode) {
@@ -275,8 +266,7 @@ class PdfBitmapHelper {
 
   /// internal method
   void drawInternal(PdfGraphics graphics, PdfRectangle bounds) {
-    graphics.drawImage(bitmap,
-        Rect.fromLTWH(0, 0, bitmap._width * 0.75, bitmap._height * 0.75));
+    graphics.drawImage(bitmap, Rect.fromLTWH(0, 0, bitmap._width * 0.75, bitmap._height * 0.75));
   }
 
   /// internal method
