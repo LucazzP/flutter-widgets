@@ -21,6 +21,7 @@ class SfColorScheme {
     required Color outlineVariant,
     required this.splashColor,
     required this.hoverColor,
+    required this.alternateRowColor,
     required this.highlightColor,
     required this.valueIndicatorColor,
     required this.textColor,
@@ -88,12 +89,8 @@ class SfColorScheme {
         31: surface.withValues(alpha: 0.12),
         143: surface.withValues(alpha: 0.56),
         150: surface,
-        250: brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
-            : const Color(0xFF303030),
-        251: brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
-            : const Color(0xFF303030),
+        250: brightness == Brightness.light ? const Color(0xFFFAFAFA) : const Color(0xFF303030),
+        251: brightness == Brightness.light ? const Color(0xFFFAFAFA) : const Color(0xFF303030),
         255: surface,
       },
     );
@@ -223,9 +220,7 @@ class SfColorScheme {
     this.inverseSurface = MaterialColor(
       inverseSurface.toInt32,
       <int, Color>{
-        255: brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
-            : const Color(0xFF424242),
+        255: brightness == Brightness.light ? const Color(0xFFFAFAFA) : const Color(0xFF424242),
         257: Colors.transparent,
         79: brightness == Brightness.light
             ? const Color.fromRGBO(79, 79, 79, 1)
@@ -304,6 +299,7 @@ class SfColorScheme {
     required Color outlineVariant,
     required this.splashColor,
     required this.hoverColor,
+    required this.alternateRowColor,
     required this.highlightColor,
     required this.valueIndicatorColor,
     required this.textColor,
@@ -361,9 +357,7 @@ class SfColorScheme {
             ? const Color.fromRGBO(150, 60, 112, 1)
             : const Color.fromRGBO(77, 170, 255, 1),
         250: surface,
-        251: brightness == Brightness.light
-            ? const Color(0xFFEEE8F4)
-            : const Color(0xFF302D38),
+        251: brightness == Brightness.light ? const Color(0xFFEEE8F4) : const Color(0xFF302D38),
         255: surface,
       },
     );
@@ -531,6 +525,9 @@ class SfColorScheme {
 
   /// A color that is used to paint the hover effect of the components.
   Color hoverColor;
+
+  /// A color that is used to paint the alternate row color of the components.
+  Color alternateRowColor;
 
   /// A color that is used to paint the highlight effect of the components.
   Color highlightColor;

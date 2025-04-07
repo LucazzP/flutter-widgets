@@ -5080,6 +5080,8 @@ class DataGridThemeHelper {
     headerHoverColor =
         defaults.headerHoverColor ?? sfDataGridThemeData.headerHoverColor;
     rowHoverColor = defaults.rowHoverColor ?? sfDataGridThemeData.rowHoverColor;
+    alternateRowColor = defaults.alternateRowColor ??
+        sfDataGridThemeData.alternateRowColor;
     sortIconColor = defaults.sortIconColor ?? sfDataGridThemeData.sortIconColor;
     frozenPaneLineColor =
         defaults.frozenPaneLineColor ?? sfDataGridThemeData.frozenPaneLineColor;
@@ -5186,6 +5188,7 @@ class DataGridThemeHelper {
   /// To do
 
   late final Color? rowHoverColor;
+  late final Color? alternateRowColor;
 
   /// To do
 

@@ -16,7 +16,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  syncfusion_flutter_core: ^26.1.39
+  syncfusion_flutter_core:
+    path: ../syncfusion_flutter_core
       
       
       
